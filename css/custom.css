@@ -1,12 +1,60 @@
+/* ---- COLOR CODES ----
+
+cream: #D9AE89
+orange: #D97D48
+light-brown: #8C513B
+med-brown: #593325
+dark-brown: #261A16
+
+
+tumbleweed: #D9AE89
+flame: #D95A2B
+dark olive green: #68764A
+caput mortuum: #593325
+smoky black: #261A16
+
+---- ---- ---- ---- */
+body {
+    Font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
+    background: url(../img/zach-plank-htjOCeVtW60-unsplash.jpg) no-repeat center; 
+    background-size: cover;
+    
+}
+
+.cover-container {
+    
+
+}
+
 #headline {
-    background: rgba(38, 26, 22, 0.7);
+    background: rgba(38, 26, 22, 0.8);
     color: #D9AE89;
 }
 
-#headline h1 {
-    font-family: 'IM Fell DW Pica', serif;
+h1 {
+    Font-family: Garamond, Baskerville, Baskerville Old Face, Hoefler Text, Times New Roman, serif;
+    font-weight: 600;
+}
+h2 {
+    Font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
 }
 
-#headline h2 {
-    font-family: 'Open Sans', sans-serif;
+h3 {
+    Font-family: Garamond, Baskerville, Baskerville Old Face, Hoefler Text, Times New Roman, serif;
 }
+
+header {
+    background: rgba(38, 26, 22, 0.8);
+    color: #D9AE89;
+}
+
+nav a {
+    color: #D9AE89;
+}
+
+.nav-pills .nav-link.active {
+    background-color: #D9AE89;
+    color: #261A16;
+}
+
+
