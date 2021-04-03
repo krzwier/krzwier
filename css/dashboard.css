@@ -16,16 +16,14 @@ smoky black: #261A16
 ---- ---- ---- ---- */
 
 body {
-    font-size: .875rem;
-    font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
-    background: url(../img/zach-plank-htjOCeVtW60-unsplash.jpg) no-repeat center;
-    background-size: cover;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 300;
+    background-color: #D9AE89;
 }
 
 h3 {
     font-family: 'Quicksand', sans-serif;
     font-weight: 500;
-    font-size: 1.125em;
     margin-bottom: 0.25em;
     color: #D95A2B;
 }
@@ -37,40 +35,36 @@ h4 {
     margin: 0;
 }
 
-.feather {
-    width: 16px;
-    height: 16px;
-    vertical-align: text-bottom;
-}
 
 /*
  * Sidebar
  */
 
 .sidebar {
-    background-color: #593325;
+    background-color: rgba(38, 26, 22, 0.8);
+    /*background-color: #593325;*/
     color: #D9AE89;
     position: fixed;
-    top: 0;
+    top: 67.75px;
     bottom: 0;
     left: 0;
     z-index: 100;
     /* Behind the navbar */
-    padding: 76.5px 0 0;
+    /* padding: 76.5px 0 0;*/
     /* Height of navbar */
     box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
 }
-
+/*
 @media (max-width: 767.98px) {
     .sidebar {
         top: 5rem;
     }
 }
+*/
 
 .sidebar-sticky {
     position: relative;
     top: 0;
-    height: calc(100vh - 48px);
     padding-top: .5rem;
     overflow-x: hidden;
     overflow-y: auto;
@@ -123,4 +117,11 @@ i {
     border: 1px solid #D9AE89;
     background: none;
     margin-top: 12px;
+}
+
+#intro {
+    background: url(../img/selfie.png) no-repeat center;
+    background-size: contain;
+    background-position: right bottom;
+    height: calc(100vh - 61px);
 }
