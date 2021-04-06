@@ -79,16 +79,16 @@ h4 {
 #sidebar, #sidebar-widescreen {
     background-color: rgba(89, 51, 37, 0.9);
     color: #D9AE89;
-    height: calc(100vh - 4.5rem);
+}
+
+#sidebar {
+    float: left;
     position: fixed;
     top: 4.5rem;
     left: 0;
     width: 150px;
     white-space: nowrap;
-}
-
-#sidebar {
-    float: left;
+    height: calc(100vh - 4.5rem);
 }
 
 #sidebar.collapse {
@@ -143,6 +143,11 @@ h4 {
     height: 4.5rem;
 }
 
+#title {
+    background-color: rgba(38, 26, 22, 0.9);
+    color: #D9AE89;
+}
+
 #navbar a {
 
     color: #D9AE89;
@@ -158,12 +163,29 @@ i {
     float: left;
 }
 
-
+#main-container {
+    padding-top: 4.5rem;
+}
 
 #intro {
     background: url(../img/selfie.png) no-repeat center;
     background-size: contain;
     background-position: right bottom;
-    padding-top: 67.75px;
-    /*height: calc(100vh - 74px);*/
+    height: calc(100vh - 4.5rem);
+    /*
+    background: red;
+    clip-path: polygon(55% 0%, 37% 25%, 40% 42%, 15% 47%, 5% 55%, 0% 65%, 5% 90%, 100% 90%, 100% 0%);
+    shape-outside: polygon(55% 0%, 37% 25%, 40% 42%, 15% 47%, 5% 55%, 0% 65%, 5% 90%, 100% 90%, 100% 0%);
+    */
+}
+
+@media (min-width: 768px) {
+
+    #main-container {
+        padding-top: 0;
+    }
+
+    #intro {
+        height: 100vh;
+    }
 }
