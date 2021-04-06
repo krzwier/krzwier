@@ -10,8 +10,13 @@ dark-brown: #261A16
 tumbleweed: #D9AE89
 flame: #D95A2B
 dark olive green: #68764A
+    rgb(104, 118, 74)
+
 caput mortuum: #593325
+    background-color: rgba(89, 51, 37, 0.8);
+
 smoky black: #261A16
+    background-color: rgba(38, 26, 22, 0.8);
 
 ---- ---- ---- ---- */
 
@@ -35,25 +40,24 @@ h4 {
     margin: 0;
 }
 
-
 /*
  * Sidebar
  */
 
+/*
 .sidebar {
     background-color: rgba(38, 26, 22, 0.8);
-    /*background-color: #593325;*/
     color: #D9AE89;
     position: fixed;
-    top: 67.75px;
+    top: 0;
     bottom: 0;
     left: 0;
     z-index: 100;
-    /* Behind the navbar */
-    /* padding: 76.5px 0 0;*/
-    /* Height of navbar */
+    padding-top: 70px;
     box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
 }
+*/
+
 /*
 @media (max-width: 767.98px) {
     .sidebar {
@@ -62,44 +66,85 @@ h4 {
 }
 */
 
+/*
 .sidebar-sticky {
     position: relative;
     top: 0;
     padding-top: .5rem;
     overflow-x: hidden;
-    overflow-y: auto;
-    /* Scrollable contents if viewport is shorter than content. */
+    overflow-y: hidden;
+}
+*/
+
+#sidebar, #sidebar-widescreen {
+    background-color: rgba(89, 51, 37, 0.9);
+    color: #D9AE89;
+    height: calc(100vh - 4.5rem);
+    position: fixed;
+    top: 4.5rem;
+    left: 0;
+    width: 150px;
+    white-space: nowrap;
 }
 
-.sidebar .nav-link {
+#sidebar {
+    float: left;
+}
+
+#sidebar.collapse {
+    visibility: hidden;
+}
+
+#sidebar.show {
+    visibility: visible;
+    overflow: hidden;
+}
+
+#sidebar.collapsing {
+    -webkit-transition-property: height, visibility;
+    transition-property: height, visibility;
+    -webkit-transition-duration: 0.35s;
+    transition-duration: 0.35s;
+    -webkit-transition-timing-function: ease;
+    transition-timing-function: ease;
+    
+}
+
+#sidebar.collapsing.width {
+    -webkit-transition-property: width, visibility;
+    transition-property: width, visibility;
+    width: 0;
+    
+}
+
+#sidebar ul, #sidebar-widescreen ul {
+    list-style: none;
+    padding: 0;
+}
+
+#sidebar li a, #sidebar-widescreen li a {
     font-weight: 500;
     color: #D9AE89;
+    text-decoration: none;
 }
 
-.sidebar .nav-link i {
+#sidebar li i, #sidebar-widescreen li i {
     margin-right: 4px;
     color: #D95A2B;
-}
-
-.sidebar .nav-link:hover .feather, .sidebar .nav-link.active .feather {
-    color: inherit;
-}
-
-.sidebar-heading {
-    font-size: .75rem;
-    text-transform: uppercase;
 }
 
 /*
  * Navbar
  */
 
-.navbar {
-    background-color: rgba(38, 26, 22, 0.8);
+#navbar {
+    background-color: rgba(38, 26, 22, 0.9);
     color: #D9AE89;
+    height: 4.5rem;
 }
 
-.navbar a {
+#navbar a {
+
     color: #D9AE89;
 }
 
@@ -107,21 +152,18 @@ i {
     color: #D9AE89;
 }
 
-.navbar-brand {
-    padding-top: .75rem;
-    padding-bottom: .75rem;
-    font-size: 1rem;
-}
-
-.navbar .navbar-toggler {
+.btn {
     border: 1px solid #D9AE89;
     background: none;
-    margin-top: 12px;
+    float: left;
 }
+
+
 
 #intro {
     background: url(../img/selfie.png) no-repeat center;
     background-size: contain;
     background-position: right bottom;
-    height: calc(100vh - 61px);
+    padding-top: 67.75px;
+    /*height: calc(100vh - 74px);*/
 }
