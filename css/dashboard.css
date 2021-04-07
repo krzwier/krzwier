@@ -107,14 +107,12 @@ h4 {
     transition-duration: 0.35s;
     -webkit-transition-timing-function: ease;
     transition-timing-function: ease;
-    
 }
 
 #sidebar.collapsing.width {
     -webkit-transition-property: width, visibility;
     transition-property: width, visibility;
     width: 0;
-    
 }
 
 #sidebar ul, #sidebar-widescreen ul {
@@ -149,7 +147,6 @@ h4 {
 }
 
 #navbar a {
-
     color: #D9AE89;
 }
 
@@ -167,25 +164,41 @@ i {
     padding-top: 4.5rem;
 }
 
-#intro {
-    background: url(../img/selfie.png) no-repeat center;
-    background-size: contain;
-    background-position: right bottom;
+#intro h1 {
+    overflow: visible;
+}
+
+#selfie-container {
+    float: right;
     height: calc(100vh - 4.5rem);
+}
+
+#selfie {
+    display: block;
+    float: right;
+    max-height: calc(100vh - 4.5rem);
+    max-width: 100%;
+    height: auto;
+    width: auto;
+    shape-outside: polygon(55% 0%, 37% 25%, 40% 42%, 15% 47%, 5% 55%, 0% 65%, 5% 100%, 100% 100%, 100% 0%);
+    /* Uncomment to view mask for text wrap */
     /*
-    background: red;
-    clip-path: polygon(55% 0%, 37% 25%, 40% 42%, 15% 47%, 5% 55%, 0% 65%, 5% 90%, 100% 90%, 100% 0%);
-    shape-outside: polygon(55% 0%, 37% 25%, 40% 42%, 15% 47%, 5% 55%, 0% 65%, 5% 90%, 100% 90%, 100% 0%);
+    background-color: red;
+    clip-path: polygon(55% 0%, 37% 25%, 40% 42%, 15% 47%, 5% 55%, 0% 65%, 5% 100%, 100% 100%, 100% 0%);
     */
 }
 
 @media (min-width: 768px) {
-
     #main-container {
         padding-top: 0;
     }
-
     #intro {
         height: 100vh;
+    }
+    #selfie {
+        max-height: 100%;
+        max-width: 100%;
+        height: auto;
+        width: auto;
     }
 }
