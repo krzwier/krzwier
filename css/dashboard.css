@@ -162,30 +162,38 @@ i {
 
 #main-container {
     padding-top: 4.5rem;
+    width: 100%;
 }
 
-#intro h1 {
-    overflow: visible;
-}
-
-#selfie-container {
-    float: right;
+#intro {
+    position: relative;
     height: calc(100vh - 4.5rem);
+    width: 100%;
+
 }
 
-#selfie {
-    display: block;
+
+
+#empty {
     float: right;
-    max-height: calc(100vh - 4.5rem);
+    height: calc(100% - 111.1vw);
+    width: 1px;
+}
+
+#intro img {
+    float: right;
+    clear: right;
+    max-height: 100%;
     max-width: 100%;
     height: auto;
     width: auto;
     shape-outside: polygon(55% 0%, 37% 25%, 40% 42%, 15% 47%, 5% 55%, 0% 65%, 5% 100%, 100% 100%, 100% 0%);
-    /* Uncomment to view mask for text wrap */
-    /*
-    background-color: red;
-    clip-path: polygon(55% 0%, 37% 25%, 40% 42%, 15% 47%, 5% 55%, 0% 65%, 5% 100%, 100% 100%, 100% 0%);
-    */
+}
+
+#intro span {
+    color: #D95A2B;
+    font-family: 'Pacifico', cursive;
+
 }
 
 @media (min-width: 768px) {
@@ -195,10 +203,5 @@ i {
     #intro {
         height: 100vh;
     }
-    #selfie {
-        max-height: 100%;
-        max-width: 100%;
-        height: auto;
-        width: auto;
-    }
+
 }
