@@ -40,6 +40,11 @@ h4 {
     margin: 0;
 }
 
+h5 {
+    font-weight: 300;
+    font-size: 1em;
+}
+
 /*
  * Sidebar
  */
@@ -214,14 +219,18 @@ code {
 }
 
 .carousel-item {
-    padding-top: 40px;
+    padding-bottom: 120px;
 }
 
 .carousel-caption {
     background-color: rgba(38, 26, 22, 0.8);
     /*border-radius: 5px;*/
-    top: 0;
-    bottom: auto;
+    
+
+}
+
+.carousel-caption span {
+    background-color: #68764A;
 
 }
 
