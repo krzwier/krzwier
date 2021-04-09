@@ -196,9 +196,9 @@ i {
 }
 
 code {
-    background-color: #68764A;
-    color: #D9AE89;
-    box-shadow: 0 3px 5px rgba(104, 118, 74, 0.3);
+    color: #68764A;
+    font-family: 'VT323', monospace;
+    
 }
 
 #loves {
@@ -206,6 +206,22 @@ code {
     font-family: 'Pacifico', cursive;
     font-size: calc(1.6rem + 2.1vw);
     line-height: calc(1.2*(1.425rem + 2.1vw));
+
+}
+
+#portfolio {
+    background-color: #D95A2B;
+}
+
+.carousel-item {
+    padding-top: 40px;
+}
+
+.carousel-caption {
+    background-color: rgba(38, 26, 22, 0.8);
+    /*border-radius: 5px;*/
+    top: 0;
+    bottom: auto;
 
 }
 
