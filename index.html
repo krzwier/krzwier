@@ -20,6 +20,9 @@
     <!-- FontAwesome -->
     <script src="https://kit.fontawesome.com/dfa77e14af.js" crossorigin="anonymous"></script>
 
+    <!-- Reset CSS -->
+    <link href="css/reset.css" rel="stylesheet">
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
 
@@ -109,7 +112,7 @@
             </div>
 
             <main class="col-12 col-md-9 col-xl-10 px-0">
-                <div id="main-container" class="px-0">
+                <div class="row px-0">
                     <!--<div id="intro" class="p-0 d-flex flex-column"> -->
 
 
@@ -119,57 +122,116 @@
                         <img class="float-right" src="img/selfie.png" />
                         <h1 class="display-5 p-3"><code>$ echo "Hi!"</code><br> I'm a developer who <span id="loves">loves</span> complex problems and being challenged in new ways.</h1>
                     </div>
+                </div>
 
-                    <div id="portfolio" class="pb-3">
-                        <h2 class="p-3 text-center">Portfolio</h2>
-                        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-indicators">
-                                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                            </div>
-                            <div class="carousel-inner">
-                                <div class="carousel-item active">
-                                    <img src="img/unplugged-mockup.png" class="d-block w-100" alt="mockup images for unplugged retreat project">
-                                    <div class="carousel-caption d-block">
-                                        <h5>Unplugged Retreat</h5>
-                                        <p>
+                <div class="row px-0">
+
+                    <div id="portfolio">
+                        <div id="portfolio-wrapper" class="m-3 py-3">
+                            <h2 class="m-3 p-0 text-center display-5">Portfolio</h2>
+                            <div id="carouselIndicators" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-indicators">
+                                    <button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                                    <button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                </div>
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active">
+                                        <img src="img/unplugged-mockup.png" class="d-block w-100" alt="mockup images for unplugged retreat project">
+                                        <div id="unplugged-accordion" class="accordion accordion-flush">
+
+                                            <div class="accordion-item text-center">
+                                                <h4 class="accordion-header" id="unplugged-header">
+                                                    <button class="accordion-button collapsed text-center" type="button" data-bs-toggle="collapse" data-bs-target="#unplugged-collapse" aria-expanded="false" aria-controls="unplugged-collapse">
+                                                        Unplugged Retreat
+                                                    </button>
+                                                    </h2>
+                                                    <div id="unplugged-collapse" class="accordion-collapse collapse " aria-labelledby="unplugged-header" data-bs-parent="#unplugged-accordion">
+                                                        <div class="accordion-body">
+                                                            Three-page responsive website for fictional company "Unplugged Retreat". Project from Skillcrush course in responsive design. Mobile-first design produced using flexbox and breakpoints.
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                        <p class="text-center">
                                             <span class="badge rounded-pill"><i class="fab fa-html5"></i> HTML</span>
                                             <span class="badge rounded-pill"><i class="fab fa-css3"></i> CSS</span>
                                         </p>
+                                        <ul class="list-inline text-center">
+                                            <li class="list-inline-item fs-3">
+                                                <a href="https://krzwier.github.io/unplugged-retreat/" data-bs-toggle="tooltip" title="Live version">
+                                                    <i class="fas fa-globe"></i>
+                                                </a>
+                                            </li>
+                                            <li class="list-inline-item fs-3">
+                                                <a href="https://github.com/krzwier/unplugged-retreat" data-bs-toggle="tooltip" title="Code">
+                                                    <i class="fab fa-github"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
 
-                                        <p class="d-none d-md-block">Three-page responsive website for fictional company "Unplugged Retreat". Project from Skillcrush course in responsive design. Mobile-first design produced using flexbox and breakpoints.</p>
+                                    <div class="carousel-item">
+                                        <img src="img/adhoc-mockup.png" class="d-block w-100" alt="...">
+                                        <div id="adhoc-accordion" class="accordion accordion-flush">
+
+                                            <div class="accordion-item text-center">
+                                                <h4 class="accordion-header" id="adhoc-header">
+                                                    <button class="accordion-button collapsed text-center" type="button" data-bs-toggle="collapse" data-bs-target="#adhoc-collapse" aria-expanded="false" aria-controls="adhoc-collapse">
+                                                        Adhoc
+                                                    </button>
+                                                    </h2>
+                                                    <div id="adhoc-collapse" class="accordion-collapse collapse " aria-labelledby="adhoc-header" data-bs-parent="#adhoc-accordion">
+                                                        <div class="accordion-body">
+                                                            Insert new text here.
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                        </div>
+
+                                        <p class="text-center">
+                                            <span class="badge rounded-pill"><i class="fab fa-html5"></i> HTML</span>
+                                            <span class="badge rounded-pill"><i class="fab fa-css3"></i> CSS</span>
+                                            <span class="badge rounded-pill"><i class="fab fa-bootstrap"></i> Bootstrap</span>
+
+                                        </p>
+
+
+
+                                        <ul class="list-inline text-center">
+                                            <li class="list-inline-item fs-3">
+                                                <a href="https://krzwier.github.io/adhoc/">
+                                                    <i class="fas fa-globe"></i>
+                                                </a>
+                                            </li>
+                                            <li class="list-inline-item fs-3">
+                                                <a href="https://github.com/krzwier/adhoc">
+                                                    <i class="fab fa-github"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+
                                     </div>
                                 </div>
-                                <div class="carousel-item">
-                                    <img src="img/adhoc-mockup.png" class="d-block w-100" alt="...">
-                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselIndicators" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#carouselIndicators" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
                             </div>
-                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
-                            </button>
                         </div>
                     </div>
+                </div>
 
-
-
-
-
-
-
-
+                <div class="row">
                     <h2>Section title</h2>
                     <div class="table-responsive">
                         <p>
                             Lorem ipsum stuff stuff stuff
                         </p>
                     </div>
-
                 </div>
             </main>
         </div>
