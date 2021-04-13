@@ -267,6 +267,18 @@ code {
     margin-left: 10px;
 }
 
+#skills {
+    background-color: #593325;
+    color: #D9AE89;
+}
+
+#skills .badge {
+    background-color: #D95A2B;
+
+}
+
+
+
 @media (min-width: 768px) {
     #main-container {
         padding-top: 0;
