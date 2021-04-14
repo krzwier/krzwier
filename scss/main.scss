@@ -1,0 +1,26 @@
+$font-stack: 'Quicksand', sans-serif;
+
+$tumbleweed: #D9AE89;
+$flame: #D95A2B;
+$olive-green: #68764A;
+$caput-mortuum: #593325;
+$smoky-black: #261A16;
+
+
+
+body {
+  font-family: $font-stack;
+  font-weight: 300;
+  color: $tumbleweed;
+}
+
+h3 {
+    font-weight: 500;
+    margin-bottom: 0.25em;
+    color: $flame;
+}
+
+h4 {
+    font-size: 1em;
+    margin: 0;
+}
