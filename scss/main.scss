@@ -1,22 +1,40 @@
-$font-stack: 'Quicksand', sans-serif;
-$code-font-stack: 'VT323', monospace;
-$pacifico-font-stack: 'Pacifico', cursive;
+// Include all of Bootstrap
 
-$tumbleweed: #D9AE89;
-$flame: #D95A2B;
-$olive-green: #68764A;
+// Include any default variable overrides here (though functions won't be available)
+
+@import "../bootstrap/scss/bootstrap.scss";
+
+// Custom code begins here
+
+$font-stack: "Quicksand", sans-serif;
+$code-font-stack: "VT323", monospace;
+$pacifico-font-stack: "Pacifico", cursive;
+
+$tumbleweed: #d9ae89;
+$flame: #d95a2b;
+$olive-green: #68764a;
 $caput-mortuum: #593325;
-$smoky-black: #261A16;
-$white: #FFFFFF;
+$smoky-black: #261a16;
+$white: #ffffff;
 $smoky-black-shadow: rgba(38, 36, 22, 0.3);
 $smoky-black-background: rgba(38, 36, 22, 0.9);
 
-
+@mixin margin-auto {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+}
 
 body {
-  font-family: $font-stack;
-  font-weight: 300;
-  background-color: $tumbleweed;
+    font-family: $font-stack;
+    font-weight: 300;
+    background-color: $tumbleweed;
+}
+
+#body-container {
+    @extend .container-fluid;
 }
 
 h3 {
@@ -35,6 +53,9 @@ h5 {
 }
 
 #navbar {
+    @extend .container-fluid;
+    @extend .fixed-top;
+    @extend .d-md-none;
     background-color: $smoky-black-background;
     color: $tumbleweed;
     height: 4.5rem;
@@ -42,26 +63,28 @@ h5 {
 }
 
 #title {
-    background-color: $smoky-black-background;
-    color: $tumbleweed;
+    @extend .container-fluid;
+    @extend .fixed-top;
+    @extend .py-2;
+    @extend .text-center;
 }
 
-#navbar a {
-    color: $tumbleweed;
+#hamburger {
+    @extend .fixed-top;
+    @extend .py-2;
+    @extend .px-3;
+    .btn {
+        border: 1px solid $tumbleweed;
+        background: none;
+        float: left;
+        i {
+            color: $tumbleweed;
+        }
+    }
 }
 
-i {
-    color: $tumbleweed;
-}
-
-.btn {
-    border: 1px solid $tumbleweed;
-    background: none;
-    float: left;
-}
-
-
-#sidebar, #sidebar-widescreen {
+#sidebar,
+#sidebar-widescreen {
     z-index: 1000;
     background-color: $caput-mortuum;
     color: $tumbleweed;
@@ -69,13 +92,18 @@ i {
 }
 
 #sidebar {
+    @extend .d-md-none;
     position: fixed;
     top: 4.5rem;
     left: 0;
     width: 150px;
     white-space: nowrap;
+}
+
+#sidebar-container {
     height: calc(100vh - 4.5rem);
 }
+
 
 #sidebar.collapse {
     visibility: hidden;
@@ -86,26 +114,47 @@ i {
     overflow: hidden;
 }
 
-#sidebar.collapsing.width {
-    -webkit-transition-property: width, visibility;
+#sidebar.collapsing {
     transition-property: width, visibility;
+    transition-duration: 0.35s;
     width: 0;
+    height: calc(100vh - 4.5rem);
 }
 
-#sidebar ul, #sidebar-widescreen ul {
-    list-style: none;
-    padding: 0;
+
+#sidebar, #sidebar-widescreen {
+    ul {
+        list-style: none;
+        padding: 0;
+        li {
+            a {
+                font-weight: 500;
+                color: $tumbleweed;
+                text-decoration: none;
+            }
+            i {
+                margin-right: 4px;
+                color: $flame;
+            }
+        }
+        
+    }
 }
 
-#sidebar li a, #sidebar-widescreen li a {
-    font-weight: 500;
-    color: #D9AE89;
-    text-decoration: none;
+#sidebar-widescreen {
+    @extend .d-none;
+    @extend .p-0;
+    @extend .d-md-block;
+    @extend .col-md-3;
+    @extend .col-xl-2;
 }
 
-#sidebar li i, #sidebar-widescreen li i {
-    margin-right: 4px;
-    color: #D95A2B;
+#title-widescreen {
+    @extend .container-fluid;
+    @extend .w-100;
+    @extend .p-2;
+    @extend .p-md-3;
+    background-color: $smoky-black-background;
 }
 
 /* ---- INTRO SECTION ---- */
@@ -176,11 +225,14 @@ code {
 
 .carousel .badge {
     color: $white;
-    background-color: #68764A;
+    background-color: #68764a;
     margin: 1rem 0;
 }
 
-.accordion-item, .accordion-button, .accordion-button:focus, .accordion-button:not(.collapsed) {
+.accordion-item,
+.accordion-button,
+.accordion-button:focus,
+.accordion-button:not(.collapsed) {
     background: none;
     border: none;
     box-shadow: none;
@@ -192,20 +244,18 @@ code {
     margin: auto;
 }
 
-.accordion-button::after, .accordion-button:not(.collapsed)::after {
+.accordion-button::after,
+.accordion-button:not(.collapsed)::after {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
     margin-left: 10px;
 }
 
-
 /* ---- SKILLS SECTION ---- */
-
 
 #skills {
     background-color: $caput-mortuum;
     color: $tumbleweed;
 }
-
 
 #badge-wrapper {
     width: 90%;
@@ -228,7 +278,8 @@ code {
     transition: all 0.2s ease;
 }
 
-.hex-badge::after, .hex-badge::before {
+.hex-badge::after,
+.hex-badge::before {
     position: absolute;
     width: inherit;
     height: inherit;
@@ -250,7 +301,6 @@ code {
     transform: rotate(-60deg);
 }
 .hex-badge:hover {
-
     top: -4px;
 }
 
@@ -285,7 +335,6 @@ code {
     right: 0;
     bottom: 0;
     margin: auto;
-
 }
 
 .circle i {
@@ -293,12 +342,10 @@ code {
     margin-top: 8px;
 }
 
-
 .yellow {
     background: linear-gradient(to bottom right, #ffeb3b 0%, #fbc02d 100%);
     color: #ffb300;
 }
-
 
 @media (min-width: 768px) {
     #main-container {
