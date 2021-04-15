@@ -1,10 +1,8 @@
 // Include all of Bootstrap
 
-// Include any default variable overrides here (though functions won't be available)
-
 @import "../bootstrap/scss/bootstrap.scss";
 
-// Custom code begins here
+// Custom code
 
 $font-stack: "Quicksand", sans-serif;
 $code-font-stack: "VT323", monospace;
@@ -52,6 +50,8 @@ h5 {
     font-weight: 300;
 }
 
+/* ---- TOP NAVBAR (ONLY VISIBLE ON XS & S) ---- */
+
 #navbar {
     @extend .container-fluid;
     @extend .fixed-top;
@@ -83,50 +83,21 @@ h5 {
     }
 }
 
+/* ---- SIDEBAR ---- */
+
 #sidebar,
 #sidebar-widescreen {
     z-index: 1000;
     background-color: $caput-mortuum;
     color: $tumbleweed;
     box-shadow: 3px 0 5px $smoky-black-shadow;
-}
 
-#sidebar {
-    @extend .d-md-none;
-    position: fixed;
-    top: 4.5rem;
-    left: 0;
-    width: 150px;
-    white-space: nowrap;
-}
-
-#sidebar-container {
-    height: calc(100vh - 4.5rem);
-}
-
-
-#sidebar.collapse {
-    visibility: hidden;
-}
-
-#sidebar.show {
-    visibility: visible;
-    overflow: hidden;
-}
-
-#sidebar.collapsing {
-    transition-property: width, visibility;
-    transition-duration: 0.35s;
-    width: 0;
-    height: calc(100vh - 4.5rem);
-}
-
-
-#sidebar, #sidebar-widescreen {
     ul {
         list-style: none;
         padding: 0;
         li {
+            @extend .py-2;
+            @extend .p-md-3;
             a {
                 font-weight: 500;
                 color: $tumbleweed;
@@ -138,6 +109,35 @@ h5 {
             }
         }
         
+    }
+}
+
+#sidebar {
+    @extend .d-md-none;
+    position: fixed;
+    top: 4.5rem;
+    left: 0;
+    width: 150px;
+    white-space: nowrap;
+
+    #sidebar-container {
+        height: calc(100vh - 4.5rem);
+    }
+
+    .collapse {
+        visibility: hidden;
+    }
+
+    .show {
+        visibility: visible;
+        overflow: hidden;
+    }
+
+    .collapsing {
+        transition-property: width, visibility;
+        transition-duration: 0.35s;
+        width: 0;
+        height: calc(100vh - 4.5rem);
     }
 }
 
@@ -157,46 +157,63 @@ h5 {
     background-color: $smoky-black-background;
 }
 
-/* ---- INTRO SECTION ---- */
+/* ---- MAIN SECTION ---- */
 
-main {
+#main-wrapper {
+    @extend .col-12;
+    @extend .col-md-9;
+    @extend .col-xl-10;
+    @extend .px-0;
     padding-top: 4.5rem;
-    width: 100%;
+
+    .row {
+        @extend .gx-0;
+    }
 }
+
+
+/* ---- INTRO SECTION ---- */
 
 #intro {
     position: relative;
     height: calc(100vh - 4.5rem);
     width: 100%;
+
+    #empty {
+        float: right;
+        height: calc(100% - 111.1vw);
+        width: 1px;
+    }
+
+    img {
+        float: right;
+        clear: right;
+        max-height: 100%;
+        max-width: 100%;
+        height: auto;
+        width: auto;
+        shape-outside: polygon(70% 0%, 38% 25%, 40% 42%, 15% 47%, 5% 55%, 0% 65%, 5% 100%, 100% 100%, 100% 0%);
+    }
+
+    code {
+        color: $olive-green;
+        font-family: $code-font-stack;
+        font-size: calc(1.8rem + 2.1vw);
+    }
+
+    span {
+        color: $flame;
+        font-family: $pacifico-font-stack;
+        font-size: calc(1.6rem + 2.1vw);
+    }
+
+    h1 {
+        @extend .display-6;
+        @extend .p-3;
+    }
 }
 
-#empty {
-    float: right;
-    height: calc(100% - 111.1vw);
-    width: 1px;
-}
 
-#intro img {
-    float: right;
-    clear: right;
-    max-height: 100%;
-    max-width: 100%;
-    height: auto;
-    width: auto;
-    shape-outside: polygon(70% 0%, 38% 25%, 40% 42%, 15% 47%, 5% 55%, 0% 65%, 5% 100%, 100% 100%, 100% 0%);
-}
-
-code {
-    color: $olive-green;
-    font-family: $code-font-stack;
-    font-size: calc(1.8rem + 2.1vw);
-}
-
-#loves {
-    color: $flame;
-    font-family: $pacifico-font-stack;
-    font-size: calc(1.6rem + 2.1vw);
-}
 
 /* ---- PORTFOLIO SECTION ---- */
 

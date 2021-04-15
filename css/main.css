@@ -508,13 +508,13 @@ progress {
   }
 }
 
-.display-6 {
+.display-6, #intro h1, #intro .h1 {
   font-size: calc(1.375rem + 1.5vw);
   font-weight: 300;
   line-height: 1.2;
 }
 @media (min-width: 1200px) {
-  .display-6 {
+  .display-6, #intro h1, #intro .h1 {
     font-size: 2.5rem;
   }
 }
@@ -747,7 +747,7 @@ progress {
   width: 91.6666666667%;
 }
 
-.col-12 {
+.col-12, #main-wrapper {
   flex: 0 0 auto;
   width: 100%;
 }
@@ -797,7 +797,8 @@ progress {
 }
 
 .g-0,
-.gx-0 {
+.gx-0,
+#main-wrapper .row {
   --bs-gutter-x: 0;
 }
 
@@ -1154,7 +1155,7 @@ progress {
     width: 66.6666666667%;
   }
 
-  .col-md-9 {
+  .col-md-9, #main-wrapper {
     flex: 0 0 auto;
     width: 75%;
   }
@@ -1585,7 +1586,7 @@ progress {
     width: 75%;
   }
 
-  .col-xl-10 {
+  .col-xl-10, #main-wrapper {
     flex: 0 0 auto;
     width: 83.3333333333%;
   }
@@ -6952,7 +6953,7 @@ textarea.form-control-lg {
   padding: 0.5rem !important;
 }
 
-.p-3 {
+.p-3, #intro h1, #intro .h1 {
   padding: 1rem !important;
 }
 
@@ -6964,7 +6965,7 @@ textarea.form-control-lg {
   padding: 3rem !important;
 }
 
-.px-0 {
+.px-0, #main-wrapper {
   padding-right: 0 !important;
   padding-left: 0 !important;
 }
@@ -7004,7 +7005,8 @@ textarea.form-control-lg {
   padding-bottom: 0.25rem !important;
 }
 
-.py-2, #hamburger, #title {
+.py-2, #sidebar ul li,
+#sidebar-widescreen ul li, #hamburger, #title {
   padding-top: 0.5rem !important;
   padding-bottom: 0.5rem !important;
 }
@@ -8545,7 +8547,8 @@ textarea.form-control-lg {
     padding: 0.5rem !important;
   }
 
-  .p-md-3, #title-widescreen {
+  .p-md-3, #title-widescreen, #sidebar ul li,
+#sidebar-widescreen ul li {
     padding: 1rem !important;
   }
 
@@ -10757,6 +10760,7 @@ h5, .h5 {
   font-weight: 300;
 }
 
+/* ---- TOP NAVBAR (ONLY VISIBLE ON XS & S) ---- */
 #navbar {
   background-color: rgba(38, 36, 22, 0.9);
   color: #d9ae89;
@@ -10773,12 +10777,29 @@ h5, .h5 {
   color: #d9ae89;
 }
 
+/* ---- SIDEBAR ---- */
 #sidebar,
 #sidebar-widescreen {
   z-index: 1000;
   background-color: #593325;
   color: #d9ae89;
   box-shadow: 3px 0 5px rgba(38, 36, 22, 0.3);
+}
+#sidebar ul,
+#sidebar-widescreen ul {
+  list-style: none;
+  padding: 0;
+}
+#sidebar ul li a,
+#sidebar-widescreen ul li a {
+  font-weight: 500;
+  color: #d9ae89;
+  text-decoration: none;
+}
+#sidebar ul li i,
+#sidebar-widescreen ul li i {
+  margin-right: 4px;
+  color: #d95a2b;
 }
 
 #sidebar {
@@ -10788,63 +10809,42 @@ h5, .h5 {
   width: 150px;
   white-space: nowrap;
 }
-
-#sidebar-container {
+#sidebar #sidebar-container {
   height: calc(100vh - 4.5rem);
 }
-
-#sidebar.collapse {
+#sidebar .collapse {
   visibility: hidden;
 }
-
-#sidebar.show {
+#sidebar .show {
   visibility: visible;
   overflow: hidden;
 }
-
-#sidebar.collapsing {
+#sidebar .collapsing {
   transition-property: width, visibility;
   transition-duration: 0.35s;
   width: 0;
   height: calc(100vh - 4.5rem);
 }
 
-#sidebar ul, #sidebar-widescreen ul {
-  list-style: none;
-  padding: 0;
-}
-#sidebar ul li a, #sidebar-widescreen ul li a {
-  font-weight: 500;
-  color: #d9ae89;
-  text-decoration: none;
-}
-#sidebar ul li i, #sidebar-widescreen ul li i {
-  margin-right: 4px;
-  color: #d95a2b;
-}
-
 #title-widescreen {
   background-color: rgba(38, 36, 22, 0.9);
 }
 
-/* ---- INTRO SECTION ---- */
-main {
+/* ---- MAIN SECTION ---- */
+#main-wrapper {
   padding-top: 4.5rem;
-  width: 100%;
 }
-
+/* ---- INTRO SECTION ---- */
 #intro {
   position: relative;
   height: calc(100vh - 4.5rem);
   width: 100%;
 }
-
-#empty {
+#intro #empty {
   float: right;
   height: calc(100% - 111.1vw);
   width: 1px;
 }
-
 #intro img {
   float: right;
   clear: right;
@@ -10854,19 +10854,16 @@ main {
   width: auto;
   shape-outside: polygon(70% 0%, 38% 25%, 40% 42%, 15% 47%, 5% 55%, 0% 65%, 5% 100%, 100% 100%, 100% 0%);
 }
-
-code {
+#intro code {
   color: #68764a;
   font-family: "VT323", monospace;
   font-size: calc(1.8rem + 2.1vw);
 }
-
-#loves {
+#intro span {
   color: #d95a2b;
   font-family: "Pacifico", cursive;
   font-size: calc(1.6rem + 2.1vw);
 }
-
 /* ---- PORTFOLIO SECTION ---- */
 #portfolio {
   background-color: #261a16;
