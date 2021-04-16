@@ -121,28 +121,23 @@ h5 {
     padding: 0;
     position: fixed;
     top: 4.5rem;
-    left: 0;
-    bottom: 0;
+    
     width: 150px;
     white-space: nowrap;
     //height: calc(100vh - 4.5rem);
-    
-    
+
     //transition-property: width, visibility;
 
-    &.collapsing {
+    &.collapsing.width {
         width: 0;
         height: auto;
-        transition-property: width; 
-        transition-duration: 5s;       
+        transition-property: width;
     }
 
     #sidebar-container {
         @extend .px-3;
         height: calc(100vh - 4.5rem);
     }
-    
-
 }
 
 #sidebar-widescreen {

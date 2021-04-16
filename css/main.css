@@ -10809,16 +10809,13 @@ h5, .h5 {
   padding: 0;
   position: fixed;
   top: 4.5rem;
-  left: 0;
-  bottom: 0;
   width: 150px;
   white-space: nowrap;
 }
-#sidebar.collapsing {
+#sidebar.collapsing.width {
   width: 0;
   height: auto;
   transition-property: width;
-  transition-duration: 5s;
 }
 #sidebar #sidebar-container {
   height: calc(100vh - 4.5rem);
