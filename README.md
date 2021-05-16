@@ -4,9 +4,11 @@
 
 - 👩‍💻 → 👩‍💻 I'm making a career change from higher education to tech
 
-- 📚 I’ve recently been learning front-end languages (HTML5, CSS, JavaScript) and frameworks like Bootstrap and React.
+- 📚 I’ve recently been learning front-end languages (HTML5, CSS, JavaScript) and frameworks like Bootstrap and React
 
 - 🌱 I have experience in a few back-end languages: Java, SQL, and Python (currently learning)
+
+- ❌ → ✅ - I practice TDD and ensemble programming regularly with [Ladies of Code](https://github.com/LadiesOfCodeGroupSessions) 
 
 - 🐓 + 🐕 I own chickens and a dog (and no, they don't get along with each other very well...😳)
 
