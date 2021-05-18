@@ -2,7 +2,7 @@
 
 ### I'm passionate about code and learning new things. I'm currently looking for a job, and I'm quite a catch 🎣, so be sure to snap me up quick!
 
-- 👩‍💻 → 👩‍💻 I'm making a career change from higher education to tech
+- 👩‍🏫 → 👩‍💻 I'm making a career change from higher education to tech
 
 - 📚 I’ve recently been learning front-end languages (HTML5, CSS, JavaScript) and frameworks like Bootstrap and React
 
