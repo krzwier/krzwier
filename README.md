@@ -12,7 +12,7 @@
 
 - 🐓 + 🐕 I own chickens and a dog (and no, they don't get along with each other very well...😳)
 
-- ♀ My pronouns are she/her
+- 😊 My pronouns are she/her/hers
 
 - 📫 You can reach me on [LinkedIn](https://www.linkedin.com/in/karen-zwier/)
 
