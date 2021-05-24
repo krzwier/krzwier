@@ -6,7 +6,7 @@
 
 - 📚 I’ve recently been learning front-end languages (HTML5, CSS, JavaScript) and frameworks like Bootstrap and React
 
-- 🌱 I have experience in a few back-end languages: Java, SQL, and Python (currently learning)
+- 🌱 I have experience in a few back-end languages: Java, SQL, and Python (the last is currently on my docket to learn better)
 
 - ❌ → ✅ - I practice TDD and ensemble programming regularly with [Ladies of Code](https://github.com/LadiesOfCodeGroupSessions) 
 
