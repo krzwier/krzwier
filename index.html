@@ -25,6 +25,9 @@
     <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon.ico">
     <meta name="theme-color" content="#7952b3">
 
+    <!-- Scripts -->
+    <script src="js/bundle.js" defer></script>
+
 </head>
 
 <body>
@@ -118,7 +121,21 @@
 
                     <div id="portfolio">
                         <div id="portfolio-wrapper">
-                            <h2>Portfolio</h2>
+                            <div class="clip">
+                                <div class="clip-circle"></div>
+                            </div>
+                            <h1>Project Gallery</h1>
+
+                            <section class="repos">
+                                <input type="text" class="filter-repos hide" placeholder="Search by name" />
+                                <ul class="repo-list"></ul>
+                            </section>
+                            <section class="repo-data hide"></section>
+                            <div class="button-container">
+                                <button class="view-repos hide">Back to Repo Gallery</button>
+                            </div>
+
+                            <!-- <h2>Portfolio</h2>
                             <div id="portfolio-carousel" class="carousel slide" data-bs-ride="carousel">
                                 <div class="carousel-indicators">
                                     <button type="button" data-bs-target="#portfolio-carousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
@@ -268,7 +285,7 @@
                                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                     <span class="visually-hidden">Next</span>
                                 </button>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>

@@ -18,15 +18,13 @@ $white: #ffffff;
 $smoky-black-shadow: rgba(38, 36, 22, 0.3);
 $smoky-black-background: rgba(38, 36, 22, 0.9);
 
-
-// New experimental colors
-$floral-white: #FFFEFC;
+// New colors
+$floral-white: #fffefc;
 $smoky-black: #110903;
-$persian-green: #2A9D8F;
+$persian-green: #2a9d8f;
 $yellow-orange: #f5a943;
 $maize-crayola: #ffcb5c;
 $spanish-orange: #e46825;
-
 
 @mixin margin-auto {
     top: 0;
@@ -60,6 +58,11 @@ h4 {
 
 h5 {
     font-weight: 300;
+}
+
+.hide {
+    /* '!important' is to make sure that when we add the class using JS, it takes precendence */
+    display: none !important;
 }
 
 /* ---- TOP NAVBAR (ONLY VISIBLE ON XS & S) ---- */
@@ -133,7 +136,7 @@ h5 {
     padding: 0;
     position: fixed;
     top: 4.5rem;
-    
+
     width: 150px;
     white-space: nowrap;
     //height: calc(100vh - 4.5rem);
@@ -166,7 +169,7 @@ h5 {
     @extend .p-2;
     @extend .p-md-3;
     background-color: $persian-green;
-    border-bottom: solid 3px $floral-white;
+    // border-bottom: solid 3px $floral-white;
 }
 
 /* ---- MAIN SECTION ---- */
@@ -228,100 +231,319 @@ h5 {
 /* ---- PORTFOLIO SECTION ---- */
 
 #portfolio {
+    display: flex;
     background-color: $smoky-black;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    @extend .pt-3;
+    @extend .pb-5;
 
-    #portfolio-wrapper {
-        @extend .m-3;
-        @extend .py-3;
-        @extend .px-0;
+    
+
+    h1 {
+        width: 100%;
+        padding: 1em 0.5em;
+        margin: 0;
+        text-align: center;
         background-color: $spanish-orange;
-        border-radius: 5px;
-        color: white;
+        color: $floral-white;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+    }
 
-        h2 {
-            @extend .m-3;
-            @extend .p-0;
-            @extend .text-center;
-            @extend .display-5;
-        }
+    h2 {
+        @extend .m-3;
+        @extend .p-0;
+        @extend .text-center;
+        @extend .display-5;
+    }
+
+    h3 {
+        color: $spanish-orange;
     }
 }
 
-.carousel-item {
-    padding-bottom: 50px;
-
-    img {
-        @extend .d-block;
-        @extend .w-100;
-    }
-
-    p {
-        @extend .text-center;
-
-        span {
-            @extend .badge;
-            @extend .rounded-pill;
-            color: $white;
-            background-color: #68764a;
-            margin: 1rem 0;
-
-            i {
-                color: $floral-white;
-            }
-        }
-    }
-
-    ul {
-        @extend .list-inline;
-        @extend .text-center;
-
-        li {
-            @extend .list-inline-item;
-            @extend .fs-3;
-
-            a {
-                i {
-                    color: $floral-white;
-                }
-            }
-        }
-    }
+#portfolio ul {
+    list-style: none;
+    padding: 0;
 }
 
-.accordion-item {
-    @extend .text-center;
+#portfolio-wrapper {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 90%;
+    margin: 0;
+}
+.clip {
+    height: 80px;
+    width: 50px;
+    background-color: $persian-green;
+    z-index: 98;
+    margin-bottom: -35px;
+    margin-top: 10px;
+    border-radius: 10px;
+    border: solid 3px $smoky-black;
+    display: flex;
+    flex-direction: column;
+}
+
+.clip-circle {
+    width: 20px;
+    height: 20px;
+    background-color: $spanish-orange;
+    border: solid 3px $smoky-black;
+    border-radius: 100%;
+    z-index: 99;
+    align-self: center;
+    margin-top: auto;
+    margin-bottom: 8px;
+}
+
+.view-repos {
+    margin-top: 1.5em;
+    padding: 0.5em 1em;
+    cursor: pointer;
+    align-self: center;
+    width: 300px;
+}
+
+.repos {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    background-color: $floral-white;
+    margin-top: 0;
+    padding: 2em;
+}
+
+
+
+.filter-repos {
+    max-width: 300px;
+    width: 100%;
+    margin-top: 1em;
+    padding: 1em;
+    margin-bottom: 1em;
+    border: 2px solid $persian-green;
+}
+
+section.repo-data {
+    background-color: $floral-white;
+    padding: 2em;
+    padding-bottom: 1em;
+}
+
+.repo-list {
+    display: block;
+    width: 100%;
+    padding: 0;
+    column-count: 1;
+}
+
+.repo-list li {
+    width: 100%;
+    display: list-item;
+    margin: 0 0 1em 0;
+    border: 1px solid $spanish-orange;
+    padding: 0.5em;
+    break-inside: avoid;
+}
+
+.repo-list h3 {
+    text-align: left;
+    margin: 0;
+    padding: 10px;
+}
+
+.repo-list li:hover {
+    background-color: #eee9ff;
+    cursor: pointer;
+}
+
+.repo-list p {
+    padding: 0em 0.5em;
+    margin: 0.5em 0;
+}
+
+.repo img {
+    max-width: 100%;
+    height: auto;
+}
+
+.repo-data {
+    width: 100%;
+}
+
+.repo-data div {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: start;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.repo-data .readme {
+    display: block;
+    padding: 2em 0 0 0;
+}
+
+.language-list {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: start;
+    align-items: flex-start;
+}
+
+.language-list li {
+    width: auto;
+    font-size: .75em;
+    color: white;
+    border: none;
+    border-radius: 500px;
+    margin: 8px 5px;
+    padding: 7px 12px;
+    background-color: $persian-green;
+}
+
+.repo-data .language-list li {
+    background-color:$spanish-orange;
+    margin: 8px 10px 8px 0;
+}
+
+.readme>ul {
+    list-style: disc outside none;
+    padding-left: 20px;
+}
+
+.repo-data h1 {
+    padding: 0;
+    margin: 0;
+    font-size: 1.5em;
+    font-family: "Open Sans", sans-serif;
     background: none;
-
-    h4 {
-        @extend .accordion-header;
-        background: none;
-    }
-
-    button {
-        @extend .accordion-button;
-        @extend .collapsed;
-        @extend .text-center;
-        background: none;
-        color: white;
-        width: auto;
-        margin: auto;
-
-        &:focus,
-        &:not(.collapsed) {
-            background: none;
-            border: none;
-            box-shadow: none;
-            color: $white;
-        }
-
-        &::after,
-        &:not(.collapsed)::after {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
-            margin-left: 10px;
-        }
-    }
+    color: $spanish-orange;
+    text-transform: none;
+    border: none;
+    width: 100%;
+    text-align: left;
 }
 
+.repo-data h3 {
+    text-align: left;
+}
+
+.repo-data .visit {
+    text-decoration: none;
+    text-align: center;
+    max-width: 200px;
+    color: $floral-white;
+    padding: 0.75em;
+    margin-right: 1em;
+    margin-top: 1em;
+    cursor: pointer;
+    display: block;
+    background-color: $persian-green;
+    border: 1px solid $persian-green;
+}
+
+.repo-data .visit:hover {
+    background-color: $persian-green;
+    border: 1px solid $floral-white;
+}
+
+.button-container {
+    width: 100%;
+    background-color: $floral-white;
+    padding-left: 2em;
+    padding-bottom: 2em;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.view-repos {
+    max-width: 200px;
+    margin-top: 0;
+}
+
+// .carousel-item {
+//     padding-bottom: 50px;
+
+//     img {
+//         @extend .d-block;
+//         @extend .w-100;
+//     }
+
+//     p {
+//         @extend .text-center;
+
+//         span {
+//             @extend .badge;
+//             @extend .rounded-pill;
+//             color: $white;
+//             background-color: #68764a;
+//             margin: 1rem 0;
+
+//             i {
+//                 color: $floral-white;
+//             }
+//         }
+//     }
+
+//     ul {
+//         @extend .list-inline;
+//         @extend .text-center;
+
+//         li {
+//             @extend .list-inline-item;
+//             @extend .fs-3;
+
+//             a {
+//                 i {
+//                     color: $floral-white;
+//                 }
+//             }
+//         }
+//     }
+// }
+
+// .accordion-item {
+//     @extend .text-center;
+//     background: none;
+
+//     h4 {
+//         @extend .accordion-header;
+//         background: none;
+//     }
+
+//     button {
+//         @extend .accordion-button;
+//         @extend .collapsed;
+//         @extend .text-center;
+//         background: none;
+//         color: white;
+//         width: auto;
+//         margin: auto;
+
+//         &:focus,
+//         &:not(.collapsed) {
+//             background: none;
+//             border: none;
+//             box-shadow: none;
+//             color: $white;
+//         }
+
+//         &::after,
+//         &:not(.collapsed)::after {
+//             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+//             margin-left: 10px;
+//         }
+//     }
+// }
 
 /* ---- EXPERIENCE SECTION ---- */
 
@@ -335,7 +557,7 @@ h5 {
 }
 
 .main-timeline {
-    position: relative
+    position: relative;
 }
 
 .main-timeline:before {
@@ -348,18 +570,18 @@ h5 {
     position: absolute;
     top: 0;
     left: 7px;
-    right: 0
+    right: 0;
 }
 
 .main-timeline .timeline {
     margin-bottom: 20px;
-    position: relative
+    position: relative;
 }
 
 .main-timeline .timeline:after {
     content: "";
     display: block;
-    clear: both
+    clear: both;
 }
 
 .main-timeline .icon {
@@ -371,7 +593,7 @@ h5 {
     top: 0;
     left: 0;
     bottom: 0;
-    right: 0
+    right: 0;
 }
 
 .main-timeline .icon:before {
@@ -383,7 +605,7 @@ h5 {
     position: absolute;
     top: 0;
     left: 0;
-    transition: all 0.33s ease-out 0s
+    transition: all 0.33s ease-out 0s;
 }
 
 .main-timeline .timeline:hover .icon:before {
@@ -397,9 +619,7 @@ h5 {
     //position: absolute;
     //top: 0;
     //left: 0;
-    
 }
-
 
 /*
 .main-timeline .icon:after {
@@ -432,8 +652,7 @@ h5 {
     width: 95%;
     float: right;
     margin-top: 0;
-    position: relative
-
+    position: relative;
 }
 
 .main-timeline .date-content:before {
@@ -455,11 +674,10 @@ h5 {
     font-size: 16px;
     text-align: center;
     margin: auto;
-    z-index: 1
+    z-index: 1;
 }
 
-.main-timeline .date-outer:before
- {
+.main-timeline .date-outer:before {
     background: $floral-white;
     content: "";
     width: 110px;
@@ -470,7 +688,7 @@ h5 {
     top: 0;
     left: 0;
     right: 0;
-    transition: all 0.33s ease-out 0s
+    transition: all 0.33s ease-out 0s;
 }
 
 /*
@@ -509,7 +727,7 @@ h5 {
     margin: auto;
     position: absolute;
     top: calc(30% - 5px);
-    left: 0
+    left: 0;
 }
 
 .main-timeline .month {
@@ -522,7 +740,7 @@ h5 {
     font-size: 24px;
     font-weight: 700;
     color: $smoky-black;
-    line-height: 36px
+    line-height: 36px;
 }
 
 .main-timeline .timeline-content {
@@ -530,37 +748,36 @@ h5 {
     width: 95%;
     text-align: center;
     padding: 10px 0;
-    float: right
+    float: right;
 }
 
 .main-timeline .title {
     font-size: 17px;
     font-weight: 700;
     line-height: 24px;
-    margin-bottom: 10px
+    margin-bottom: 10px;
 }
 
 .main-timeline .description {
-    margin-bottom: 0
+    margin-bottom: 0;
 }
 
 .main-timeline .timeline:nth-child(2n) .date-content {
-    float: right
+    float: right;
 }
 
 .main-timeline .timeline:nth-child(2n) .date-content:before {
-    left: 10px
+    left: 10px;
 }
 
 .main-timeline .timeline:nth-child(2n) .timeline-content {
     width: 95%;
     text-align: center;
     padding: 10px 0;
-
 }
 
 .main-timeline .timeline:last-child {
-    margin-bottom: 0
+    margin-bottom: 0;
 }
 
 /* ---- SKILLS SECTION ---- */
@@ -660,11 +877,31 @@ h5 {
     color: #ffb300;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 700px) {
     #main-wrapper {
         padding-top: 0;
     }
     #intro {
         height: 100vh;
     }
+    .user-info div {
+        width: 45%;
+        text-align: left;
+    }
+    .repo-list {
+        column-count: 2;
+    }
+    .repo-data div {
+        flex-flow: row nowrap;
+    }
+    .repo-data .readme {
+        padding: 0 0 0 2em;
+    }
 }
+
+@media (min-width: 1200px) {
+    .repo-list {
+        column-count: 3;
+    }
+}
+
