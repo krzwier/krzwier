@@ -8,6 +8,7 @@ $font-stack: "Quicksand", sans-serif;
 $code-font-stack: "VT323", monospace;
 $pacifico-font-stack: "Pacifico", cursive;
 
+// Old colors
 $tumbleweed: #d9ae89;
 $flame: #d95a2b;
 $olive-green: #68764a;
@@ -16,6 +17,16 @@ $smoky-black: #261a16;
 $white: #ffffff;
 $smoky-black-shadow: rgba(38, 36, 22, 0.3);
 $smoky-black-background: rgba(38, 36, 22, 0.9);
+
+
+// New experimental colors
+$floral-white: #FFFEFC;
+$smoky-black: #110903;
+$persian-green: #2A9D8F;
+$yellow-orange: #f5a943;
+$maize-crayola: #ffcb5c;
+$spanish-orange: #e46825;
+
 
 @mixin margin-auto {
     top: 0;
@@ -28,7 +39,7 @@ $smoky-black-background: rgba(38, 36, 22, 0.9);
 body {
     font-family: $font-stack;
     font-weight: 300;
-    background-color: $tumbleweed;
+    background-color: $floral-white;
     color: $smoky-black;
 }
 
@@ -39,7 +50,7 @@ body {
 h3 {
     font-weight: 500;
     margin-bottom: 0.25em;
-    color: $flame;
+    color: $maize-crayola;
 }
 
 h4 {
@@ -57,8 +68,8 @@ h5 {
     @extend .container-fluid;
     @extend .fixed-top;
     @extend .d-md-none;
-    background-color: $smoky-black-background;
-    color: $tumbleweed;
+    background-color: $persian-green;
+    color: $floral-white;
     height: 4.5rem;
     box-shadow: 0 3px 5px $smoky-black-shadow;
 }
@@ -75,11 +86,11 @@ h5 {
     @extend .py-2;
     @extend .px-3;
     .btn {
-        border: 1px solid $tumbleweed;
+        border: 1px solid $floral-white;
         background: none;
         float: left;
         i {
-            color: $tumbleweed;
+            color: $floral-white;
         }
 
         &:focus {
@@ -93,8 +104,8 @@ h5 {
 #sidebar,
 #sidebar-widescreen {
     z-index: 1000;
-    background-color: $caput-mortuum;
-    color: $tumbleweed;
+    background-color: $maize-crayola;
+    color: $floral-white;
     box-shadow: 3px 0 5px $smoky-black-shadow;
 
     ul {
@@ -105,12 +116,12 @@ h5 {
             @extend .p-md-3;
             a {
                 font-weight: 500;
-                color: $tumbleweed;
+                color: $persian-green;
                 text-decoration: none;
             }
             i {
                 margin-right: 4px;
-                color: $flame;
+                color: $persian-green;
             }
         }
     }
@@ -154,7 +165,8 @@ h5 {
     @extend .w-100;
     @extend .p-2;
     @extend .p-md-3;
-    background-color: $smoky-black-background;
+    background-color: $persian-green;
+    border-bottom: solid 3px $floral-white;
 }
 
 /* ---- MAIN SECTION ---- */
@@ -195,20 +207,21 @@ h5 {
     }
 
     code {
-        color: $olive-green;
+        color: $persian-green;
         font-family: $code-font-stack;
         font-size: calc(1.8rem + 2.1vw);
     }
 
     span {
-        color: $flame;
+        color: $spanish-orange;
         font-family: $pacifico-font-stack;
         font-size: calc(1.6rem + 2.1vw);
     }
 
     h1 {
         @extend .display-6;
-        @extend .p-3;
+        @extend .ps-4;
+        @extend .pt-3;
     }
 }
 
@@ -221,7 +234,7 @@ h5 {
         @extend .m-3;
         @extend .py-3;
         @extend .px-0;
-        background-color: $flame;
+        background-color: $spanish-orange;
         border-radius: 5px;
         color: white;
 
@@ -253,7 +266,7 @@ h5 {
             margin: 1rem 0;
 
             i {
-                color: $tumbleweed;
+                color: $floral-white;
             }
         }
     }
@@ -268,7 +281,7 @@ h5 {
 
             a {
                 i {
-                    color: $tumbleweed;
+                    color: $floral-white;
                 }
             }
         }
@@ -318,7 +331,7 @@ h5 {
     @extend .container-fluid;
     @extend .p-4;
 
-    background-color: $olive-green;
+    background-color: $persian-green;
 }
 
 .main-timeline {
@@ -330,7 +343,7 @@ h5 {
     display: block;
     width: 2px;
     height: 100%;
-    background: $tumbleweed;
+    background: $floral-white;
     margin: 0;
     position: absolute;
     top: 0;
@@ -362,7 +375,7 @@ h5 {
 }
 
 .main-timeline .icon:before {
-    background-color: $tumbleweed;
+    background-color: $floral-white;
     content: "";
     width: 18px;
     height: 18px;
@@ -374,7 +387,7 @@ h5 {
 }
 
 .main-timeline .timeline:hover .icon:before {
-    background: $flame;
+    background: $spanish-orange;
     //content: "";
     width: 20px;
     height: 20px;
@@ -398,7 +411,7 @@ h5 {
 .main-timeline .timeline:hover .icon:before {
     //left: -3px
     content: " ";
-    background: $flame;
+    background: $spanish-orange;
     left: -1px;
     top: -1px;
     width: 20px;
@@ -407,7 +420,7 @@ h5 {
 }
 */
 /*.main-timeline .timeline:hover .icon:after {
-    background: $tumbleweed;
+    background: $floral-white;
     left: 1px;
     top: 1px;
     width: 18px;
@@ -447,7 +460,7 @@ h5 {
 
 .main-timeline .date-outer:before
  {
-    background: $tumbleweed;
+    background: $floral-white;
     content: "";
     width: 110px;
     height: 110px;
@@ -462,7 +475,7 @@ h5 {
 
 /*
 .main-timeline .date-outer:before {
-    background: $tumbleweed;
+    background: $floral-white;
     //border: 2px solid #232323;
     //width: 120px;
     //height: 120px;
@@ -479,7 +492,7 @@ h5 {
 */
 
 .main-timeline .timeline:hover .date-outer:before {
-    background-color: $flame;
+    background-color: $spanish-orange;
     width: 120px;
     height: 120px;
     top: -5px;
@@ -553,8 +566,8 @@ h5 {
 /* ---- SKILLS SECTION ---- */
 
 #skills {
-    background-color: $caput-mortuum;
-    color: $tumbleweed;
+    background-color: $maize-crayola;
+    color: $floral-white;
 }
 
 #badge-wrapper {
@@ -648,7 +661,7 @@ h5 {
 }
 
 @media (min-width: 768px) {
-    #main-container {
+    #main-wrapper {
         padding-top: 0;
     }
     #intro {

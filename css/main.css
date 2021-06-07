@@ -6955,7 +6955,7 @@ textarea.form-control-lg {
   padding: 0.5rem !important;
 }
 
-.p-3, #intro h1, #intro .h1 {
+.p-3 {
   padding: 1rem !important;
 }
 
@@ -7040,7 +7040,7 @@ textarea.form-control-lg {
   padding-top: 0.5rem !important;
 }
 
-.pt-3 {
+.pt-3, #intro h1, #intro .h1 {
   padding-top: 1rem !important;
 }
 
@@ -7116,7 +7116,7 @@ textarea.form-control-lg {
   padding-left: 1rem !important;
 }
 
-.ps-4 {
+.ps-4, #intro h1, #intro .h1 {
   padding-left: 1.5rem !important;
 }
 
@@ -10744,14 +10744,14 @@ textarea.form-control-lg {
 body {
   font-family: "Quicksand", sans-serif;
   font-weight: 300;
-  background-color: #d9ae89;
-  color: #261a16;
+  background-color: #FFFEFC;
+  color: #110903;
 }
 
 h3, .h3 {
   font-weight: 500;
   margin-bottom: 0.25em;
-  color: #d95a2b;
+  color: #ffcb5c;
 }
 
 h4, .h4 {
@@ -10765,19 +10765,19 @@ h5, .h5 {
 
 /* ---- TOP NAVBAR (ONLY VISIBLE ON XS & S) ---- */
 #navbar {
-  background-color: rgba(38, 36, 22, 0.9);
-  color: #d9ae89;
+  background-color: #2A9D8F;
+  color: #FFFEFC;
   height: 4.5rem;
   box-shadow: 0 3px 5px rgba(38, 36, 22, 0.3);
 }
 
 #hamburger .btn {
-  border: 1px solid #d9ae89;
+  border: 1px solid #FFFEFC;
   background: none;
   float: left;
 }
 #hamburger .btn i {
-  color: #d9ae89;
+  color: #FFFEFC;
 }
 #hamburger .btn:focus {
   box-shadow: none;
@@ -10787,8 +10787,8 @@ h5, .h5 {
 #sidebar,
 #sidebar-widescreen {
   z-index: 1000;
-  background-color: #593325;
-  color: #d9ae89;
+  background-color: #ffcb5c;
+  color: #FFFEFC;
   box-shadow: 3px 0 5px rgba(38, 36, 22, 0.3);
 }
 #sidebar ul,
@@ -10799,13 +10799,13 @@ h5, .h5 {
 #sidebar ul li a,
 #sidebar-widescreen ul li a {
   font-weight: 500;
-  color: #d9ae89;
+  color: #2A9D8F;
   text-decoration: none;
 }
 #sidebar ul li i,
 #sidebar-widescreen ul li i {
   margin-right: 4px;
-  color: #d95a2b;
+  color: #2A9D8F;
 }
 
 #sidebar {
@@ -10825,7 +10825,8 @@ h5, .h5 {
 }
 
 #title-widescreen {
-  background-color: rgba(38, 36, 22, 0.9);
+  background-color: #2A9D8F;
+  border-bottom: solid 3px #FFFEFC;
 }
 
 /* ---- MAIN SECTION ---- */
@@ -10853,21 +10854,21 @@ h5, .h5 {
   shape-outside: polygon(70% 0%, 38% 25%, 40% 42%, 15% 47%, 5% 55%, 0% 65%, 5% 100%, 100% 100%, 100% 0%);
 }
 #intro code {
-  color: #68764a;
+  color: #2A9D8F;
   font-family: "VT323", monospace;
   font-size: calc(1.8rem + 2.1vw);
 }
 #intro span {
-  color: #d95a2b;
+  color: #e46825;
   font-family: "Pacifico", cursive;
   font-size: calc(1.6rem + 2.1vw);
 }
 /* ---- PORTFOLIO SECTION ---- */
 #portfolio {
-  background-color: #261a16;
+  background-color: #110903;
 }
 #portfolio #portfolio-wrapper {
-  background-color: #d95a2b;
+  background-color: #e46825;
   border-radius: 5px;
   color: white;
 }
@@ -10880,10 +10881,10 @@ h5, .h5 {
   margin: 1rem 0;
 }
 .carousel-item p span i {
-  color: #d9ae89;
+  color: #FFFEFC;
 }
 .carousel-item ul li a i {
-  color: #d9ae89;
+  color: #FFFEFC;
 }
 
 .accordion-item {
@@ -10912,7 +10913,7 @@ h5, .h5 {
 /* ---- EXPERIENCE SECTION ---- */
 /* Code for timeline adapted from https://www.bootdey.com/snippets/view/bs4-my-experience-timeline#html */
 #experience {
-  background-color: #68764a;
+  background-color: #2A9D8F;
 }
 
 .main-timeline {
@@ -10924,7 +10925,7 @@ h5, .h5 {
   display: block;
   width: 2px;
   height: 100%;
-  background: #d9ae89;
+  background: #FFFEFC;
   margin: 0;
   position: absolute;
   top: 0;
@@ -10956,7 +10957,7 @@ h5, .h5 {
 }
 
 .main-timeline .icon:before {
-  background-color: #d9ae89;
+  background-color: #FFFEFC;
   content: "";
   width: 18px;
   height: 18px;
@@ -10968,7 +10969,7 @@ h5, .h5 {
 }
 
 .main-timeline .timeline:hover .icon:before {
-  background: #d95a2b;
+  background: #e46825;
   width: 20px;
   height: 20px;
   left: -1px;
@@ -10984,7 +10985,7 @@ h5, .h5 {
 .main-timeline .timeline:hover .icon:before {
     //left: -3px
     content: " ";
-    background: $flame;
+    background: $spanish-orange;
     left: -1px;
     top: -1px;
     width: 20px;
@@ -10993,7 +10994,7 @@ h5, .h5 {
 }
 */
 /*.main-timeline .timeline:hover .icon:after {
-    background: $tumbleweed;
+    background: $floral-white;
     left: 1px;
     top: 1px;
     width: 18px;
@@ -11030,7 +11031,7 @@ h5, .h5 {
 }
 
 .main-timeline .date-outer:before {
-  background: #d9ae89;
+  background: #FFFEFC;
   content: "";
   width: 110px;
   height: 110px;
@@ -11045,7 +11046,7 @@ h5, .h5 {
 
 /*
 .main-timeline .date-outer:before {
-    background: $tumbleweed;
+    background: $floral-white;
     //border: 2px solid #232323;
     //width: 120px;
     //height: 120px;
@@ -11060,7 +11061,7 @@ h5, .h5 {
 }
 */
 .main-timeline .timeline:hover .date-outer:before {
-  background-color: #d95a2b;
+  background-color: #e46825;
   width: 120px;
   height: 120px;
   top: -5px;
@@ -11088,7 +11089,7 @@ h5, .h5 {
   display: block;
   font-size: 24px;
   font-weight: 700;
-  color: #261a16;
+  color: #110903;
   line-height: 36px;
 }
 
@@ -11131,8 +11132,8 @@ h5, .h5 {
 
 /* ---- SKILLS SECTION ---- */
 #skills {
-  background-color: #593325;
-  color: #d9ae89;
+  background-color: #ffcb5c;
+  color: #FFFEFC;
 }
 
 #badge-wrapper {
@@ -11227,7 +11228,7 @@ h5, .h5 {
 }
 
 @media (min-width: 768px) {
-  #main-container {
+  #main-wrapper {
     padding-top: 0;
   }
 
