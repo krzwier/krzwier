@@ -60,50 +60,72 @@
                         <li>
                             <a href="#portfolio">
                                 <i class="far fa-file-code"></i>
-                                Portfolio
+                                Project Gallery
                             </a>
                         </li>
                         <li>
+                            <a href="#experience">
+                                <i class="far fa-file-code"></i>
+                                Experience
+                            </a>
+                        </li>
+
+                        <li>
                             <a href="#contact">
                                 <i class="fas fa-user"></i>
-                                Contact
+                                Skills
                             </a>
                         </li>
                         <li>
                             <a href="#about">
                                 <i class="fas fa-user"></i>
-                                About
+                                Contact
                             </a>
                         </li>
                     </ul>
                 </div>
             </div>
 
-            <div id="sidebar-widescreen">
-                <div id="title-widescreen">
-                    <h3>Karen Zwier</h3>
-                    <h4>Full Stack Developer</h4>
+            <div id="sidebar-widescreen-container">
+                <div id="sidebar-widescreen">
+                    <div id="title-widescreen">
+                        <h3>Karen Zwier</h3>
+                        <h4>Full Stack Developer</h4>
+                    </div>
+                    <ul>
+                        <li>
+                            <a href="#intro">
+                                <i class="far fa-file-code"></i>
+                                Home
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#portfolio">
+                                <i class="far fa-file-code"></i>
+                                Project Gallery
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#experience">
+                                <i class="far fa-file-code"></i>
+                                Experience
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#contact">
+                                <i class="fas fa-user"></i>
+                                Skills
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#about">
+                                <i class="fas fa-user"></i>
+                                Contact
+                            </a>
+                        </li>
+                    </ul>
                 </div>
-                <ul>
-                    <li>
-                        <a href="#portfolio">
-                            <i class="far fa-file-code"></i>
-                            Portfolio
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#contact">
-                            <i class="fas fa-user"></i>
-                            Contact
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#about">
-                            <i class="fas fa-user"></i>
-                            About
-                        </a>
-                    </li>
-                </ul>
             </div>
 
             <main id="main-wrapper">
@@ -121,171 +143,21 @@
 
                     <div id="portfolio">
                         <div id="portfolio-wrapper">
-                            <div class="clip">
+                            <!-- <div class="clip">
                                 <div class="clip-circle"></div>
-                            </div>
+                            </div> -->
                             <h1>Project Gallery</h1>
 
                             <section class="repos">
-                                <input type="text" class="filter-repos hide" placeholder="Search by name" />
-                                <ul class="repo-list"></ul>
+                                <input type="text" class="filter-repos hide" placeholder="Search by project name" />
+                                <div class="row repo-list"></div>
                             </section>
                             <section class="repo-data hide"></section>
                             <div class="button-container">
                                 <button class="view-repos hide">Back to Repo Gallery</button>
                             </div>
 
-                            <!-- <h2>Portfolio</h2>
-                            <div id="portfolio-carousel" class="carousel slide" data-bs-ride="carousel">
-                                <div class="carousel-indicators">
-                                    <button type="button" data-bs-target="#portfolio-carousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                                    <button type="button" data-bs-target="#portfolio-carousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                                    <button type="button" data-bs-target="#portfolio-carousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                                </div>
-                                <div class="carousel-inner">
-                                    <div class="carousel-item active">
-                                        <img src="img/unplugged-mockup.png" alt="Mockup image of Unplugged Retreat website">
-                                        <div id="unplugged-accordion" class="accordion accordion-flush">
 
-                                            <div class="accordion-item">
-                                                <h4 id="unplugged-header">
-                                                    <button type="button" data-bs-toggle="collapse" data-bs-target="#unplugged-collapse" aria-expanded="false" aria-controls="unplugged-collapse">
-                                                        Unplugged Retreat
-                                                    </button>
-                                                </h4>
-                                                <div id="unplugged-collapse" class="accordion-collapse collapse" aria-labelledby="unplugged-header" data-bs-parent="#unplugged-accordion">
-                                                    <div class="accordion-body">
-                                                        Three-page responsive website for fictional company "Unplugged Retreat". Project from Skillcrush course in responsive design. Mobile-first design produced using flexbox and breakpoints.
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <p>
-                                            <span>
-                                                <i class="fab fa-html5"></i>
-                                                HTML
-                                            </span>
-                                            <span>
-                                                <i class="fab fa-css3"></i>
-                                                CSS
-                                            </span>
-                                        </p>
-                                        <ul>
-                                            <li>
-                                                <a href="https://krzwier.github.io/unplugged-retreat/" target="_blank" data-bs-toggle="tooltip" title="Live site">
-                                                    <i class="fas fa-globe"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="https://github.com/krzwier/unplugged-retreat" target="_blank" data-bs-toggle="tooltip" title="Code on Github">
-                                                    <i class="fab fa-github"></i>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="carousel-item">
-                                        <img src="img/adhoc-mockup.png" alt="Mockup image of Adhoc website">
-                                        <div id="adhoc-accordion" class="accordion accordion-flush">
-
-                                            <div class="accordion-item">
-                                                <h4 id="adhoc-header">
-                                                    <button type="button" data-bs-toggle="collapse" data-bs-target="#adhoc-collapse" aria-expanded="false" aria-controls="adhoc-collapse">
-                                                        Adhoc
-                                                    </button>
-                                                </h4>
-                                                <div id="adhoc-collapse" class="accordion-collapse collapse" aria-labelledby="adhoc-header" data-bs-parent="#adhoc-accordion">
-                                                    <div class="accordion-body">
-                                                        Sample website for fictional administrative company. Project from Codecademy's "Learn Bootstrap" course. Responsive site coded using HTML, CSS, and Bootstrap.
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <p>
-                                            <span>
-                                                <i class="fab fa-html5"></i>
-                                                HTML
-                                            </span>
-                                            <span>
-                                                <i class="fab fa-css3"></i>
-                                                CSS
-                                            </span>
-                                            <span>
-                                                <i class="fab fa-bootstrap"></i> Bootstrap
-                                            </span>
-                                        </p>
-
-                                        <ul>
-                                            <li>
-                                                <a href="https://krzwier.github.io/adhoc/" target="_blank" data-bs-toggle="tooltip" title="Live site">
-                                                    <i class="fas fa-globe"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="https://github.com/krzwier/adhoc" target="_blank" data-bs-toggle="tooltip" title="Code on Github">
-                                                    <i class="fab fa-github"></i>
-                                                </a>
-                                            </li>
-                                        </ul>
-
-                                    </div>
-
-                                    <div class="carousel-item">
-                                        <img src="img/rogue-pickings-mockup.png" alt="Mockup image of Rogue Pickings website">
-                                        <div id="rogue-pickings-accordion" class="accordion accordion-flush">
-
-                                            <div class="accordion-item">
-                                                <h4 class="accordion-header" id="rogue-pickings-header">
-                                                    <button type="button" data-bs-toggle="collapse" data-bs-target="#rogue-pickings-collapse" aria-expanded="false" aria-controls="rogue-pickings-collapse">
-                                                        Rogue Pickings
-                                                    </button>
-                                                </h4>
-                                                <div id="rogue-pickings-collapse" class="accordion-collapse collapse" aria-labelledby="rogue-pickings-header" data-bs-parent="#rogue-pickings-accordion">
-                                                    <div class="accordion-body">
-                                                        Simple one-page website for an imaginary food truck business. Course project in the Skillcrush program. First iteration was a static page coded to match a Photoshop design spec for desktop. Later modifications moved to a mobile-first responsive design, hand-coded using flexbox and breakpoints.
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <p>
-                                            <span>
-                                                <i class="fab fa-html5"></i>
-                                                HTML
-                                            </span>
-                                            <span>
-                                                <i class="fab fa-css3"></i>
-                                                CSS
-                                            </span>
-                                        </p>
-
-
-                                        <ul>
-                                            <li>
-                                                <a href="https://krzwier.github.io/rogue-pickings/" target="_blank" data-bs-toggle="tooltip" title="Live site">
-                                                    <i class="fas fa-globe"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="https://github.com/krzwier/rogue-pickings" target="_blank" data-bs-toggle="tooltip" title="Code on Github">
-                                                    <i class="fab fa-github"></i>
-                                                </a>
-                                            </li>
-                                        </ul>
-
-                                    </div>
-
-                                </div>
-                                <button class="carousel-control-prev" type="button" data-bs-target="#portfolio-carousel" data-bs-slide="prev">
-                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                    <span class="visually-hidden">Previous</span>
-                                </button>
-                                <button class="carousel-control-next" type="button" data-bs-target="#portfolio-carousel" data-bs-slide="next">
-                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                    <span class="visually-hidden">Next</span>
-                                </button>
-                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -296,83 +168,130 @@
 
                             <!-- start experience section-->
                             <div class="timeline">
-                                <div class="icon"></div>
+
                                 <div class="date-content">
                                     <div class="date-outer">
-                                        <span class="date">
-                                            <span class="month">2 Years</span>
-                                            <span class="year">2013</span>
+
+                                        <span class="year">2021
                                         </span>
+
                                     </div>
                                 </div>
+                                <div class="icon"></div>
                                 <div class="timeline-content">
-                                    <h5 class="title">Visual Art &amp; Design</h5>
-                                    <p class="description">
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed efficitur ex sit amet massa scelerisque scelerisque. Aliquam erat volutpat. Aenean interdum finibus efficitur. Praesent dapibus dolor felis, eu ultrices elit molestie.
-                                    </p>
+                                    <div class="wrapper">
+                                        <h5 class="title">Skillcrush</h5>
+                                        <h5 class="title">
+                                            Developer Fast-Track Intensive 
+                                        </h5>
+                                        <p class="description">Courses in HTML5, CSS, Git, Responsive Web Design, JavaScript, React</p>
+
+                                    </div>
                                 </div>
                             </div>
                             <!-- end experience section-->
 
                             <!-- start experience section-->
                             <div class="timeline">
+                                <div class="timeline-content">
+                                    <div class="wrapper">
+                                        <h5 class="title">Faculty at Iowa State University</h5>
+                                        <p class="description">
+                                            Taught courses covering topics such as ethics, critical thinking, and societal impacts of technology. Delivered lectures and facilitated discussions for classes ranging in size from 30-100 students.
+                                        </p>
+                                    </div>
+                                </div>
+
                                 <div class="icon"></div>
                                 <div class="date-content">
                                     <div class="date-outer">
-                                        <span class="date">
-                                            <span class="month">1 Years</span>
-                                            <span class="year">2015</span>
+
+                                        <span class="year">2018&ndash;21
                                         </span>
+
+
                                     </div>
-                                </div>
-                                <div class="timeline-content">
-                                    <h5 class="title">Product Designer</h5>
-                                    <p class="description">
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed efficitur ex sit amet massa scelerisque scelerisque. Aliquam erat volutpat. Aenean interdum finibus efficitur. Praesent dapibus dolor felis, eu ultrices elit molestie.
-                                    </p>
                                 </div>
                             </div>
                             <!-- end experience section-->
 
                             <!-- start experience section-->
                             <div class="timeline">
-                                <div class="icon"></div>
+
                                 <div class="date-content">
                                     <div class="date-outer">
-                                        <span class="date">
-                                            <span class="month">2 Years</span>
-                                            <span class="year">2016</span>
+
+                                        <span class="year">2013&ndash;18
                                         </span>
+
                                     </div>
                                 </div>
+                                <div class="icon"></div>
                                 <div class="timeline-content">
-                                    <h5 class="title">Web Designer</h5>
-                                    <p class="description">
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed efficitur ex sit amet massa scelerisque scelerisque. Aliquam erat volutpat. Aenean interdum finibus efficitur. Praesent dapibus dolor felis, eu ultrices elit molestie.
-                                    </p>
+                                    <div class="wrapper">
+                                        <h5 class="title">Faculty at Drake University</h5>
+                                        <p class="description">
+                                            Designed and taught honors-level interdisciplinary courses (science and religion,
+                                            philosophy of science, physics and philosophy, comparative religion). Served as Interim Director of The Comparison Project Lecture Series
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                             <!-- end experience section-->
 
                             <!-- start experience section-->
                             <div class="timeline">
+                                <div class="timeline-content">
+                                    <div class="wrapper">
+                                        <h5 class="title">University of Pittsburgh, Ph.D. History and Philosophy of Science</h5>
+                                        <p class="description">&amp;</p>
+                                        <h5 class="title">University of Pittsburgh, M.A. Philosophy</h5>
+                                        <p class="description">
+                                            Teaching fellow. Graduate research focus on causal reasoning. Dissertation: <em>Interventionist Causation in Physical Science</em>.
+                                        </p>
+                                    </div>
+                                </div>
                                 <div class="icon"></div>
                                 <div class="date-content">
                                     <div class="date-outer">
-                                        <span class="date">
-                                            <span class="month">2 Years</span>
-                                            <span class="year">2018</span>
+
+                                        <span class="year">2006&ndash;14
                                         </span>
+
                                     </div>
                                 </div>
+
+                            </div>
+                            <!-- end experience section-->
+
+                            <!-- start experience section-->
+                            <div class="timeline">
+
+                                <div class="date-content">
+                                    <div class="date-outer">
+
+                                        <span class="year">2006</span>
+
+                                    </div>
+                                </div>
+                                <div class="icon"></div>
                                 <div class="timeline-content">
-                                    <h5 class="title">Graphic Designer</h5>
-                                    <p class="description">
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed efficitur ex sit amet massa scelerisque scelerisque. Aliquam erat volutpat. Aenean interdum finibus efficitur. Praesent dapibus dolor felis, eu ultrices elit molestie.
-                                    </p>
+                                    <div class="wrapper">
+                                        <h5 class="title">University of Illinois, B.S. Computer Engineering</h5>
+                                        <p class="description">
+                                            Topics of study: Computer architecture, assembly language, interpreters, data structures, databases.
+                                        </p>
+                                        <p class="description">&amp;</p>
+                                        <h5 class="title">University of Illinois, B.A. Philosophy</h5>
+                                        <p class="description">
+                                            Topics of study: Logic, philosophy of mathematics, philosophy of physics.
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                             <!-- end experience section-->
+
+
 
                         </div>
                     </div>
@@ -403,6 +322,7 @@
     <!-- Popper and Bootstrap Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js" integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG" crossorigin="anonymous"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/masonry.pkgd.min.js"></script>
 
 </body>
 

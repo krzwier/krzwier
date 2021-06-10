@@ -1,5 +1,9 @@
+const { lineBreak } = require("acorn");
 const { HmacSHA3 } = require("crypto-js");
 const funkyTown = require("./funkyTown");
+const imagesLoaded = require('imagesloaded');
+
+
 
 const overview = document.querySelector('.overview');
 
@@ -113,17 +117,51 @@ const displayRepoList = function (repoList) {
             item.textContent = language.node.name;
             languages.append(item);
         }
-        const li = document.createElement("li");
+        const li = document.createElement("div");
         li.classList.add("repo");
+        // li.classList.add("col");
+        // li.classList.add("col-md-6");
+        // li.classList.add("col-lg-4");
+
         li.innerHTML =
-            '<img src="' + repo.openGraphImageUrl + '" alt="preview image">' +
-            '<h3>' + repo.name + '</h3>' +
-            '<p>' + repo.description + '</p>' +
-            languages.outerHTML;
+            '<div class="card">' +
+            '<img class="card-img-top" src="' + repo.openGraphImageUrl + '" alt="preview image">' +
+            '<div class="card-body">' +
+            '<h3 class="card-title">' + repo.name + '</h3>' +
+            '<p class="card-text">' + repo.description + '</p>' +
+            languages.outerHTML +
+            '</div>' +
+            '</div>';
         repoListDiv.append(li);
     }
 
+    // wait until all images are loaded, then update masonry grid
+    refreshMasonry(repoListDiv);
+
+    // imagesLoaded(repoListDiv, function () {
+    //     // init Isotope after all images have loaded
+    //     const msnry = new Masonry(repoListDiv, {
+    //         itemSelector: '.repo',
+    //         // columnWidth: '.grid-sizer',
+    //         percentPosition: true
+    //     });
+    // });
+
+
 }
+
+const refreshMasonry = function () {
+    imagesLoaded(repoListDiv, function () {
+        // init Isotope after all images have loaded
+        const msnry = new Masonry(repoListDiv, {
+            itemSelector: '.repo',
+            // columnWidth: '.grid-sizer',
+            percentPosition: true
+        });
+    });
+};
+
+window.onresize = refreshMasonry;
 
 const mess = function () {
     return "U2F" +
@@ -237,18 +275,18 @@ const displayRepoInfo = async function (repoName, rawReadme, languages, picUrl, 
         console.error(`Failed conversion to text in displayRepoInfo("${repoName}", "${rawReadme}", ${languages}, "${picUrl}", "${url}", ${numDeployments}) function: ${e.message}`);
     };
     const languagesUL = document.createElement("ul");
-        languagesUL.classList.add("language-list");
-        for (let language of languages) {
-            const item = document.createElement("li");
-            item.textContent = language;
-            languagesUL.append(item);
-        }
+    languagesUL.classList.add("language-list");
+    for (let language of languages) {
+        const item = document.createElement("li");
+        item.textContent = language;
+        languagesUL.append(item);
+    }
     repoData.innerHTML = "";
     const newDiv = document.createElement("div");
     let htmlString =
         '<div><img src="' + picUrl + '" alt="preview image"></div>' +
         '<div class="readme">' +
-        readme + 
+        readme +
         "<div>" + languagesUL.outerHTML + "</div>" +
         '<div class="buttons"><a class="visit" href="' + url + '" target="_blank" rel="noreferrer noopener">View Repo on GitHub</a>';
     if (numDeployments >= 1) {
@@ -260,8 +298,8 @@ const displayRepoInfo = async function (repoName, rawReadme, languages, picUrl, 
     htmlString = htmlString + '</div>';
     newDiv.innerHTML = htmlString;
     repoData.append(newDiv);
-    
-    
+
+
     repoData.classList.remove("hide");
     repos.classList.add("hide");
     backToGallery.classList.remove("hide");
@@ -286,6 +324,7 @@ filterInput.addEventListener("input", function (e) {
             repo.classList.add("hide");
         }
     }
+    refreshMasonry();
 });
 
 const str = function () {
