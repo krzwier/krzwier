@@ -1,5 +1,3 @@
-const { lineBreak } = require("acorn");
-const { HmacSHA3 } = require("crypto-js");
 const funkyTown = require("./funkyTown");
 const imagesLoaded = require('imagesloaded');
 const Masonry = require('masonry-layout');
@@ -91,10 +89,11 @@ const fetchRepoList = async function (username) {
     } catch (e) {
         console.error(`Failed conversion to JSON in fetchRepoList("${username}" function: ${e.message}`);
     };
+    console.log('done fetching repo list')
 
 }
 
-const displayRepoList = function (repoList) {
+const displayRepoList = async function (repoList) {
 
     filterInput.classList.remove("hide");
     for (let repo of repoList) {
@@ -127,18 +126,9 @@ const displayRepoList = function (repoList) {
     }
 
     // wait until all images are loaded, then update masonry grid
-    refreshMasonry();
+    await refreshMasonry();
 
-    // imagesLoaded(repoListDiv, function () {
-    //     // init Isotope after all images have loaded
-    //     const msnry = new Masonry(repoListDiv, {
-    //         itemSelector: '.repo',
-    //         // columnWidth: '.grid-sizer',
-    //         percentPosition: true
-    //     });
-    // });
-
-
+    console.log('done displaying repo list');
 }
 
 const refreshMasonry = async function () {
@@ -150,9 +140,68 @@ const refreshMasonry = async function () {
             percentPosition: true
         });
     });
+    console.log('done refreshing masonry');
 };
 
-window.onresize = refreshMasonry;
+const chooseVisibleRepos = function () {
+    console.log('entered chooseVisibleRepos function');
+    const searchText = filterInput.value.toLowerCase();
+    const repos = document.querySelectorAll(".repo");
+    for (let repo of repos) {
+
+        const repoHeader = repo.querySelector("h3");
+        const repoTitle = repoHeader.textContent.toLowerCase();
+        console.log(repoTitle);
+        if (repoTitle.includes(searchText)) {
+            if (!more && !pinnedList.includes(repoTitle)) {
+                repo.classList.add("hide");
+                repo.classList.remove("brick");
+            } else {
+                repo.classList.remove("hide");
+                repo.classList.add("brick");
+            }
+        } else {
+            repo.classList.add("hide");
+            repo.classList.remove("brick");
+        }
+    }
+    console.log('Done looping through repos to adjust visibility');
+    refreshMasonry();
+    console.log('Done choosing visible repos');
+}
+
+// var fnResizeCallTimer = null;
+
+// const fnResizeCaller = function () {
+//     console.log('about to clear resize timer');
+//     // If resize is triggered by browser and a previous resize handler is supposed to be fired, 
+//     // clear it so that new resize handler is triggered (the last fnResize call will only survive)
+//     clearTimeout(fnResizeCallTimer);
+//     console.log('resize timer cleared');
+//     // Delay the resize handling by 200ms
+//     fnResizeCallTimer = setTimeout(function () {
+//         chooseVisibleRepos();
+//     }, 200);
+// }
+
+function debounce(func, timeout = 300) {
+    let timer;
+    return () => {
+        clearTimeout(timer);
+        timer = setTimeout(() => { func.apply(this); }, timeout);
+    };
+}
+
+
+const processResize = debounce(() => chooseVisibleRepos());
+
+window.addEventListener('resize', () => {
+    // resizeEventCounter++;
+    console.log("resize event");
+    processResize();
+});
+
+// window.onresize = chooseVisibleRepos;
 
 const mess = function () {
     return "U2F" +
@@ -294,19 +343,18 @@ const displayRepoInfo = async function (repoName, rawReadme, languages, picUrl, 
     newDiv.innerHTML = htmlString;
     repoData.append(newDiv);
 
-
     repoData.classList.remove("hide");
     repos.classList.add("hide");
     moreButton.classList.add("hide");
     backToGallery.classList.remove("hide");
 };
 
-backToGallery.addEventListener("click", async function () {
+backToGallery.addEventListener("click", function () {
     repos.classList.remove("hide");
     repoData.classList.add("hide");
     backToGallery.classList.add("hide");
     moreButton.classList.remove("hide");
-    await refreshMasonry();
+    chooseVisibleRepos();
     document.querySelector('#portfolio').scrollIntoView();
 });
 
@@ -314,27 +362,7 @@ filterInput.addEventListener("input", function (e) {
     chooseVisibleRepos();
 });
 
-const chooseVisibleRepos = function () {
-    const searchText = filterInput.value.toLowerCase();
-    const repos = document.querySelectorAll(".repo");
-    for (let repo of repos) {
-        const repoHeader = repo.querySelector("h3");
-        const repoTitle = repoHeader.textContent.toLowerCase();
-        if (repoTitle.includes(searchText)) {
-            if (!more && !pinnedList.includes(repoTitle)) {
-                repo.classList.add("hide");
-                repo.classList.remove("brick");
-            } else {
-                repo.classList.remove("hide");
-                repo.classList.add("brick");
-            }
-        } else {
-            repo.classList.add("hide");
-            repo.classList.remove("brick");
-        }
-    }
-    refreshMasonry();
-}
+
 
 moreButton.addEventListener("click", function (e) {
     more = !more;

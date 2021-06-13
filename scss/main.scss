@@ -715,12 +715,14 @@ button:hover {
 }
 
 #contact-column-wrapper {
-    @extend .d-flex;
+    @extend .row;
+    // @extend .d-flex;
+    // @extend .flex-wrap;
     @extend .my-5;
 }
 
 #meet, #social {
-    @extend .col;
+    @extend .col-12;
     @extend .col-md-6;
     @extend .text-center;
 }

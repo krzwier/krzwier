@@ -1,0 +1,17 @@
+{
+    "configurations": [
+
+    {
+        "name": "Launch Edge",
+        "request": "launch",
+        "type": "pwa-msedge",
+        "url": "file:///Users/krzwier/Dropbox/GitHub/krzwier/index.html",
+    },
+        {
+            "type": "pwa-chrome",
+            "name": "file:///Users/krzwier/Dropbox/GitHub/krzwier/index.html",
+            "request": "launch",
+            "url": "file:///Users/krzwier/Dropbox/GitHub/krzwier/index.html"
+        }
+    ]
+}
