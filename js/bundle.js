@@ -15,10 +15,10 @@ const { lineBreak } = require("acorn");
 const { HmacSHA3 } = require("crypto-js");
 const funkyTown = require("./funkyTown");
 const imagesLoaded = require('imagesloaded');
+const Masonry = require('masonry-layout');
 
 
-
-const overview = document.querySelector('.overview');
+// const overview = document.querySelector('.overview');
 
 const repoListDiv = document.querySelector('.repo-list');
 
@@ -30,19 +30,38 @@ const backToGallery = document.querySelector('.view-repos');
 
 const filterInput = document.querySelector('.filter-repos');
 
+const moreButton = document.querySelector('.more');
+
 const username = "krzwier";
 
 let repoList = [];
 
+let pinnedList = [];
+
+let more = false;
+
 const repoListQuery = {
     'query': 'query { ' +
         'repositoryOwner(login: "' + username + '") { ' +
-        'repositories(orderBy: {field: CREATED_AT, direction: DESC}, first: 100, privacy: PUBLIC) {' +
+        '... on ProfileOwner {' +
+        'itemShowcase {' +
+        'items(first: 6) {' +
+        'edges {' +
+        'node {' +
+        '... on Repository {' +
+        'name' +
+        '}' +
+        '}' +
+        '}' +
+        '}' +
+        '}' +
+        '}' +
+        'repositories(orderBy: {field: UPDATED_AT, direction: DESC}, first: 100, privacy: PUBLIC) {' +
         'nodes {' +
         'openGraphImageUrl,' +
         'name,' +
         'description,' +
-        'languages(first: 10) {' +
+        'languages(first: 10, orderBy: {field: SIZE, direction: DESC}) {' +
         'edges {' +
         'node {' +
         'name' +
@@ -58,43 +77,6 @@ const repoListQuery = {
         '}' +
         '}'
 };
-
-
-const fetchProfile = async function (username) {
-
-    const data = await fetch('https://api.github.com/users/' + username, {
-        headers: {
-            Accept: 'application/vnd.github.v3+json'
-        }
-    }).catch((e) => {
-        console.error(`API call to https://api.github.com/users/ rejected in fetchProfile("${username}") function: ${e.message}`);
-    });
-    try {
-        const userData = await data.json()
-        displayProfile(userData);
-        return userData;
-    } catch (e) {
-        console.error(`Failed conversion to JSON in fetchProfile("${username}" function: ${e.message}`);
-    };
-
-}
-
-const displayProfile = function (userData) {
-    const newDiv = document.createElement("div");
-    newDiv.classList.add("user-info");
-    newDiv.innerHTML =
-        '<figure>' +
-        '<img alt="user avatar" src="' + userData.avatar_url + '">' +
-        '</figure>' +
-        '<div>' +
-        '<p><strong>Name:</strong> ' + userData.name + '</p>' +
-        '<p><strong>Bio:</strong> ' + userData.bio + '</p>' +
-        '<p><strong>Location:</strong> ' + userData.location + '</p>' +
-        '<p><strong>Number of public repos:</strong> ' + userData.public_repos + '</p>' +
-        '</div>';
-    overview.innerHTML = newDiv.outerHTML;
-
-}
 
 const fetchRepoList = async function (username) {
 
@@ -112,6 +94,11 @@ const fetchRepoList = async function (username) {
     try {
         const repoListObject = await res.json();
         repoList = repoListObject.data.repositoryOwner.repositories.nodes;
+        const pins = repoListObject.data.repositoryOwner.itemShowcase.items.edges;
+        pinnedList = [];
+        for (let pin of pins) {
+            pinnedList.push(pin.node.name.toLowerCase());
+        }
         displayRepoList(repoList);
         return repoList;
     } catch (e) {
@@ -121,6 +108,7 @@ const fetchRepoList = async function (username) {
 }
 
 const displayRepoList = function (repoList) {
+
     filterInput.classList.remove("hide");
     for (let repo of repoList) {
         const languages = document.createElement("ul");
@@ -132,9 +120,12 @@ const displayRepoList = function (repoList) {
         }
         const li = document.createElement("div");
         li.classList.add("repo");
-        // li.classList.add("col");
-        // li.classList.add("col-md-6");
-        // li.classList.add("col-lg-4");
+        if (pinnedList.includes(repo.name.toLowerCase())) {
+            li.classList.add("brick");
+        } else {
+            li.classList.add("hide");
+        }
+
 
         li.innerHTML =
             '<div class="card">' +
@@ -149,7 +140,7 @@ const displayRepoList = function (repoList) {
     }
 
     // wait until all images are loaded, then update masonry grid
-    refreshMasonry(repoListDiv);
+    refreshMasonry();
 
     // imagesLoaded(repoListDiv, function () {
     //     // init Isotope after all images have loaded
@@ -163,11 +154,11 @@ const displayRepoList = function (repoList) {
 
 }
 
-const refreshMasonry = function () {
+const refreshMasonry = async function () {
     imagesLoaded(repoListDiv, function () {
         // init Isotope after all images have loaded
         const msnry = new Masonry(repoListDiv, {
-            itemSelector: '.repo',
+            itemSelector: '.brick',
             // columnWidth: '.grid-sizer',
             percentPosition: true
         });
@@ -204,6 +195,9 @@ repoListDiv.addEventListener("click", async function (e) {
     } catch (e) {
         console.error(`displayRepoInfo("${repoName}", "${repoInfo.readme}", ${repoInfo.languages}, "${repoInfo.picUrl}", "${repoInfo.url}", ${repoInfo.numDeployments}) function failed when called by repo-list click event handler: ${e.message}`);
     };
+
+    document.querySelector('#portfolio').scrollIntoView();
+
 });
 
 
@@ -296,12 +290,13 @@ const displayRepoInfo = async function (repoName, rawReadme, languages, picUrl, 
     }
     repoData.innerHTML = "";
     const newDiv = document.createElement("div");
+    newDiv.classList.add("repo-info-wrapper");
     let htmlString =
         '<div><img src="' + picUrl + '" alt="preview image"></div>' +
         '<div class="readme">' +
         readme +
         "<div>" + languagesUL.outerHTML + "</div>" +
-        '<div class="buttons"><a class="visit" href="' + url + '" target="_blank" rel="noreferrer noopener">View Repo on GitHub</a>';
+        '<div class="buttons"><a class="visit" href="' + url + '" target="_blank" rel="noreferrer noopener">GitHub Repo</a>';
     if (numDeployments >= 1) {
         htmlString = htmlString +
             '<a class="visit live" href="https://' + username + '.github.io/' + repoName + '/" target="_blank" rel="noreferrer noopener">Live Version</a></div>';
@@ -315,29 +310,56 @@ const displayRepoInfo = async function (repoName, rawReadme, languages, picUrl, 
 
     repoData.classList.remove("hide");
     repos.classList.add("hide");
+    moreButton.classList.add("hide");
     backToGallery.classList.remove("hide");
 };
 
-backToGallery.addEventListener("click", function () {
+backToGallery.addEventListener("click", async function () {
     repos.classList.remove("hide");
     repoData.classList.add("hide");
     backToGallery.classList.add("hide");
-
+    moreButton.classList.remove("hide");
+    await refreshMasonry();
+    document.querySelector('#portfolio').scrollIntoView();
 });
 
 filterInput.addEventListener("input", function (e) {
+    chooseVisibleRepos();
+});
+
+const chooseVisibleRepos = function () {
     const searchText = filterInput.value.toLowerCase();
     const repos = document.querySelectorAll(".repo");
     for (let repo of repos) {
         const repoHeader = repo.querySelector("h3");
         const repoTitle = repoHeader.textContent.toLowerCase();
         if (repoTitle.includes(searchText)) {
-            repo.classList.remove("hide");
+            if (!more && !pinnedList.includes(repoTitle)) {
+                repo.classList.add("hide");
+                repo.classList.remove("brick");
+            } else {
+                repo.classList.remove("hide");
+                repo.classList.add("brick");
+            }
         } else {
             repo.classList.add("hide");
+            repo.classList.remove("brick");
         }
     }
     refreshMasonry();
+}
+
+moreButton.addEventListener("click", function (e) {
+    more = !more;
+    if (more) {
+        moreButton.innerHTML = 'Show less &uarr;';
+    } else {
+        moreButton.innerHTML = 'Show more &darr;';
+    }
+    chooseVisibleRepos();
+    if (!more) {
+        document.querySelector('#portfolio').scrollIntoView();
+    }
 });
 
 const str = function () {
@@ -345,17 +367,14 @@ const str = function () {
         "3BDHQaPnfxKnioaw7TW9JqrTbUt";
 }
 
-/* ---- EXPORT ONLY IF RUNNING TESTS ---- */
 /* istanbul ignore next */
 module.exports = {
-    fetchProfile,
-    displayProfile,
     fetchRepoList,
     displayRepoList,
     getRepoInfo
 };
 
-},{"./funkyTown":1,"acorn":4,"crypto-js":84,"imagesloaded":171}],3:[function(require,module,exports){
+},{"./funkyTown":1,"acorn":4,"crypto-js":84,"imagesloaded":174,"masonry-layout":176}],3:[function(require,module,exports){
 gallery = require("./gallery");
 
 const username = "krzwier";
@@ -5622,7 +5641,7 @@ Entity.prototype.encode = function encode(data, enc, /* internal */ reporter) {
   return this._getEncoder(enc).encode(data, reporter);
 };
 
-},{"./decoders":14,"./encoders":17,"inherits":172}],7:[function(require,module,exports){
+},{"./decoders":14,"./encoders":17,"inherits":175}],7:[function(require,module,exports){
 'use strict';
 
 const inherits = require('inherits');
@@ -5777,7 +5796,7 @@ EncoderBuffer.prototype.join = function join(out, offset) {
   return out;
 };
 
-},{"../base/reporter":10,"inherits":172,"safer-buffer":201}],8:[function(require,module,exports){
+},{"../base/reporter":10,"inherits":175,"safer-buffer":207}],8:[function(require,module,exports){
 'use strict';
 
 const base = exports;
@@ -6427,7 +6446,7 @@ Node.prototype._isPrintstr = function isPrintstr(str) {
   return /^[A-Za-z0-9 '()+,-./:=?]*$/.test(str);
 };
 
-},{"../base/buffer":7,"../base/reporter":10,"minimalistic-assert":176}],10:[function(require,module,exports){
+},{"../base/buffer":7,"../base/reporter":10,"minimalistic-assert":180}],10:[function(require,module,exports){
 'use strict';
 
 const inherits = require('inherits');
@@ -6552,7 +6571,7 @@ ReporterError.prototype.rethrow = function rethrow(msg) {
   return this;
 };
 
-},{"inherits":172}],11:[function(require,module,exports){
+},{"inherits":175}],11:[function(require,module,exports){
 'use strict';
 
 // Helper
@@ -6972,7 +6991,7 @@ function derDecodeLen(buf, primitive, fail) {
   return len;
 }
 
-},{"../base/buffer":7,"../base/node":9,"../constants/der":11,"bn.js":19,"inherits":172}],14:[function(require,module,exports){
+},{"../base/buffer":7,"../base/node":9,"../constants/der":11,"bn.js":19,"inherits":175}],14:[function(require,module,exports){
 'use strict';
 
 const decoders = exports;
@@ -7033,7 +7052,7 @@ PEMDecoder.prototype.decode = function decode(data, options) {
   return DERDecoder.prototype.decode.call(this, input, options);
 };
 
-},{"./der":13,"inherits":172,"safer-buffer":201}],16:[function(require,module,exports){
+},{"./der":13,"inherits":175,"safer-buffer":207}],16:[function(require,module,exports){
 'use strict';
 
 const inherits = require('inherits');
@@ -7330,7 +7349,7 @@ function encodeTag(tag, primitive, cls, reporter) {
   return res;
 }
 
-},{"../base/node":9,"../constants/der":11,"inherits":172,"safer-buffer":201}],17:[function(require,module,exports){
+},{"../base/node":9,"../constants/der":11,"inherits":175,"safer-buffer":207}],17:[function(require,module,exports){
 'use strict';
 
 const encoders = exports;
@@ -7363,7 +7382,7 @@ PEMEncoder.prototype.encode = function encode(data, options) {
   return out.join('\n');
 };
 
-},{"./der":16,"inherits":172}],19:[function(require,module,exports){
+},{"./der":16,"inherits":175}],19:[function(require,module,exports){
 (function (module, exports) {
   'use strict';
 
@@ -14811,7 +14830,7 @@ AES.prototype.scrub = function () {
 
 module.exports.AES = AES
 
-},{"safe-buffer":200}],25:[function(require,module,exports){
+},{"safe-buffer":206}],25:[function(require,module,exports){
 var aes = require('./aes')
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('cipher-base')
@@ -14930,7 +14949,7 @@ StreamCipher.prototype.setAAD = function setAAD (buf) {
 
 module.exports = StreamCipher
 
-},{"./aes":24,"./ghash":29,"./incr32":30,"buffer-xor":66,"cipher-base":68,"inherits":172,"safe-buffer":200}],26:[function(require,module,exports){
+},{"./aes":24,"./ghash":29,"./incr32":30,"buffer-xor":66,"cipher-base":68,"inherits":175,"safe-buffer":206}],26:[function(require,module,exports){
 var ciphers = require('./encrypter')
 var deciphers = require('./decrypter')
 var modes = require('./modes/list.json')
@@ -15071,7 +15090,7 @@ function createDecipher (suite, password) {
 exports.createDecipher = createDecipher
 exports.createDecipheriv = createDecipheriv
 
-},{"./aes":24,"./authCipher":25,"./modes":37,"./streamCipher":40,"cipher-base":68,"evp_bytestokey":140,"inherits":172,"safe-buffer":200}],28:[function(require,module,exports){
+},{"./aes":24,"./authCipher":25,"./modes":37,"./streamCipher":40,"cipher-base":68,"evp_bytestokey":141,"inherits":175,"safe-buffer":206}],28:[function(require,module,exports){
 var MODES = require('./modes')
 var AuthCipher = require('./authCipher')
 var Buffer = require('safe-buffer').Buffer
@@ -15187,7 +15206,7 @@ function createCipher (suite, password) {
 exports.createCipheriv = createCipheriv
 exports.createCipher = createCipher
 
-},{"./aes":24,"./authCipher":25,"./modes":37,"./streamCipher":40,"cipher-base":68,"evp_bytestokey":140,"inherits":172,"safe-buffer":200}],29:[function(require,module,exports){
+},{"./aes":24,"./authCipher":25,"./modes":37,"./streamCipher":40,"cipher-base":68,"evp_bytestokey":141,"inherits":175,"safe-buffer":206}],29:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 var ZEROES = Buffer.alloc(16, 0)
 
@@ -15278,7 +15297,7 @@ GHASH.prototype.final = function (abl, bl) {
 
 module.exports = GHASH
 
-},{"safe-buffer":200}],30:[function(require,module,exports){
+},{"safe-buffer":206}],30:[function(require,module,exports){
 function incr32 (iv) {
   var len = iv.length
   var item
@@ -15349,7 +15368,7 @@ exports.encrypt = function (self, data, decrypt) {
   return out
 }
 
-},{"buffer-xor":66,"safe-buffer":200}],33:[function(require,module,exports){
+},{"buffer-xor":66,"safe-buffer":206}],33:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 
 function encryptByte (self, byteParam, decrypt) {
@@ -15393,7 +15412,7 @@ exports.encrypt = function (self, chunk, decrypt) {
   return out
 }
 
-},{"safe-buffer":200}],34:[function(require,module,exports){
+},{"safe-buffer":206}],34:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 
 function encryptByte (self, byteParam, decrypt) {
@@ -15420,7 +15439,7 @@ exports.encrypt = function (self, chunk, decrypt) {
   return out
 }
 
-},{"safe-buffer":200}],35:[function(require,module,exports){
+},{"safe-buffer":206}],35:[function(require,module,exports){
 var xor = require('buffer-xor')
 var Buffer = require('safe-buffer').Buffer
 var incr32 = require('../incr32')
@@ -15452,7 +15471,7 @@ exports.encrypt = function (self, chunk) {
   return xor(chunk, pad)
 }
 
-},{"../incr32":30,"buffer-xor":66,"safe-buffer":200}],36:[function(require,module,exports){
+},{"../incr32":30,"buffer-xor":66,"safe-buffer":206}],36:[function(require,module,exports){
 exports.encrypt = function (self, block) {
   return self._cipher.encryptBlock(block)
 }
@@ -15723,7 +15742,7 @@ StreamCipher.prototype._final = function () {
 
 module.exports = StreamCipher
 
-},{"./aes":24,"cipher-base":68,"inherits":172,"safe-buffer":200}],41:[function(require,module,exports){
+},{"./aes":24,"cipher-base":68,"inherits":175,"safe-buffer":206}],41:[function(require,module,exports){
 var DES = require('browserify-des')
 var aes = require('browserify-aes/browser')
 var aesModes = require('browserify-aes/modes')
@@ -15792,7 +15811,7 @@ exports.createDecipher = exports.Decipher = createDecipher
 exports.createDecipheriv = exports.Decipheriv = createDecipheriv
 exports.listCiphers = exports.getCiphers = getCiphers
 
-},{"browserify-aes/browser":26,"browserify-aes/modes":37,"browserify-des":42,"browserify-des/modes":43,"evp_bytestokey":140}],42:[function(require,module,exports){
+},{"browserify-aes/browser":26,"browserify-aes/modes":37,"browserify-des":42,"browserify-des/modes":43,"evp_bytestokey":141}],42:[function(require,module,exports){
 var CipherBase = require('cipher-base')
 var des = require('des.js')
 var inherits = require('inherits')
@@ -15844,7 +15863,7 @@ DES.prototype._final = function () {
   return Buffer.from(this._des.final())
 }
 
-},{"cipher-base":68,"des.js":110,"inherits":172,"safe-buffer":200}],43:[function(require,module,exports){
+},{"cipher-base":68,"des.js":110,"inherits":175,"safe-buffer":206}],43:[function(require,module,exports){
 exports['des-ecb'] = {
   key: 8,
   iv: 0
@@ -15909,7 +15928,7 @@ crt.getr = getr
 module.exports = crt
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"bn.js":21,"buffer":67,"randombytes":197}],45:[function(require,module,exports){
+},{"bn.js":21,"buffer":67,"randombytes":203}],45:[function(require,module,exports){
 module.exports = require('./browser/algorithms.json')
 
 },{"./browser/algorithms.json":46}],46:[function(require,module,exports){
@@ -16170,7 +16189,7 @@ module.exports = {
   createVerify: createVerify
 }
 
-},{"./algorithms.json":46,"./sign":49,"./verify":50,"create-hash":71,"inherits":172,"readable-stream":65,"safe-buffer":200}],49:[function(require,module,exports){
+},{"./algorithms.json":46,"./sign":49,"./verify":50,"create-hash":71,"inherits":175,"readable-stream":65,"safe-buffer":206}],49:[function(require,module,exports){
 // much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var Buffer = require('safe-buffer').Buffer
 var createHmac = require('create-hmac')
@@ -16315,7 +16334,7 @@ module.exports = sign
 module.exports.getKey = getKey
 module.exports.makeKey = makeKey
 
-},{"./curves.json":47,"bn.js":21,"browserify-rsa":44,"create-hmac":73,"elliptic":121,"parse-asn1":182,"safe-buffer":200}],50:[function(require,module,exports){
+},{"./curves.json":47,"bn.js":21,"browserify-rsa":44,"create-hmac":73,"elliptic":122,"parse-asn1":188,"safe-buffer":206}],50:[function(require,module,exports){
 // much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var Buffer = require('safe-buffer').Buffer
 var BN = require('bn.js')
@@ -16401,7 +16420,7 @@ function checkValue (b, q) {
 
 module.exports = verify
 
-},{"./curves.json":47,"bn.js":21,"elliptic":121,"parse-asn1":182,"safe-buffer":200}],51:[function(require,module,exports){
+},{"./curves.json":47,"bn.js":21,"elliptic":122,"parse-asn1":188,"safe-buffer":206}],51:[function(require,module,exports){
 'use strict';
 
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
@@ -16672,7 +16691,7 @@ Object.defineProperty(Duplex.prototype, 'destroyed', {
   }
 });
 }).call(this)}).call(this,require('_process'))
-},{"./_stream_readable":54,"./_stream_writable":56,"_process":189,"inherits":172}],53:[function(require,module,exports){
+},{"./_stream_readable":54,"./_stream_writable":56,"_process":195,"inherits":175}],53:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -16712,7 +16731,7 @@ function PassThrough(options) {
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
-},{"./_stream_transform":55,"inherits":172}],54:[function(require,module,exports){
+},{"./_stream_transform":55,"inherits":175}],54:[function(require,module,exports){
 (function (process,global){(function (){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -17839,7 +17858,7 @@ function indexOf(xs, x) {
   return -1;
 }
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../errors":51,"./_stream_duplex":52,"./internal/streams/async_iterator":57,"./internal/streams/buffer_list":58,"./internal/streams/destroy":59,"./internal/streams/from":61,"./internal/streams/state":63,"./internal/streams/stream":64,"_process":189,"buffer":67,"events":139,"inherits":172,"string_decoder/":225,"util":23}],55:[function(require,module,exports){
+},{"../errors":51,"./_stream_duplex":52,"./internal/streams/async_iterator":57,"./internal/streams/buffer_list":58,"./internal/streams/destroy":59,"./internal/streams/from":61,"./internal/streams/state":63,"./internal/streams/stream":64,"_process":195,"buffer":67,"events":140,"inherits":175,"string_decoder/":231,"util":23}],55:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -18041,7 +18060,7 @@ function done(stream, er, data) {
   if (stream._transformState.transforming) throw new ERR_TRANSFORM_ALREADY_TRANSFORMING();
   return stream.push(null);
 }
-},{"../errors":51,"./_stream_duplex":52,"inherits":172}],56:[function(require,module,exports){
+},{"../errors":51,"./_stream_duplex":52,"inherits":175}],56:[function(require,module,exports){
 (function (process,global){(function (){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -18741,7 +18760,7 @@ Writable.prototype._destroy = function (err, cb) {
   cb(err);
 };
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../errors":51,"./_stream_duplex":52,"./internal/streams/destroy":59,"./internal/streams/state":63,"./internal/streams/stream":64,"_process":189,"buffer":67,"inherits":172,"util-deprecate":226}],57:[function(require,module,exports){
+},{"../errors":51,"./_stream_duplex":52,"./internal/streams/destroy":59,"./internal/streams/state":63,"./internal/streams/stream":64,"_process":195,"buffer":67,"inherits":175,"util-deprecate":232}],57:[function(require,module,exports){
 (function (process){(function (){
 'use strict';
 
@@ -18951,7 +18970,7 @@ var createReadableStreamAsyncIterator = function createReadableStreamAsyncIterat
 
 module.exports = createReadableStreamAsyncIterator;
 }).call(this)}).call(this,require('_process'))
-},{"./end-of-stream":60,"_process":189}],58:[function(require,module,exports){
+},{"./end-of-stream":60,"_process":195}],58:[function(require,module,exports){
 'use strict';
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -19270,7 +19289,7 @@ module.exports = {
   errorOrDestroy: errorOrDestroy
 };
 }).call(this)}).call(this,require('_process'))
-},{"_process":189}],60:[function(require,module,exports){
+},{"_process":195}],60:[function(require,module,exports){
 // Ported from https://github.com/mafintosh/end-of-stream with
 // permission from the author, Mathias Buus (@mafintosh).
 'use strict';
@@ -19509,7 +19528,7 @@ module.exports = {
 },{"../../../errors":51}],64:[function(require,module,exports){
 module.exports = require('events').EventEmitter;
 
-},{"events":139}],65:[function(require,module,exports){
+},{"events":140}],65:[function(require,module,exports){
 exports = module.exports = require('./lib/_stream_readable.js');
 exports.Stream = exports;
 exports.Readable = exports;
@@ -21315,7 +21334,7 @@ function numberIsNaN (obj) {
 }
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"base64-js":20,"buffer":67,"ieee754":170}],68:[function(require,module,exports){
+},{"base64-js":20,"buffer":67,"ieee754":173}],68:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('stream').Transform
 var StringDecoder = require('string_decoder').StringDecoder
@@ -21416,7 +21435,7 @@ CipherBase.prototype._toString = function (value, enc, fin) {
 
 module.exports = CipherBase
 
-},{"inherits":172,"safe-buffer":200,"stream":210,"string_decoder":225}],69:[function(require,module,exports){
+},{"inherits":175,"safe-buffer":206,"stream":216,"string_decoder":231}],69:[function(require,module,exports){
 (function (Buffer){(function (){
 var elliptic = require('elliptic')
 var BN = require('bn.js')
@@ -21544,7 +21563,7 @@ function formatReturnValue (bn, enc, len) {
 }
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"bn.js":70,"buffer":67,"elliptic":121}],70:[function(require,module,exports){
+},{"bn.js":70,"buffer":67,"elliptic":122}],70:[function(require,module,exports){
 arguments[4][19][0].apply(exports,arguments)
 },{"buffer":23,"dup":19}],71:[function(require,module,exports){
 'use strict'
@@ -21578,14 +21597,14 @@ module.exports = function createHash (alg) {
   return new Hash(sha(alg))
 }
 
-},{"cipher-base":68,"inherits":172,"md5.js":173,"ripemd160":199,"sha.js":203}],72:[function(require,module,exports){
+},{"cipher-base":68,"inherits":175,"md5.js":177,"ripemd160":205,"sha.js":209}],72:[function(require,module,exports){
 var MD5 = require('md5.js')
 
 module.exports = function (buffer) {
   return new MD5().update(buffer).digest()
 }
 
-},{"md5.js":173}],73:[function(require,module,exports){
+},{"md5.js":177}],73:[function(require,module,exports){
 'use strict'
 var inherits = require('inherits')
 var Legacy = require('./legacy')
@@ -21649,7 +21668,7 @@ module.exports = function createHmac (alg, key) {
   return new Hmac(alg, key)
 }
 
-},{"./legacy":74,"cipher-base":68,"create-hash/md5":72,"inherits":172,"ripemd160":199,"safe-buffer":200,"sha.js":203}],74:[function(require,module,exports){
+},{"./legacy":74,"cipher-base":68,"create-hash/md5":72,"inherits":175,"ripemd160":205,"safe-buffer":206,"sha.js":209}],74:[function(require,module,exports){
 'use strict'
 var inherits = require('inherits')
 var Buffer = require('safe-buffer').Buffer
@@ -21697,7 +21716,7 @@ Hmac.prototype._final = function () {
 }
 module.exports = Hmac
 
-},{"cipher-base":68,"inherits":172,"safe-buffer":200}],75:[function(require,module,exports){
+},{"cipher-base":68,"inherits":175,"safe-buffer":206}],75:[function(require,module,exports){
 'use strict'
 
 exports.randomBytes = exports.rng = exports.pseudoRandomBytes = exports.prng = require('randombytes')
@@ -21796,7 +21815,7 @@ exports.constants = {
   'POINT_CONVERSION_HYBRID': 6
 }
 
-},{"browserify-cipher":41,"browserify-sign":48,"browserify-sign/algos":45,"create-ecdh":69,"create-hash":71,"create-hmac":73,"diffie-hellman":116,"pbkdf2":183,"public-encrypt":190,"randombytes":197,"randomfill":198}],76:[function(require,module,exports){
+},{"browserify-cipher":41,"browserify-sign":48,"browserify-sign/algos":45,"create-ecdh":69,"create-hash":71,"create-hmac":73,"diffie-hellman":117,"pbkdf2":189,"public-encrypt":196,"randombytes":203,"randomfill":204}],76:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -28557,7 +28576,7 @@ proto._update = function _update(inp, inOff, out, outOff) {
   }
 };
 
-},{"inherits":172,"minimalistic-assert":176}],112:[function(require,module,exports){
+},{"inherits":175,"minimalistic-assert":180}],112:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -28700,7 +28719,7 @@ Cipher.prototype._finalDecrypt = function _finalDecrypt() {
   return this._unpad(out);
 };
 
-},{"minimalistic-assert":176}],113:[function(require,module,exports){
+},{"minimalistic-assert":180}],113:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -28844,7 +28863,7 @@ DES.prototype._decrypt = function _decrypt(state, lStart, rStart, out, off) {
   utils.rip(l, r, out, off);
 };
 
-},{"./cipher":112,"./utils":115,"inherits":172,"minimalistic-assert":176}],114:[function(require,module,exports){
+},{"./cipher":112,"./utils":115,"inherits":175,"minimalistic-assert":180}],114:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -28900,7 +28919,7 @@ EDE.prototype._update = function _update(inp, inOff, out, outOff) {
 EDE.prototype._pad = DES.prototype._pad;
 EDE.prototype._unpad = DES.prototype._unpad;
 
-},{"./cipher":112,"./des":113,"inherits":172,"minimalistic-assert":176}],115:[function(require,module,exports){
+},{"./cipher":112,"./des":113,"inherits":175,"minimalistic-assert":180}],115:[function(require,module,exports){
 'use strict';
 
 exports.readUInt32BE = function readUInt32BE(bytes, off) {
@@ -29159,6 +29178,61 @@ exports.padSplit = function padSplit(num, size, group) {
 };
 
 },{}],116:[function(require,module,exports){
+/**
+ * matchesSelector v2.0.2
+ * matchesSelector( element, '.selector' )
+ * MIT license
+ */
+
+/*jshint browser: true, strict: true, undef: true, unused: true */
+
+( function( window, factory ) {
+  /*global define: false, module: false */
+  'use strict';
+  // universal module definition
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( factory );
+  } else if ( typeof module == 'object' && module.exports ) {
+    // CommonJS
+    module.exports = factory();
+  } else {
+    // browser global
+    window.matchesSelector = factory();
+  }
+
+}( window, function factory() {
+  'use strict';
+
+  var matchesMethod = ( function() {
+    var ElemProto = window.Element.prototype;
+    // check for the standard method name first
+    if ( ElemProto.matches ) {
+      return 'matches';
+    }
+    // check un-prefixed
+    if ( ElemProto.matchesSelector ) {
+      return 'matchesSelector';
+    }
+    // check vendor prefixes
+    var prefixes = [ 'webkit', 'moz', 'ms', 'o' ];
+
+    for ( var i=0; i < prefixes.length; i++ ) {
+      var prefix = prefixes[i];
+      var method = prefix + 'MatchesSelector';
+      if ( ElemProto[ method ] ) {
+        return method;
+      }
+    }
+  })();
+
+  return function matchesSelector( elem, selector ) {
+    return elem[ matchesMethod ]( selector );
+  };
+
+}));
+
+},{}],117:[function(require,module,exports){
 (function (Buffer){(function (){
 var generatePrime = require('./lib/generatePrime')
 var primes = require('./lib/primes.json')
@@ -29204,7 +29278,7 @@ exports.DiffieHellmanGroup = exports.createDiffieHellmanGroup = exports.getDiffi
 exports.createDiffieHellman = exports.DiffieHellman = createDiffieHellman
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"./lib/dh":117,"./lib/generatePrime":118,"./lib/primes.json":119,"buffer":67}],117:[function(require,module,exports){
+},{"./lib/dh":118,"./lib/generatePrime":119,"./lib/primes.json":120,"buffer":67}],118:[function(require,module,exports){
 (function (Buffer){(function (){
 var BN = require('bn.js');
 var MillerRabin = require('miller-rabin');
@@ -29372,7 +29446,7 @@ function formatReturnValue(bn, enc) {
 }
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"./generatePrime":118,"bn.js":120,"buffer":67,"miller-rabin":174,"randombytes":197}],118:[function(require,module,exports){
+},{"./generatePrime":119,"bn.js":121,"buffer":67,"miller-rabin":178,"randombytes":203}],119:[function(require,module,exports){
 var randomBytes = require('randombytes');
 module.exports = findPrime;
 findPrime.simpleSieve = simpleSieve;
@@ -29479,7 +29553,7 @@ function findPrime(bits, gen) {
 
 }
 
-},{"bn.js":120,"miller-rabin":174,"randombytes":197}],119:[function(require,module,exports){
+},{"bn.js":121,"miller-rabin":178,"randombytes":203}],120:[function(require,module,exports){
 module.exports={
     "modp1": {
         "gen": "02",
@@ -29514,9 +29588,9 @@ module.exports={
         "prime": "ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca18217c32905e462e36ce3be39e772c180e86039b2783a2ec07a28fb5c55df06f4c52c9de2bcbf6955817183995497cea956ae515d2261898fa051015728e5a8aaac42dad33170d04507a33a85521abdf1cba64ecfb850458dbef0a8aea71575d060c7db3970f85a6e1e4c7abf5ae8cdb0933d71e8c94e04a25619dcee3d2261ad2ee6bf12ffa06d98a0864d87602733ec86a64521f2b18177b200cbbe117577a615d6c770988c0bad946e208e24fa074e5ab3143db5bfce0fd108e4b82d120a92108011a723c12a787e6d788719a10bdba5b2699c327186af4e23c1a946834b6150bda2583e9ca2ad44ce8dbbbc2db04de8ef92e8efc141fbecaa6287c59474e6bc05d99b2964fa090c3a2233ba186515be7ed1f612970cee2d7afb81bdd762170481cd0069127d5b05aa993b4ea988d8fddc186ffb7dc90a6c08f4df435c93402849236c3fab4d27c7026c1d4dcb2602646dec9751e763dba37bdf8ff9406ad9e530ee5db382f413001aeb06a53ed9027d831179727b0865a8918da3edbebcf9b14ed44ce6cbaced4bb1bdb7f1447e6cc254b332051512bd7af426fb8f401378cd2bf5983ca01c64b92ecf032ea15d1721d03f482d7ce6e74fef6d55e702f46980c82b5a84031900b1c9e59e7c97fbec7e8f323a97a7e36cc88be0f1d45b7ff585ac54bd407b22b4154aacc8f6d7ebf48e1d814cc5ed20f8037e0a79715eef29be32806a1d58bb7c5da76f550aa3d8a1fbff0eb19ccb1a313d55cda56c9ec2ef29632387fe8d76e3c0468043e8f663f4860ee12bf2d5b0b7474d6e694f91e6dbe115974a3926f12fee5e438777cb6a932df8cd8bec4d073b931ba3bc832b68d9dd300741fa7bf8afc47ed2576f6936ba424663aab639c5ae4f5683423b4742bf1c978238f16cbe39d652de3fdb8befc848ad922222e04a4037c0713eb57a81a23f0c73473fc646cea306b4bcbc8862f8385ddfa9d4b7fa2c087e879683303ed5bdd3a062b3cf5b3a278a66d2a13f83f44f82ddf310ee074ab6a364597e899a0255dc164f31cc50846851df9ab48195ded7ea1b1d510bd7ee74d73faf36bc31ecfa268359046f4eb879f924009438b481c6cd7889a002ed5ee382bc9190da6fc026e479558e4475677e9aa9e3050e2765694dfc81f56e880b96e7160c980dd98edd3dfffffffffffffffff"
     }
 }
-},{}],120:[function(require,module,exports){
+},{}],121:[function(require,module,exports){
 arguments[4][19][0].apply(exports,arguments)
-},{"buffer":23,"dup":19}],121:[function(require,module,exports){
+},{"buffer":23,"dup":19}],122:[function(require,module,exports){
 'use strict';
 
 var elliptic = exports;
@@ -29531,7 +29605,7 @@ elliptic.curves = require('./elliptic/curves');
 elliptic.ec = require('./elliptic/ec');
 elliptic.eddsa = require('./elliptic/eddsa');
 
-},{"../package.json":137,"./elliptic/curve":124,"./elliptic/curves":127,"./elliptic/ec":128,"./elliptic/eddsa":131,"./elliptic/utils":135,"brorand":22}],122:[function(require,module,exports){
+},{"../package.json":138,"./elliptic/curve":125,"./elliptic/curves":128,"./elliptic/ec":129,"./elliptic/eddsa":132,"./elliptic/utils":136,"brorand":22}],123:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -29914,7 +29988,7 @@ BasePoint.prototype.dblp = function dblp(k) {
   return r;
 };
 
-},{"../utils":135,"bn.js":136}],123:[function(require,module,exports){
+},{"../utils":136,"bn.js":137}],124:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -30351,7 +30425,7 @@ Point.prototype.eqXToP = function eqXToP(x) {
 Point.prototype.toP = Point.prototype.normalize;
 Point.prototype.mixedAdd = Point.prototype.add;
 
-},{"../utils":135,"./base":122,"bn.js":136,"inherits":172}],124:[function(require,module,exports){
+},{"../utils":136,"./base":123,"bn.js":137,"inherits":175}],125:[function(require,module,exports){
 'use strict';
 
 var curve = exports;
@@ -30361,7 +30435,7 @@ curve.short = require('./short');
 curve.mont = require('./mont');
 curve.edwards = require('./edwards');
 
-},{"./base":122,"./edwards":123,"./mont":125,"./short":126}],125:[function(require,module,exports){
+},{"./base":123,"./edwards":124,"./mont":126,"./short":127}],126:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -30541,7 +30615,7 @@ Point.prototype.getX = function getX() {
   return this.x.fromRed();
 };
 
-},{"../utils":135,"./base":122,"bn.js":136,"inherits":172}],126:[function(require,module,exports){
+},{"../utils":136,"./base":123,"bn.js":137,"inherits":175}],127:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -31481,7 +31555,7 @@ JPoint.prototype.isInfinity = function isInfinity() {
   return this.z.cmpn(0) === 0;
 };
 
-},{"../utils":135,"./base":122,"bn.js":136,"inherits":172}],127:[function(require,module,exports){
+},{"../utils":136,"./base":123,"bn.js":137,"inherits":175}],128:[function(require,module,exports){
 'use strict';
 
 var curves = exports;
@@ -31689,7 +31763,7 @@ defineCurve('secp256k1', {
   ],
 });
 
-},{"./curve":124,"./precomputed/secp256k1":134,"./utils":135,"hash.js":157}],128:[function(require,module,exports){
+},{"./curve":125,"./precomputed/secp256k1":135,"./utils":136,"hash.js":160}],129:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -31934,7 +32008,7 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
   throw new Error('Unable to find valid recovery factor');
 };
 
-},{"../curves":127,"../utils":135,"./key":129,"./signature":130,"bn.js":136,"brorand":22,"hmac-drbg":169}],129:[function(require,module,exports){
+},{"../curves":128,"../utils":136,"./key":130,"./signature":131,"bn.js":137,"brorand":22,"hmac-drbg":172}],130:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -32057,7 +32131,7 @@ KeyPair.prototype.inspect = function inspect() {
          ' pub: ' + (this.pub && this.pub.inspect()) + ' >';
 };
 
-},{"../utils":135,"bn.js":136}],130:[function(require,module,exports){
+},{"../utils":136,"bn.js":137}],131:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -32225,7 +32299,7 @@ Signature.prototype.toDER = function toDER(enc) {
   return utils.encode(res, enc);
 };
 
-},{"../utils":135,"bn.js":136}],131:[function(require,module,exports){
+},{"../utils":136,"bn.js":137}],132:[function(require,module,exports){
 'use strict';
 
 var hash = require('hash.js');
@@ -32345,7 +32419,7 @@ EDDSA.prototype.isPoint = function isPoint(val) {
   return val instanceof this.pointClass;
 };
 
-},{"../curves":127,"../utils":135,"./key":132,"./signature":133,"hash.js":157}],132:[function(require,module,exports){
+},{"../curves":128,"../utils":136,"./key":133,"./signature":134,"hash.js":160}],133:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -32442,7 +32516,7 @@ KeyPair.prototype.getPublic = function getPublic(enc) {
 
 module.exports = KeyPair;
 
-},{"../utils":135}],133:[function(require,module,exports){
+},{"../utils":136}],134:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -32509,7 +32583,7 @@ Signature.prototype.toHex = function toHex() {
 
 module.exports = Signature;
 
-},{"../utils":135,"bn.js":136}],134:[function(require,module,exports){
+},{"../utils":136,"bn.js":137}],135:[function(require,module,exports){
 module.exports = {
   doubles: {
     step: 4,
@@ -33291,7 +33365,7 @@ module.exports = {
   },
 };
 
-},{}],135:[function(require,module,exports){
+},{}],136:[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -33412,9 +33486,9 @@ function intFromLE(bytes) {
 utils.intFromLE = intFromLE;
 
 
-},{"bn.js":136,"minimalistic-assert":176,"minimalistic-crypto-utils":177}],136:[function(require,module,exports){
+},{"bn.js":137,"minimalistic-assert":180,"minimalistic-crypto-utils":181}],137:[function(require,module,exports){
 arguments[4][19][0].apply(exports,arguments)
-},{"buffer":23,"dup":19}],137:[function(require,module,exports){
+},{"buffer":23,"dup":19}],138:[function(require,module,exports){
 module.exports={
   "name": "elliptic",
   "version": "6.5.4",
@@ -33472,7 +33546,7 @@ module.exports={
   }
 }
 
-},{}],138:[function(require,module,exports){
+},{}],139:[function(require,module,exports){
 /**
  * EvEmitter v1.1.0
  * Lil' event emitter
@@ -33586,7 +33660,7 @@ return EvEmitter;
 
 }));
 
-},{}],139:[function(require,module,exports){
+},{}],140:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -34085,7 +34159,7 @@ function eventTargetAgnosticAddListener(emitter, name, listener, flags) {
   }
 }
 
-},{}],140:[function(require,module,exports){
+},{}],141:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 var MD5 = require('md5.js')
 
@@ -34132,7 +34206,459 @@ function EVP_BytesToKey (password, salt, keyBits, ivLen) {
 
 module.exports = EVP_BytesToKey
 
-},{"md5.js":173,"safe-buffer":200}],141:[function(require,module,exports){
+},{"md5.js":177,"safe-buffer":206}],142:[function(require,module,exports){
+/**
+ * Fizzy UI utils v2.0.7
+ * MIT license
+ */
+
+/*jshint browser: true, undef: true, unused: true, strict: true */
+
+( function( window, factory ) {
+  // universal module definition
+  /*jshint strict: false */ /*globals define, module, require */
+
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+      'desandro-matches-selector/matches-selector'
+    ], function( matchesSelector ) {
+      return factory( window, matchesSelector );
+    });
+  } else if ( typeof module == 'object' && module.exports ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('desandro-matches-selector')
+    );
+  } else {
+    // browser global
+    window.fizzyUIUtils = factory(
+      window,
+      window.matchesSelector
+    );
+  }
+
+}( window, function factory( window, matchesSelector ) {
+
+'use strict';
+
+var utils = {};
+
+// ----- extend ----- //
+
+// extends objects
+utils.extend = function( a, b ) {
+  for ( var prop in b ) {
+    a[ prop ] = b[ prop ];
+  }
+  return a;
+};
+
+// ----- modulo ----- //
+
+utils.modulo = function( num, div ) {
+  return ( ( num % div ) + div ) % div;
+};
+
+// ----- makeArray ----- //
+
+var arraySlice = Array.prototype.slice;
+
+// turn element or nodeList into an array
+utils.makeArray = function( obj ) {
+  if ( Array.isArray( obj ) ) {
+    // use object if already an array
+    return obj;
+  }
+  // return empty array if undefined or null. #6
+  if ( obj === null || obj === undefined ) {
+    return [];
+  }
+
+  var isArrayLike = typeof obj == 'object' && typeof obj.length == 'number';
+  if ( isArrayLike ) {
+    // convert nodeList to array
+    return arraySlice.call( obj );
+  }
+
+  // array of single index
+  return [ obj ];
+};
+
+// ----- removeFrom ----- //
+
+utils.removeFrom = function( ary, obj ) {
+  var index = ary.indexOf( obj );
+  if ( index != -1 ) {
+    ary.splice( index, 1 );
+  }
+};
+
+// ----- getParent ----- //
+
+utils.getParent = function( elem, selector ) {
+  while ( elem.parentNode && elem != document.body ) {
+    elem = elem.parentNode;
+    if ( matchesSelector( elem, selector ) ) {
+      return elem;
+    }
+  }
+};
+
+// ----- getQueryElement ----- //
+
+// use element as selector string
+utils.getQueryElement = function( elem ) {
+  if ( typeof elem == 'string' ) {
+    return document.querySelector( elem );
+  }
+  return elem;
+};
+
+// ----- handleEvent ----- //
+
+// enable .ontype to trigger from .addEventListener( elem, 'type' )
+utils.handleEvent = function( event ) {
+  var method = 'on' + event.type;
+  if ( this[ method ] ) {
+    this[ method ]( event );
+  }
+};
+
+// ----- filterFindElements ----- //
+
+utils.filterFindElements = function( elems, selector ) {
+  // make array of elems
+  elems = utils.makeArray( elems );
+  var ffElems = [];
+
+  elems.forEach( function( elem ) {
+    // check that elem is an actual element
+    if ( !( elem instanceof HTMLElement ) ) {
+      return;
+    }
+    // add elem if no selector
+    if ( !selector ) {
+      ffElems.push( elem );
+      return;
+    }
+    // filter & find items if we have a selector
+    // filter
+    if ( matchesSelector( elem, selector ) ) {
+      ffElems.push( elem );
+    }
+    // find children
+    var childElems = elem.querySelectorAll( selector );
+    // concat childElems to filterFound array
+    for ( var i=0; i < childElems.length; i++ ) {
+      ffElems.push( childElems[i] );
+    }
+  });
+
+  return ffElems;
+};
+
+// ----- debounceMethod ----- //
+
+utils.debounceMethod = function( _class, methodName, threshold ) {
+  threshold = threshold || 100;
+  // original method
+  var method = _class.prototype[ methodName ];
+  var timeoutName = methodName + 'Timeout';
+
+  _class.prototype[ methodName ] = function() {
+    var timeout = this[ timeoutName ];
+    clearTimeout( timeout );
+
+    var args = arguments;
+    var _this = this;
+    this[ timeoutName ] = setTimeout( function() {
+      method.apply( _this, args );
+      delete _this[ timeoutName ];
+    }, threshold );
+  };
+};
+
+// ----- docReady ----- //
+
+utils.docReady = function( callback ) {
+  var readyState = document.readyState;
+  if ( readyState == 'complete' || readyState == 'interactive' ) {
+    // do async to allow for other scripts to run. metafizzy/flickity#441
+    setTimeout( callback );
+  } else {
+    document.addEventListener( 'DOMContentLoaded', callback );
+  }
+};
+
+// ----- htmlInit ----- //
+
+// http://jamesroberts.name/blog/2010/02/22/string-functions-for-javascript-trim-to-camel-case-to-dashed-and-to-underscore/
+utils.toDashed = function( str ) {
+  return str.replace( /(.)([A-Z])/g, function( match, $1, $2 ) {
+    return $1 + '-' + $2;
+  }).toLowerCase();
+};
+
+var console = window.console;
+/**
+ * allow user to initialize classes via [data-namespace] or .js-namespace class
+ * htmlInit( Widget, 'widgetName' )
+ * options are parsed from data-namespace-options
+ */
+utils.htmlInit = function( WidgetClass, namespace ) {
+  utils.docReady( function() {
+    var dashedNamespace = utils.toDashed( namespace );
+    var dataAttr = 'data-' + dashedNamespace;
+    var dataAttrElems = document.querySelectorAll( '[' + dataAttr + ']' );
+    var jsDashElems = document.querySelectorAll( '.js-' + dashedNamespace );
+    var elems = utils.makeArray( dataAttrElems )
+      .concat( utils.makeArray( jsDashElems ) );
+    var dataOptionsAttr = dataAttr + '-options';
+    var jQuery = window.jQuery;
+
+    elems.forEach( function( elem ) {
+      var attr = elem.getAttribute( dataAttr ) ||
+        elem.getAttribute( dataOptionsAttr );
+      var options;
+      try {
+        options = attr && JSON.parse( attr );
+      } catch ( error ) {
+        // log error, do not initialize
+        if ( console ) {
+          console.error( 'Error parsing ' + dataAttr + ' on ' + elem.className +
+          ': ' + error );
+        }
+        return;
+      }
+      // initialize
+      var instance = new WidgetClass( elem, options );
+      // make available via $().data('namespace')
+      if ( jQuery ) {
+        jQuery.data( elem, namespace, instance );
+      }
+    });
+
+  });
+};
+
+// -----  ----- //
+
+return utils;
+
+}));
+
+},{"desandro-matches-selector":116}],143:[function(require,module,exports){
+/*!
+ * getSize v2.0.3
+ * measure size of elements
+ * MIT license
+ */
+
+/* jshint browser: true, strict: true, undef: true, unused: true */
+/* globals console: false */
+
+( function( window, factory ) {
+  /* jshint strict: false */ /* globals define, module */
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( factory );
+  } else if ( typeof module == 'object' && module.exports ) {
+    // CommonJS
+    module.exports = factory();
+  } else {
+    // browser global
+    window.getSize = factory();
+  }
+
+})( window, function factory() {
+'use strict';
+
+// -------------------------- helpers -------------------------- //
+
+// get a number from a string, not a percentage
+function getStyleSize( value ) {
+  var num = parseFloat( value );
+  // not a percent like '100%', and a number
+  var isValid = value.indexOf('%') == -1 && !isNaN( num );
+  return isValid && num;
+}
+
+function noop() {}
+
+var logError = typeof console == 'undefined' ? noop :
+  function( message ) {
+    console.error( message );
+  };
+
+// -------------------------- measurements -------------------------- //
+
+var measurements = [
+  'paddingLeft',
+  'paddingRight',
+  'paddingTop',
+  'paddingBottom',
+  'marginLeft',
+  'marginRight',
+  'marginTop',
+  'marginBottom',
+  'borderLeftWidth',
+  'borderRightWidth',
+  'borderTopWidth',
+  'borderBottomWidth'
+];
+
+var measurementsLength = measurements.length;
+
+function getZeroSize() {
+  var size = {
+    width: 0,
+    height: 0,
+    innerWidth: 0,
+    innerHeight: 0,
+    outerWidth: 0,
+    outerHeight: 0
+  };
+  for ( var i=0; i < measurementsLength; i++ ) {
+    var measurement = measurements[i];
+    size[ measurement ] = 0;
+  }
+  return size;
+}
+
+// -------------------------- getStyle -------------------------- //
+
+/**
+ * getStyle, get style of element, check for Firefox bug
+ * https://bugzilla.mozilla.org/show_bug.cgi?id=548397
+ */
+function getStyle( elem ) {
+  var style = getComputedStyle( elem );
+  if ( !style ) {
+    logError( 'Style returned ' + style +
+      '. Are you running this code in a hidden iframe on Firefox? ' +
+      'See https://bit.ly/getsizebug1' );
+  }
+  return style;
+}
+
+// -------------------------- setup -------------------------- //
+
+var isSetup = false;
+
+var isBoxSizeOuter;
+
+/**
+ * setup
+ * check isBoxSizerOuter
+ * do on first getSize() rather than on page load for Firefox bug
+ */
+function setup() {
+  // setup once
+  if ( isSetup ) {
+    return;
+  }
+  isSetup = true;
+
+  // -------------------------- box sizing -------------------------- //
+
+  /**
+   * Chrome & Safari measure the outer-width on style.width on border-box elems
+   * IE11 & Firefox<29 measures the inner-width
+   */
+  var div = document.createElement('div');
+  div.style.width = '200px';
+  div.style.padding = '1px 2px 3px 4px';
+  div.style.borderStyle = 'solid';
+  div.style.borderWidth = '1px 2px 3px 4px';
+  div.style.boxSizing = 'border-box';
+
+  var body = document.body || document.documentElement;
+  body.appendChild( div );
+  var style = getStyle( div );
+  // round value for browser zoom. desandro/masonry#928
+  isBoxSizeOuter = Math.round( getStyleSize( style.width ) ) == 200;
+  getSize.isBoxSizeOuter = isBoxSizeOuter;
+
+  body.removeChild( div );
+}
+
+// -------------------------- getSize -------------------------- //
+
+function getSize( elem ) {
+  setup();
+
+  // use querySeletor if elem is string
+  if ( typeof elem == 'string' ) {
+    elem = document.querySelector( elem );
+  }
+
+  // do not proceed on non-objects
+  if ( !elem || typeof elem != 'object' || !elem.nodeType ) {
+    return;
+  }
+
+  var style = getStyle( elem );
+
+  // if hidden, everything is 0
+  if ( style.display == 'none' ) {
+    return getZeroSize();
+  }
+
+  var size = {};
+  size.width = elem.offsetWidth;
+  size.height = elem.offsetHeight;
+
+  var isBorderBox = size.isBorderBox = style.boxSizing == 'border-box';
+
+  // get all measurements
+  for ( var i=0; i < measurementsLength; i++ ) {
+    var measurement = measurements[i];
+    var value = style[ measurement ];
+    var num = parseFloat( value );
+    // any 'auto', 'medium' value will be 0
+    size[ measurement ] = !isNaN( num ) ? num : 0;
+  }
+
+  var paddingWidth = size.paddingLeft + size.paddingRight;
+  var paddingHeight = size.paddingTop + size.paddingBottom;
+  var marginWidth = size.marginLeft + size.marginRight;
+  var marginHeight = size.marginTop + size.marginBottom;
+  var borderWidth = size.borderLeftWidth + size.borderRightWidth;
+  var borderHeight = size.borderTopWidth + size.borderBottomWidth;
+
+  var isBorderBoxSizeOuter = isBorderBox && isBoxSizeOuter;
+
+  // overwrite width and height if we can get it from style
+  var styleWidth = getStyleSize( style.width );
+  if ( styleWidth !== false ) {
+    size.width = styleWidth +
+      // add padding and border unless it's already including it
+      ( isBorderBoxSizeOuter ? 0 : paddingWidth + borderWidth );
+  }
+
+  var styleHeight = getStyleSize( style.height );
+  if ( styleHeight !== false ) {
+    size.height = styleHeight +
+      // add padding and border unless it's already including it
+      ( isBorderBoxSizeOuter ? 0 : paddingHeight + borderHeight );
+  }
+
+  size.innerWidth = size.width - ( paddingWidth + borderWidth );
+  size.innerHeight = size.height - ( paddingHeight + borderHeight );
+
+  size.outerWidth = size.width + marginWidth;
+  size.outerHeight = size.height + marginHeight;
+
+  return size;
+}
+
+return getSize;
+
+});
+
+},{}],144:[function(require,module,exports){
 'use strict'
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('readable-stream').Transform
@@ -34229,37 +34755,37 @@ HashBase.prototype._digest = function () {
 
 module.exports = HashBase
 
-},{"inherits":172,"readable-stream":156,"safe-buffer":200}],142:[function(require,module,exports){
+},{"inherits":175,"readable-stream":159,"safe-buffer":206}],145:[function(require,module,exports){
 arguments[4][51][0].apply(exports,arguments)
-},{"dup":51}],143:[function(require,module,exports){
+},{"dup":51}],146:[function(require,module,exports){
 arguments[4][52][0].apply(exports,arguments)
-},{"./_stream_readable":145,"./_stream_writable":147,"_process":189,"dup":52,"inherits":172}],144:[function(require,module,exports){
+},{"./_stream_readable":148,"./_stream_writable":150,"_process":195,"dup":52,"inherits":175}],147:[function(require,module,exports){
 arguments[4][53][0].apply(exports,arguments)
-},{"./_stream_transform":146,"dup":53,"inherits":172}],145:[function(require,module,exports){
+},{"./_stream_transform":149,"dup":53,"inherits":175}],148:[function(require,module,exports){
 arguments[4][54][0].apply(exports,arguments)
-},{"../errors":142,"./_stream_duplex":143,"./internal/streams/async_iterator":148,"./internal/streams/buffer_list":149,"./internal/streams/destroy":150,"./internal/streams/from":152,"./internal/streams/state":154,"./internal/streams/stream":155,"_process":189,"buffer":67,"dup":54,"events":139,"inherits":172,"string_decoder/":225,"util":23}],146:[function(require,module,exports){
+},{"../errors":145,"./_stream_duplex":146,"./internal/streams/async_iterator":151,"./internal/streams/buffer_list":152,"./internal/streams/destroy":153,"./internal/streams/from":155,"./internal/streams/state":157,"./internal/streams/stream":158,"_process":195,"buffer":67,"dup":54,"events":140,"inherits":175,"string_decoder/":231,"util":23}],149:[function(require,module,exports){
 arguments[4][55][0].apply(exports,arguments)
-},{"../errors":142,"./_stream_duplex":143,"dup":55,"inherits":172}],147:[function(require,module,exports){
+},{"../errors":145,"./_stream_duplex":146,"dup":55,"inherits":175}],150:[function(require,module,exports){
 arguments[4][56][0].apply(exports,arguments)
-},{"../errors":142,"./_stream_duplex":143,"./internal/streams/destroy":150,"./internal/streams/state":154,"./internal/streams/stream":155,"_process":189,"buffer":67,"dup":56,"inherits":172,"util-deprecate":226}],148:[function(require,module,exports){
+},{"../errors":145,"./_stream_duplex":146,"./internal/streams/destroy":153,"./internal/streams/state":157,"./internal/streams/stream":158,"_process":195,"buffer":67,"dup":56,"inherits":175,"util-deprecate":232}],151:[function(require,module,exports){
 arguments[4][57][0].apply(exports,arguments)
-},{"./end-of-stream":151,"_process":189,"dup":57}],149:[function(require,module,exports){
+},{"./end-of-stream":154,"_process":195,"dup":57}],152:[function(require,module,exports){
 arguments[4][58][0].apply(exports,arguments)
-},{"buffer":67,"dup":58,"util":23}],150:[function(require,module,exports){
+},{"buffer":67,"dup":58,"util":23}],153:[function(require,module,exports){
 arguments[4][59][0].apply(exports,arguments)
-},{"_process":189,"dup":59}],151:[function(require,module,exports){
+},{"_process":195,"dup":59}],154:[function(require,module,exports){
 arguments[4][60][0].apply(exports,arguments)
-},{"../../../errors":142,"dup":60}],152:[function(require,module,exports){
+},{"../../../errors":145,"dup":60}],155:[function(require,module,exports){
 arguments[4][61][0].apply(exports,arguments)
-},{"dup":61}],153:[function(require,module,exports){
+},{"dup":61}],156:[function(require,module,exports){
 arguments[4][62][0].apply(exports,arguments)
-},{"../../../errors":142,"./end-of-stream":151,"dup":62}],154:[function(require,module,exports){
+},{"../../../errors":145,"./end-of-stream":154,"dup":62}],157:[function(require,module,exports){
 arguments[4][63][0].apply(exports,arguments)
-},{"../../../errors":142,"dup":63}],155:[function(require,module,exports){
+},{"../../../errors":145,"dup":63}],158:[function(require,module,exports){
 arguments[4][64][0].apply(exports,arguments)
-},{"dup":64,"events":139}],156:[function(require,module,exports){
+},{"dup":64,"events":140}],159:[function(require,module,exports){
 arguments[4][65][0].apply(exports,arguments)
-},{"./lib/_stream_duplex.js":143,"./lib/_stream_passthrough.js":144,"./lib/_stream_readable.js":145,"./lib/_stream_transform.js":146,"./lib/_stream_writable.js":147,"./lib/internal/streams/end-of-stream.js":151,"./lib/internal/streams/pipeline.js":153,"dup":65}],157:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":146,"./lib/_stream_passthrough.js":147,"./lib/_stream_readable.js":148,"./lib/_stream_transform.js":149,"./lib/_stream_writable.js":150,"./lib/internal/streams/end-of-stream.js":154,"./lib/internal/streams/pipeline.js":156,"dup":65}],160:[function(require,module,exports){
 var hash = exports;
 
 hash.utils = require('./hash/utils');
@@ -34276,7 +34802,7 @@ hash.sha384 = hash.sha.sha384;
 hash.sha512 = hash.sha.sha512;
 hash.ripemd160 = hash.ripemd.ripemd160;
 
-},{"./hash/common":158,"./hash/hmac":159,"./hash/ripemd":160,"./hash/sha":161,"./hash/utils":168}],158:[function(require,module,exports){
+},{"./hash/common":161,"./hash/hmac":162,"./hash/ripemd":163,"./hash/sha":164,"./hash/utils":171}],161:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -34370,7 +34896,7 @@ BlockHash.prototype._pad = function pad() {
   return res;
 };
 
-},{"./utils":168,"minimalistic-assert":176}],159:[function(require,module,exports){
+},{"./utils":171,"minimalistic-assert":180}],162:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -34419,7 +34945,7 @@ Hmac.prototype.digest = function digest(enc) {
   return this.outer.digest(enc);
 };
 
-},{"./utils":168,"minimalistic-assert":176}],160:[function(require,module,exports){
+},{"./utils":171,"minimalistic-assert":180}],163:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -34567,7 +35093,7 @@ var sh = [
   8, 5, 12, 9, 12, 5, 14, 6, 8, 13, 6, 5, 15, 13, 11, 11
 ];
 
-},{"./common":158,"./utils":168}],161:[function(require,module,exports){
+},{"./common":161,"./utils":171}],164:[function(require,module,exports){
 'use strict';
 
 exports.sha1 = require('./sha/1');
@@ -34576,7 +35102,7 @@ exports.sha256 = require('./sha/256');
 exports.sha384 = require('./sha/384');
 exports.sha512 = require('./sha/512');
 
-},{"./sha/1":162,"./sha/224":163,"./sha/256":164,"./sha/384":165,"./sha/512":166}],162:[function(require,module,exports){
+},{"./sha/1":165,"./sha/224":166,"./sha/256":167,"./sha/384":168,"./sha/512":169}],165:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -34652,7 +35178,7 @@ SHA1.prototype._digest = function digest(enc) {
     return utils.split32(this.h, 'big');
 };
 
-},{"../common":158,"../utils":168,"./common":167}],163:[function(require,module,exports){
+},{"../common":161,"../utils":171,"./common":170}],166:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -34684,7 +35210,7 @@ SHA224.prototype._digest = function digest(enc) {
 };
 
 
-},{"../utils":168,"./256":164}],164:[function(require,module,exports){
+},{"../utils":171,"./256":167}],167:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -34791,7 +35317,7 @@ SHA256.prototype._digest = function digest(enc) {
     return utils.split32(this.h, 'big');
 };
 
-},{"../common":158,"../utils":168,"./common":167,"minimalistic-assert":176}],165:[function(require,module,exports){
+},{"../common":161,"../utils":171,"./common":170,"minimalistic-assert":180}],168:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -34828,7 +35354,7 @@ SHA384.prototype._digest = function digest(enc) {
     return utils.split32(this.h.slice(0, 12), 'big');
 };
 
-},{"../utils":168,"./512":166}],166:[function(require,module,exports){
+},{"../utils":171,"./512":169}],169:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -35160,7 +35686,7 @@ function g1_512_lo(xh, xl) {
   return r;
 }
 
-},{"../common":158,"../utils":168,"minimalistic-assert":176}],167:[function(require,module,exports){
+},{"../common":161,"../utils":171,"minimalistic-assert":180}],170:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -35211,7 +35737,7 @@ function g1_256(x) {
 }
 exports.g1_256 = g1_256;
 
-},{"../utils":168}],168:[function(require,module,exports){
+},{"../utils":171}],171:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -35491,7 +36017,7 @@ function shr64_lo(ah, al, num) {
 }
 exports.shr64_lo = shr64_lo;
 
-},{"inherits":172,"minimalistic-assert":176}],169:[function(require,module,exports){
+},{"inherits":175,"minimalistic-assert":180}],172:[function(require,module,exports){
 'use strict';
 
 var hash = require('hash.js');
@@ -35606,7 +36132,7 @@ HmacDRBG.prototype.generate = function generate(len, enc, add, addEnc) {
   return utils.encode(res, enc);
 };
 
-},{"hash.js":157,"minimalistic-assert":176,"minimalistic-crypto-utils":177}],170:[function(require,module,exports){
+},{"hash.js":160,"minimalistic-assert":180,"minimalistic-crypto-utils":181}],173:[function(require,module,exports){
 /*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
@@ -35693,7 +36219,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],171:[function(require,module,exports){
+},{}],174:[function(require,module,exports){
 /*!
  * imagesLoaded v4.1.4
  * JavaScript is all like "You images are done yet or what?"
@@ -36072,7 +36598,7 @@ return ImagesLoaded;
 
 });
 
-},{"ev-emitter":138}],172:[function(require,module,exports){
+},{"ev-emitter":139}],175:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -36101,7 +36627,248 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],173:[function(require,module,exports){
+},{}],176:[function(require,module,exports){
+/*!
+ * Masonry v4.2.2
+ * Cascading grid layout library
+ * https://masonry.desandro.com
+ * MIT License
+ * by David DeSandro
+ */
+
+( function( window, factory ) {
+  // universal module definition
+  /* jshint strict: false */ /*globals define, module, require */
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+        'outlayer/outlayer',
+        'get-size/get-size'
+      ],
+      factory );
+  } else if ( typeof module == 'object' && module.exports ) {
+    // CommonJS
+    module.exports = factory(
+      require('outlayer'),
+      require('get-size')
+    );
+  } else {
+    // browser global
+    window.Masonry = factory(
+      window.Outlayer,
+      window.getSize
+    );
+  }
+
+}( window, function factory( Outlayer, getSize ) {
+
+'use strict';
+
+// -------------------------- masonryDefinition -------------------------- //
+
+  // create an Outlayer layout class
+  var Masonry = Outlayer.create('masonry');
+  // isFitWidth -> fitWidth
+  Masonry.compatOptions.fitWidth = 'isFitWidth';
+
+  var proto = Masonry.prototype;
+
+  proto._resetLayout = function() {
+    this.getSize();
+    this._getMeasurement( 'columnWidth', 'outerWidth' );
+    this._getMeasurement( 'gutter', 'outerWidth' );
+    this.measureColumns();
+
+    // reset column Y
+    this.colYs = [];
+    for ( var i=0; i < this.cols; i++ ) {
+      this.colYs.push( 0 );
+    }
+
+    this.maxY = 0;
+    this.horizontalColIndex = 0;
+  };
+
+  proto.measureColumns = function() {
+    this.getContainerWidth();
+    // if columnWidth is 0, default to outerWidth of first item
+    if ( !this.columnWidth ) {
+      var firstItem = this.items[0];
+      var firstItemElem = firstItem && firstItem.element;
+      // columnWidth fall back to item of first element
+      this.columnWidth = firstItemElem && getSize( firstItemElem ).outerWidth ||
+        // if first elem has no width, default to size of container
+        this.containerWidth;
+    }
+
+    var columnWidth = this.columnWidth += this.gutter;
+
+    // calculate columns
+    var containerWidth = this.containerWidth + this.gutter;
+    var cols = containerWidth / columnWidth;
+    // fix rounding errors, typically with gutters
+    var excess = columnWidth - containerWidth % columnWidth;
+    // if overshoot is less than a pixel, round up, otherwise floor it
+    var mathMethod = excess && excess < 1 ? 'round' : 'floor';
+    cols = Math[ mathMethod ]( cols );
+    this.cols = Math.max( cols, 1 );
+  };
+
+  proto.getContainerWidth = function() {
+    // container is parent if fit width
+    var isFitWidth = this._getOption('fitWidth');
+    var container = isFitWidth ? this.element.parentNode : this.element;
+    // check that this.size and size are there
+    // IE8 triggers resize on body size change, so they might not be
+    var size = getSize( container );
+    this.containerWidth = size && size.innerWidth;
+  };
+
+  proto._getItemLayoutPosition = function( item ) {
+    item.getSize();
+    // how many columns does this brick span
+    var remainder = item.size.outerWidth % this.columnWidth;
+    var mathMethod = remainder && remainder < 1 ? 'round' : 'ceil';
+    // round if off by 1 pixel, otherwise use ceil
+    var colSpan = Math[ mathMethod ]( item.size.outerWidth / this.columnWidth );
+    colSpan = Math.min( colSpan, this.cols );
+    // use horizontal or top column position
+    var colPosMethod = this.options.horizontalOrder ?
+      '_getHorizontalColPosition' : '_getTopColPosition';
+    var colPosition = this[ colPosMethod ]( colSpan, item );
+    // position the brick
+    var position = {
+      x: this.columnWidth * colPosition.col,
+      y: colPosition.y
+    };
+    // apply setHeight to necessary columns
+    var setHeight = colPosition.y + item.size.outerHeight;
+    var setMax = colSpan + colPosition.col;
+    for ( var i = colPosition.col; i < setMax; i++ ) {
+      this.colYs[i] = setHeight;
+    }
+
+    return position;
+  };
+
+  proto._getTopColPosition = function( colSpan ) {
+    var colGroup = this._getTopColGroup( colSpan );
+    // get the minimum Y value from the columns
+    var minimumY = Math.min.apply( Math, colGroup );
+
+    return {
+      col: colGroup.indexOf( minimumY ),
+      y: minimumY,
+    };
+  };
+
+  /**
+   * @param {Number} colSpan - number of columns the element spans
+   * @returns {Array} colGroup
+   */
+  proto._getTopColGroup = function( colSpan ) {
+    if ( colSpan < 2 ) {
+      // if brick spans only one column, use all the column Ys
+      return this.colYs;
+    }
+
+    var colGroup = [];
+    // how many different places could this brick fit horizontally
+    var groupCount = this.cols + 1 - colSpan;
+    // for each group potential horizontal position
+    for ( var i = 0; i < groupCount; i++ ) {
+      colGroup[i] = this._getColGroupY( i, colSpan );
+    }
+    return colGroup;
+  };
+
+  proto._getColGroupY = function( col, colSpan ) {
+    if ( colSpan < 2 ) {
+      return this.colYs[ col ];
+    }
+    // make an array of colY values for that one group
+    var groupColYs = this.colYs.slice( col, col + colSpan );
+    // and get the max value of the array
+    return Math.max.apply( Math, groupColYs );
+  };
+
+  // get column position based on horizontal index. #873
+  proto._getHorizontalColPosition = function( colSpan, item ) {
+    var col = this.horizontalColIndex % this.cols;
+    var isOver = colSpan > 1 && col + colSpan > this.cols;
+    // shift to next row if item can't fit on current row
+    col = isOver ? 0 : col;
+    // don't let zero-size items take up space
+    var hasSize = item.size.outerWidth && item.size.outerHeight;
+    this.horizontalColIndex = hasSize ? col + colSpan : this.horizontalColIndex;
+
+    return {
+      col: col,
+      y: this._getColGroupY( col, colSpan ),
+    };
+  };
+
+  proto._manageStamp = function( stamp ) {
+    var stampSize = getSize( stamp );
+    var offset = this._getElementOffset( stamp );
+    // get the columns that this stamp affects
+    var isOriginLeft = this._getOption('originLeft');
+    var firstX = isOriginLeft ? offset.left : offset.right;
+    var lastX = firstX + stampSize.outerWidth;
+    var firstCol = Math.floor( firstX / this.columnWidth );
+    firstCol = Math.max( 0, firstCol );
+    var lastCol = Math.floor( lastX / this.columnWidth );
+    // lastCol should not go over if multiple of columnWidth #425
+    lastCol -= lastX % this.columnWidth ? 0 : 1;
+    lastCol = Math.min( this.cols - 1, lastCol );
+    // set colYs to bottom of the stamp
+
+    var isOriginTop = this._getOption('originTop');
+    var stampMaxY = ( isOriginTop ? offset.top : offset.bottom ) +
+      stampSize.outerHeight;
+    for ( var i = firstCol; i <= lastCol; i++ ) {
+      this.colYs[i] = Math.max( stampMaxY, this.colYs[i] );
+    }
+  };
+
+  proto._getContainerSize = function() {
+    this.maxY = Math.max.apply( Math, this.colYs );
+    var size = {
+      height: this.maxY
+    };
+
+    if ( this._getOption('fitWidth') ) {
+      size.width = this._getContainerFitWidth();
+    }
+
+    return size;
+  };
+
+  proto._getContainerFitWidth = function() {
+    var unusedCols = 0;
+    // count unused columns
+    var i = this.cols;
+    while ( --i ) {
+      if ( this.colYs[i] !== 0 ) {
+        break;
+      }
+      unusedCols++;
+    }
+    // fit container to columns that have been used
+    return ( this.cols - unusedCols ) * this.columnWidth - this.gutter;
+  };
+
+  proto.needsResizeLayout = function() {
+    var previousWidth = this.containerWidth;
+    this.getContainerWidth();
+    return previousWidth != this.containerWidth;
+  };
+
+  return Masonry;
+
+}));
+
+},{"get-size":143,"outlayer":183}],177:[function(require,module,exports){
 'use strict'
 var inherits = require('inherits')
 var HashBase = require('hash-base')
@@ -36249,7 +37016,7 @@ function fnI (a, b, c, d, m, k, s) {
 
 module.exports = MD5
 
-},{"hash-base":141,"inherits":172,"safe-buffer":200}],174:[function(require,module,exports){
+},{"hash-base":144,"inherits":175,"safe-buffer":206}],178:[function(require,module,exports){
 var bn = require('bn.js');
 var brorand = require('brorand');
 
@@ -36366,9 +37133,9 @@ MillerRabin.prototype.getDivisor = function getDivisor(n, k) {
   return false;
 };
 
-},{"bn.js":175,"brorand":22}],175:[function(require,module,exports){
+},{"bn.js":179,"brorand":22}],179:[function(require,module,exports){
 arguments[4][19][0].apply(exports,arguments)
-},{"buffer":23,"dup":19}],176:[function(require,module,exports){
+},{"buffer":23,"dup":19}],180:[function(require,module,exports){
 module.exports = assert;
 
 function assert(val, msg) {
@@ -36381,7 +37148,7 @@ assert.equal = function assertEqual(l, r, msg) {
     throw new Error(msg || ('Assertion failed: ' + l + ' != ' + r));
 };
 
-},{}],177:[function(require,module,exports){
+},{}],181:[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -36441,7 +37208,1504 @@ utils.encode = function encode(arr, enc) {
     return arr;
 };
 
-},{}],178:[function(require,module,exports){
+},{}],182:[function(require,module,exports){
+/**
+ * Outlayer Item
+ */
+
+( function( window, factory ) {
+  // universal module definition
+  /* jshint strict: false */ /* globals define, module, require */
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD - RequireJS
+    define( [
+        'ev-emitter/ev-emitter',
+        'get-size/get-size'
+      ],
+      factory
+    );
+  } else if ( typeof module == 'object' && module.exports ) {
+    // CommonJS - Browserify, Webpack
+    module.exports = factory(
+      require('ev-emitter'),
+      require('get-size')
+    );
+  } else {
+    // browser global
+    window.Outlayer = {};
+    window.Outlayer.Item = factory(
+      window.EvEmitter,
+      window.getSize
+    );
+  }
+
+}( window, function factory( EvEmitter, getSize ) {
+'use strict';
+
+// ----- helpers ----- //
+
+function isEmptyObj( obj ) {
+  for ( var prop in obj ) {
+    return false;
+  }
+  prop = null;
+  return true;
+}
+
+// -------------------------- CSS3 support -------------------------- //
+
+
+var docElemStyle = document.documentElement.style;
+
+var transitionProperty = typeof docElemStyle.transition == 'string' ?
+  'transition' : 'WebkitTransition';
+var transformProperty = typeof docElemStyle.transform == 'string' ?
+  'transform' : 'WebkitTransform';
+
+var transitionEndEvent = {
+  WebkitTransition: 'webkitTransitionEnd',
+  transition: 'transitionend'
+}[ transitionProperty ];
+
+// cache all vendor properties that could have vendor prefix
+var vendorProperties = {
+  transform: transformProperty,
+  transition: transitionProperty,
+  transitionDuration: transitionProperty + 'Duration',
+  transitionProperty: transitionProperty + 'Property',
+  transitionDelay: transitionProperty + 'Delay'
+};
+
+// -------------------------- Item -------------------------- //
+
+function Item( element, layout ) {
+  if ( !element ) {
+    return;
+  }
+
+  this.element = element;
+  // parent layout class, i.e. Masonry, Isotope, or Packery
+  this.layout = layout;
+  this.position = {
+    x: 0,
+    y: 0
+  };
+
+  this._create();
+}
+
+// inherit EvEmitter
+var proto = Item.prototype = Object.create( EvEmitter.prototype );
+proto.constructor = Item;
+
+proto._create = function() {
+  // transition objects
+  this._transn = {
+    ingProperties: {},
+    clean: {},
+    onEnd: {}
+  };
+
+  this.css({
+    position: 'absolute'
+  });
+};
+
+// trigger specified handler for event type
+proto.handleEvent = function( event ) {
+  var method = 'on' + event.type;
+  if ( this[ method ] ) {
+    this[ method ]( event );
+  }
+};
+
+proto.getSize = function() {
+  this.size = getSize( this.element );
+};
+
+/**
+ * apply CSS styles to element
+ * @param {Object} style
+ */
+proto.css = function( style ) {
+  var elemStyle = this.element.style;
+
+  for ( var prop in style ) {
+    // use vendor property if available
+    var supportedProp = vendorProperties[ prop ] || prop;
+    elemStyle[ supportedProp ] = style[ prop ];
+  }
+};
+
+ // measure position, and sets it
+proto.getPosition = function() {
+  var style = getComputedStyle( this.element );
+  var isOriginLeft = this.layout._getOption('originLeft');
+  var isOriginTop = this.layout._getOption('originTop');
+  var xValue = style[ isOriginLeft ? 'left' : 'right' ];
+  var yValue = style[ isOriginTop ? 'top' : 'bottom' ];
+  var x = parseFloat( xValue );
+  var y = parseFloat( yValue );
+  // convert percent to pixels
+  var layoutSize = this.layout.size;
+  if ( xValue.indexOf('%') != -1 ) {
+    x = ( x / 100 ) * layoutSize.width;
+  }
+  if ( yValue.indexOf('%') != -1 ) {
+    y = ( y / 100 ) * layoutSize.height;
+  }
+  // clean up 'auto' or other non-integer values
+  x = isNaN( x ) ? 0 : x;
+  y = isNaN( y ) ? 0 : y;
+  // remove padding from measurement
+  x -= isOriginLeft ? layoutSize.paddingLeft : layoutSize.paddingRight;
+  y -= isOriginTop ? layoutSize.paddingTop : layoutSize.paddingBottom;
+
+  this.position.x = x;
+  this.position.y = y;
+};
+
+// set settled position, apply padding
+proto.layoutPosition = function() {
+  var layoutSize = this.layout.size;
+  var style = {};
+  var isOriginLeft = this.layout._getOption('originLeft');
+  var isOriginTop = this.layout._getOption('originTop');
+
+  // x
+  var xPadding = isOriginLeft ? 'paddingLeft' : 'paddingRight';
+  var xProperty = isOriginLeft ? 'left' : 'right';
+  var xResetProperty = isOriginLeft ? 'right' : 'left';
+
+  var x = this.position.x + layoutSize[ xPadding ];
+  // set in percentage or pixels
+  style[ xProperty ] = this.getXValue( x );
+  // reset other property
+  style[ xResetProperty ] = '';
+
+  // y
+  var yPadding = isOriginTop ? 'paddingTop' : 'paddingBottom';
+  var yProperty = isOriginTop ? 'top' : 'bottom';
+  var yResetProperty = isOriginTop ? 'bottom' : 'top';
+
+  var y = this.position.y + layoutSize[ yPadding ];
+  // set in percentage or pixels
+  style[ yProperty ] = this.getYValue( y );
+  // reset other property
+  style[ yResetProperty ] = '';
+
+  this.css( style );
+  this.emitEvent( 'layout', [ this ] );
+};
+
+proto.getXValue = function( x ) {
+  var isHorizontal = this.layout._getOption('horizontal');
+  return this.layout.options.percentPosition && !isHorizontal ?
+    ( ( x / this.layout.size.width ) * 100 ) + '%' : x + 'px';
+};
+
+proto.getYValue = function( y ) {
+  var isHorizontal = this.layout._getOption('horizontal');
+  return this.layout.options.percentPosition && isHorizontal ?
+    ( ( y / this.layout.size.height ) * 100 ) + '%' : y + 'px';
+};
+
+proto._transitionTo = function( x, y ) {
+  this.getPosition();
+  // get current x & y from top/left
+  var curX = this.position.x;
+  var curY = this.position.y;
+
+  var didNotMove = x == this.position.x && y == this.position.y;
+
+  // save end position
+  this.setPosition( x, y );
+
+  // if did not move and not transitioning, just go to layout
+  if ( didNotMove && !this.isTransitioning ) {
+    this.layoutPosition();
+    return;
+  }
+
+  var transX = x - curX;
+  var transY = y - curY;
+  var transitionStyle = {};
+  transitionStyle.transform = this.getTranslate( transX, transY );
+
+  this.transition({
+    to: transitionStyle,
+    onTransitionEnd: {
+      transform: this.layoutPosition
+    },
+    isCleaning: true
+  });
+};
+
+proto.getTranslate = function( x, y ) {
+  // flip cooridinates if origin on right or bottom
+  var isOriginLeft = this.layout._getOption('originLeft');
+  var isOriginTop = this.layout._getOption('originTop');
+  x = isOriginLeft ? x : -x;
+  y = isOriginTop ? y : -y;
+  return 'translate3d(' + x + 'px, ' + y + 'px, 0)';
+};
+
+// non transition + transform support
+proto.goTo = function( x, y ) {
+  this.setPosition( x, y );
+  this.layoutPosition();
+};
+
+proto.moveTo = proto._transitionTo;
+
+proto.setPosition = function( x, y ) {
+  this.position.x = parseFloat( x );
+  this.position.y = parseFloat( y );
+};
+
+// ----- transition ----- //
+
+/**
+ * @param {Object} style - CSS
+ * @param {Function} onTransitionEnd
+ */
+
+// non transition, just trigger callback
+proto._nonTransition = function( args ) {
+  this.css( args.to );
+  if ( args.isCleaning ) {
+    this._removeStyles( args.to );
+  }
+  for ( var prop in args.onTransitionEnd ) {
+    args.onTransitionEnd[ prop ].call( this );
+  }
+};
+
+/**
+ * proper transition
+ * @param {Object} args - arguments
+ *   @param {Object} to - style to transition to
+ *   @param {Object} from - style to start transition from
+ *   @param {Boolean} isCleaning - removes transition styles after transition
+ *   @param {Function} onTransitionEnd - callback
+ */
+proto.transition = function( args ) {
+  // redirect to nonTransition if no transition duration
+  if ( !parseFloat( this.layout.options.transitionDuration ) ) {
+    this._nonTransition( args );
+    return;
+  }
+
+  var _transition = this._transn;
+  // keep track of onTransitionEnd callback by css property
+  for ( var prop in args.onTransitionEnd ) {
+    _transition.onEnd[ prop ] = args.onTransitionEnd[ prop ];
+  }
+  // keep track of properties that are transitioning
+  for ( prop in args.to ) {
+    _transition.ingProperties[ prop ] = true;
+    // keep track of properties to clean up when transition is done
+    if ( args.isCleaning ) {
+      _transition.clean[ prop ] = true;
+    }
+  }
+
+  // set from styles
+  if ( args.from ) {
+    this.css( args.from );
+    // force redraw. http://blog.alexmaccaw.com/css-transitions
+    var h = this.element.offsetHeight;
+    // hack for JSHint to hush about unused var
+    h = null;
+  }
+  // enable transition
+  this.enableTransition( args.to );
+  // set styles that are transitioning
+  this.css( args.to );
+
+  this.isTransitioning = true;
+
+};
+
+// dash before all cap letters, including first for
+// WebkitTransform => -webkit-transform
+function toDashedAll( str ) {
+  return str.replace( /([A-Z])/g, function( $1 ) {
+    return '-' + $1.toLowerCase();
+  });
+}
+
+var transitionProps = 'opacity,' + toDashedAll( transformProperty );
+
+proto.enableTransition = function(/* style */) {
+  // HACK changing transitionProperty during a transition
+  // will cause transition to jump
+  if ( this.isTransitioning ) {
+    return;
+  }
+
+  // make `transition: foo, bar, baz` from style object
+  // HACK un-comment this when enableTransition can work
+  // while a transition is happening
+  // var transitionValues = [];
+  // for ( var prop in style ) {
+  //   // dash-ify camelCased properties like WebkitTransition
+  //   prop = vendorProperties[ prop ] || prop;
+  //   transitionValues.push( toDashedAll( prop ) );
+  // }
+  // munge number to millisecond, to match stagger
+  var duration = this.layout.options.transitionDuration;
+  duration = typeof duration == 'number' ? duration + 'ms' : duration;
+  // enable transition styles
+  this.css({
+    transitionProperty: transitionProps,
+    transitionDuration: duration,
+    transitionDelay: this.staggerDelay || 0
+  });
+  // listen for transition end event
+  this.element.addEventListener( transitionEndEvent, this, false );
+};
+
+// ----- events ----- //
+
+proto.onwebkitTransitionEnd = function( event ) {
+  this.ontransitionend( event );
+};
+
+proto.onotransitionend = function( event ) {
+  this.ontransitionend( event );
+};
+
+// properties that I munge to make my life easier
+var dashedVendorProperties = {
+  '-webkit-transform': 'transform'
+};
+
+proto.ontransitionend = function( event ) {
+  // disregard bubbled events from children
+  if ( event.target !== this.element ) {
+    return;
+  }
+  var _transition = this._transn;
+  // get property name of transitioned property, convert to prefix-free
+  var propertyName = dashedVendorProperties[ event.propertyName ] || event.propertyName;
+
+  // remove property that has completed transitioning
+  delete _transition.ingProperties[ propertyName ];
+  // check if any properties are still transitioning
+  if ( isEmptyObj( _transition.ingProperties ) ) {
+    // all properties have completed transitioning
+    this.disableTransition();
+  }
+  // clean style
+  if ( propertyName in _transition.clean ) {
+    // clean up style
+    this.element.style[ event.propertyName ] = '';
+    delete _transition.clean[ propertyName ];
+  }
+  // trigger onTransitionEnd callback
+  if ( propertyName in _transition.onEnd ) {
+    var onTransitionEnd = _transition.onEnd[ propertyName ];
+    onTransitionEnd.call( this );
+    delete _transition.onEnd[ propertyName ];
+  }
+
+  this.emitEvent( 'transitionEnd', [ this ] );
+};
+
+proto.disableTransition = function() {
+  this.removeTransitionStyles();
+  this.element.removeEventListener( transitionEndEvent, this, false );
+  this.isTransitioning = false;
+};
+
+/**
+ * removes style property from element
+ * @param {Object} style
+**/
+proto._removeStyles = function( style ) {
+  // clean up transition styles
+  var cleanStyle = {};
+  for ( var prop in style ) {
+    cleanStyle[ prop ] = '';
+  }
+  this.css( cleanStyle );
+};
+
+var cleanTransitionStyle = {
+  transitionProperty: '',
+  transitionDuration: '',
+  transitionDelay: ''
+};
+
+proto.removeTransitionStyles = function() {
+  // remove transition
+  this.css( cleanTransitionStyle );
+};
+
+// ----- stagger ----- //
+
+proto.stagger = function( delay ) {
+  delay = isNaN( delay ) ? 0 : delay;
+  this.staggerDelay = delay + 'ms';
+};
+
+// ----- show/hide/remove ----- //
+
+// remove element from DOM
+proto.removeElem = function() {
+  this.element.parentNode.removeChild( this.element );
+  // remove display: none
+  this.css({ display: '' });
+  this.emitEvent( 'remove', [ this ] );
+};
+
+proto.remove = function() {
+  // just remove element if no transition support or no transition
+  if ( !transitionProperty || !parseFloat( this.layout.options.transitionDuration ) ) {
+    this.removeElem();
+    return;
+  }
+
+  // start transition
+  this.once( 'transitionEnd', function() {
+    this.removeElem();
+  });
+  this.hide();
+};
+
+proto.reveal = function() {
+  delete this.isHidden;
+  // remove display: none
+  this.css({ display: '' });
+
+  var options = this.layout.options;
+
+  var onTransitionEnd = {};
+  var transitionEndProperty = this.getHideRevealTransitionEndProperty('visibleStyle');
+  onTransitionEnd[ transitionEndProperty ] = this.onRevealTransitionEnd;
+
+  this.transition({
+    from: options.hiddenStyle,
+    to: options.visibleStyle,
+    isCleaning: true,
+    onTransitionEnd: onTransitionEnd
+  });
+};
+
+proto.onRevealTransitionEnd = function() {
+  // check if still visible
+  // during transition, item may have been hidden
+  if ( !this.isHidden ) {
+    this.emitEvent('reveal');
+  }
+};
+
+/**
+ * get style property use for hide/reveal transition end
+ * @param {String} styleProperty - hiddenStyle/visibleStyle
+ * @returns {String}
+ */
+proto.getHideRevealTransitionEndProperty = function( styleProperty ) {
+  var optionStyle = this.layout.options[ styleProperty ];
+  // use opacity
+  if ( optionStyle.opacity ) {
+    return 'opacity';
+  }
+  // get first property
+  for ( var prop in optionStyle ) {
+    return prop;
+  }
+};
+
+proto.hide = function() {
+  // set flag
+  this.isHidden = true;
+  // remove display: none
+  this.css({ display: '' });
+
+  var options = this.layout.options;
+
+  var onTransitionEnd = {};
+  var transitionEndProperty = this.getHideRevealTransitionEndProperty('hiddenStyle');
+  onTransitionEnd[ transitionEndProperty ] = this.onHideTransitionEnd;
+
+  this.transition({
+    from: options.visibleStyle,
+    to: options.hiddenStyle,
+    // keep hidden stuff hidden
+    isCleaning: true,
+    onTransitionEnd: onTransitionEnd
+  });
+};
+
+proto.onHideTransitionEnd = function() {
+  // check if still hidden
+  // during transition, item may have been un-hidden
+  if ( this.isHidden ) {
+    this.css({ display: 'none' });
+    this.emitEvent('hide');
+  }
+};
+
+proto.destroy = function() {
+  this.css({
+    position: '',
+    left: '',
+    right: '',
+    top: '',
+    bottom: '',
+    transition: '',
+    transform: ''
+  });
+};
+
+return Item;
+
+}));
+
+},{"ev-emitter":139,"get-size":143}],183:[function(require,module,exports){
+/*!
+ * Outlayer v2.1.1
+ * the brains and guts of a layout library
+ * MIT license
+ */
+
+( function( window, factory ) {
+  'use strict';
+  // universal module definition
+  /* jshint strict: false */ /* globals define, module, require */
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD - RequireJS
+    define( [
+        'ev-emitter/ev-emitter',
+        'get-size/get-size',
+        'fizzy-ui-utils/utils',
+        './item'
+      ],
+      function( EvEmitter, getSize, utils, Item ) {
+        return factory( window, EvEmitter, getSize, utils, Item);
+      }
+    );
+  } else if ( typeof module == 'object' && module.exports ) {
+    // CommonJS - Browserify, Webpack
+    module.exports = factory(
+      window,
+      require('ev-emitter'),
+      require('get-size'),
+      require('fizzy-ui-utils'),
+      require('./item')
+    );
+  } else {
+    // browser global
+    window.Outlayer = factory(
+      window,
+      window.EvEmitter,
+      window.getSize,
+      window.fizzyUIUtils,
+      window.Outlayer.Item
+    );
+  }
+
+}( window, function factory( window, EvEmitter, getSize, utils, Item ) {
+'use strict';
+
+// ----- vars ----- //
+
+var console = window.console;
+var jQuery = window.jQuery;
+var noop = function() {};
+
+// -------------------------- Outlayer -------------------------- //
+
+// globally unique identifiers
+var GUID = 0;
+// internal store of all Outlayer intances
+var instances = {};
+
+
+/**
+ * @param {Element, String} element
+ * @param {Object} options
+ * @constructor
+ */
+function Outlayer( element, options ) {
+  var queryElement = utils.getQueryElement( element );
+  if ( !queryElement ) {
+    if ( console ) {
+      console.error( 'Bad element for ' + this.constructor.namespace +
+        ': ' + ( queryElement || element ) );
+    }
+    return;
+  }
+  this.element = queryElement;
+  // add jQuery
+  if ( jQuery ) {
+    this.$element = jQuery( this.element );
+  }
+
+  // options
+  this.options = utils.extend( {}, this.constructor.defaults );
+  this.option( options );
+
+  // add id for Outlayer.getFromElement
+  var id = ++GUID;
+  this.element.outlayerGUID = id; // expando
+  instances[ id ] = this; // associate via id
+
+  // kick it off
+  this._create();
+
+  var isInitLayout = this._getOption('initLayout');
+  if ( isInitLayout ) {
+    this.layout();
+  }
+}
+
+// settings are for internal use only
+Outlayer.namespace = 'outlayer';
+Outlayer.Item = Item;
+
+// default options
+Outlayer.defaults = {
+  containerStyle: {
+    position: 'relative'
+  },
+  initLayout: true,
+  originLeft: true,
+  originTop: true,
+  resize: true,
+  resizeContainer: true,
+  // item options
+  transitionDuration: '0.4s',
+  hiddenStyle: {
+    opacity: 0,
+    transform: 'scale(0.001)'
+  },
+  visibleStyle: {
+    opacity: 1,
+    transform: 'scale(1)'
+  }
+};
+
+var proto = Outlayer.prototype;
+// inherit EvEmitter
+utils.extend( proto, EvEmitter.prototype );
+
+/**
+ * set options
+ * @param {Object} opts
+ */
+proto.option = function( opts ) {
+  utils.extend( this.options, opts );
+};
+
+/**
+ * get backwards compatible option value, check old name
+ */
+proto._getOption = function( option ) {
+  var oldOption = this.constructor.compatOptions[ option ];
+  return oldOption && this.options[ oldOption ] !== undefined ?
+    this.options[ oldOption ] : this.options[ option ];
+};
+
+Outlayer.compatOptions = {
+  // currentName: oldName
+  initLayout: 'isInitLayout',
+  horizontal: 'isHorizontal',
+  layoutInstant: 'isLayoutInstant',
+  originLeft: 'isOriginLeft',
+  originTop: 'isOriginTop',
+  resize: 'isResizeBound',
+  resizeContainer: 'isResizingContainer'
+};
+
+proto._create = function() {
+  // get items from children
+  this.reloadItems();
+  // elements that affect layout, but are not laid out
+  this.stamps = [];
+  this.stamp( this.options.stamp );
+  // set container style
+  utils.extend( this.element.style, this.options.containerStyle );
+
+  // bind resize method
+  var canBindResize = this._getOption('resize');
+  if ( canBindResize ) {
+    this.bindResize();
+  }
+};
+
+// goes through all children again and gets bricks in proper order
+proto.reloadItems = function() {
+  // collection of item elements
+  this.items = this._itemize( this.element.children );
+};
+
+
+/**
+ * turn elements into Outlayer.Items to be used in layout
+ * @param {Array or NodeList or HTMLElement} elems
+ * @returns {Array} items - collection of new Outlayer Items
+ */
+proto._itemize = function( elems ) {
+
+  var itemElems = this._filterFindItemElements( elems );
+  var Item = this.constructor.Item;
+
+  // create new Outlayer Items for collection
+  var items = [];
+  for ( var i=0; i < itemElems.length; i++ ) {
+    var elem = itemElems[i];
+    var item = new Item( elem, this );
+    items.push( item );
+  }
+
+  return items;
+};
+
+/**
+ * get item elements to be used in layout
+ * @param {Array or NodeList or HTMLElement} elems
+ * @returns {Array} items - item elements
+ */
+proto._filterFindItemElements = function( elems ) {
+  return utils.filterFindElements( elems, this.options.itemSelector );
+};
+
+/**
+ * getter method for getting item elements
+ * @returns {Array} elems - collection of item elements
+ */
+proto.getItemElements = function() {
+  return this.items.map( function( item ) {
+    return item.element;
+  });
+};
+
+// ----- init & layout ----- //
+
+/**
+ * lays out all items
+ */
+proto.layout = function() {
+  this._resetLayout();
+  this._manageStamps();
+
+  // don't animate first layout
+  var layoutInstant = this._getOption('layoutInstant');
+  var isInstant = layoutInstant !== undefined ?
+    layoutInstant : !this._isLayoutInited;
+  this.layoutItems( this.items, isInstant );
+
+  // flag for initalized
+  this._isLayoutInited = true;
+};
+
+// _init is alias for layout
+proto._init = proto.layout;
+
+/**
+ * logic before any new layout
+ */
+proto._resetLayout = function() {
+  this.getSize();
+};
+
+
+proto.getSize = function() {
+  this.size = getSize( this.element );
+};
+
+/**
+ * get measurement from option, for columnWidth, rowHeight, gutter
+ * if option is String -> get element from selector string, & get size of element
+ * if option is Element -> get size of element
+ * else use option as a number
+ *
+ * @param {String} measurement
+ * @param {String} size - width or height
+ * @private
+ */
+proto._getMeasurement = function( measurement, size ) {
+  var option = this.options[ measurement ];
+  var elem;
+  if ( !option ) {
+    // default to 0
+    this[ measurement ] = 0;
+  } else {
+    // use option as an element
+    if ( typeof option == 'string' ) {
+      elem = this.element.querySelector( option );
+    } else if ( option instanceof HTMLElement ) {
+      elem = option;
+    }
+    // use size of element, if element
+    this[ measurement ] = elem ? getSize( elem )[ size ] : option;
+  }
+};
+
+/**
+ * layout a collection of item elements
+ * @api public
+ */
+proto.layoutItems = function( items, isInstant ) {
+  items = this._getItemsForLayout( items );
+
+  this._layoutItems( items, isInstant );
+
+  this._postLayout();
+};
+
+/**
+ * get the items to be laid out
+ * you may want to skip over some items
+ * @param {Array} items
+ * @returns {Array} items
+ */
+proto._getItemsForLayout = function( items ) {
+  return items.filter( function( item ) {
+    return !item.isIgnored;
+  });
+};
+
+/**
+ * layout items
+ * @param {Array} items
+ * @param {Boolean} isInstant
+ */
+proto._layoutItems = function( items, isInstant ) {
+  this._emitCompleteOnItems( 'layout', items );
+
+  if ( !items || !items.length ) {
+    // no items, emit event with empty array
+    return;
+  }
+
+  var queue = [];
+
+  items.forEach( function( item ) {
+    // get x/y object from method
+    var position = this._getItemLayoutPosition( item );
+    // enqueue
+    position.item = item;
+    position.isInstant = isInstant || item.isLayoutInstant;
+    queue.push( position );
+  }, this );
+
+  this._processLayoutQueue( queue );
+};
+
+/**
+ * get item layout position
+ * @param {Outlayer.Item} item
+ * @returns {Object} x and y position
+ */
+proto._getItemLayoutPosition = function( /* item */ ) {
+  return {
+    x: 0,
+    y: 0
+  };
+};
+
+/**
+ * iterate over array and position each item
+ * Reason being - separating this logic prevents 'layout invalidation'
+ * thx @paul_irish
+ * @param {Array} queue
+ */
+proto._processLayoutQueue = function( queue ) {
+  this.updateStagger();
+  queue.forEach( function( obj, i ) {
+    this._positionItem( obj.item, obj.x, obj.y, obj.isInstant, i );
+  }, this );
+};
+
+// set stagger from option in milliseconds number
+proto.updateStagger = function() {
+  var stagger = this.options.stagger;
+  if ( stagger === null || stagger === undefined ) {
+    this.stagger = 0;
+    return;
+  }
+  this.stagger = getMilliseconds( stagger );
+  return this.stagger;
+};
+
+/**
+ * Sets position of item in DOM
+ * @param {Outlayer.Item} item
+ * @param {Number} x - horizontal position
+ * @param {Number} y - vertical position
+ * @param {Boolean} isInstant - disables transitions
+ */
+proto._positionItem = function( item, x, y, isInstant, i ) {
+  if ( isInstant ) {
+    // if not transition, just set CSS
+    item.goTo( x, y );
+  } else {
+    item.stagger( i * this.stagger );
+    item.moveTo( x, y );
+  }
+};
+
+/**
+ * Any logic you want to do after each layout,
+ * i.e. size the container
+ */
+proto._postLayout = function() {
+  this.resizeContainer();
+};
+
+proto.resizeContainer = function() {
+  var isResizingContainer = this._getOption('resizeContainer');
+  if ( !isResizingContainer ) {
+    return;
+  }
+  var size = this._getContainerSize();
+  if ( size ) {
+    this._setContainerMeasure( size.width, true );
+    this._setContainerMeasure( size.height, false );
+  }
+};
+
+/**
+ * Sets width or height of container if returned
+ * @returns {Object} size
+ *   @param {Number} width
+ *   @param {Number} height
+ */
+proto._getContainerSize = noop;
+
+/**
+ * @param {Number} measure - size of width or height
+ * @param {Boolean} isWidth
+ */
+proto._setContainerMeasure = function( measure, isWidth ) {
+  if ( measure === undefined ) {
+    return;
+  }
+
+  var elemSize = this.size;
+  // add padding and border width if border box
+  if ( elemSize.isBorderBox ) {
+    measure += isWidth ? elemSize.paddingLeft + elemSize.paddingRight +
+      elemSize.borderLeftWidth + elemSize.borderRightWidth :
+      elemSize.paddingBottom + elemSize.paddingTop +
+      elemSize.borderTopWidth + elemSize.borderBottomWidth;
+  }
+
+  measure = Math.max( measure, 0 );
+  this.element.style[ isWidth ? 'width' : 'height' ] = measure + 'px';
+};
+
+/**
+ * emit eventComplete on a collection of items events
+ * @param {String} eventName
+ * @param {Array} items - Outlayer.Items
+ */
+proto._emitCompleteOnItems = function( eventName, items ) {
+  var _this = this;
+  function onComplete() {
+    _this.dispatchEvent( eventName + 'Complete', null, [ items ] );
+  }
+
+  var count = items.length;
+  if ( !items || !count ) {
+    onComplete();
+    return;
+  }
+
+  var doneCount = 0;
+  function tick() {
+    doneCount++;
+    if ( doneCount == count ) {
+      onComplete();
+    }
+  }
+
+  // bind callback
+  items.forEach( function( item ) {
+    item.once( eventName, tick );
+  });
+};
+
+/**
+ * emits events via EvEmitter and jQuery events
+ * @param {String} type - name of event
+ * @param {Event} event - original event
+ * @param {Array} args - extra arguments
+ */
+proto.dispatchEvent = function( type, event, args ) {
+  // add original event to arguments
+  var emitArgs = event ? [ event ].concat( args ) : args;
+  this.emitEvent( type, emitArgs );
+
+  if ( jQuery ) {
+    // set this.$element
+    this.$element = this.$element || jQuery( this.element );
+    if ( event ) {
+      // create jQuery event
+      var $event = jQuery.Event( event );
+      $event.type = type;
+      this.$element.trigger( $event, args );
+    } else {
+      // just trigger with type if no event available
+      this.$element.trigger( type, args );
+    }
+  }
+};
+
+// -------------------------- ignore & stamps -------------------------- //
+
+
+/**
+ * keep item in collection, but do not lay it out
+ * ignored items do not get skipped in layout
+ * @param {Element} elem
+ */
+proto.ignore = function( elem ) {
+  var item = this.getItem( elem );
+  if ( item ) {
+    item.isIgnored = true;
+  }
+};
+
+/**
+ * return item to layout collection
+ * @param {Element} elem
+ */
+proto.unignore = function( elem ) {
+  var item = this.getItem( elem );
+  if ( item ) {
+    delete item.isIgnored;
+  }
+};
+
+/**
+ * adds elements to stamps
+ * @param {NodeList, Array, Element, or String} elems
+ */
+proto.stamp = function( elems ) {
+  elems = this._find( elems );
+  if ( !elems ) {
+    return;
+  }
+
+  this.stamps = this.stamps.concat( elems );
+  // ignore
+  elems.forEach( this.ignore, this );
+};
+
+/**
+ * removes elements to stamps
+ * @param {NodeList, Array, or Element} elems
+ */
+proto.unstamp = function( elems ) {
+  elems = this._find( elems );
+  if ( !elems ){
+    return;
+  }
+
+  elems.forEach( function( elem ) {
+    // filter out removed stamp elements
+    utils.removeFrom( this.stamps, elem );
+    this.unignore( elem );
+  }, this );
+};
+
+/**
+ * finds child elements
+ * @param {NodeList, Array, Element, or String} elems
+ * @returns {Array} elems
+ */
+proto._find = function( elems ) {
+  if ( !elems ) {
+    return;
+  }
+  // if string, use argument as selector string
+  if ( typeof elems == 'string' ) {
+    elems = this.element.querySelectorAll( elems );
+  }
+  elems = utils.makeArray( elems );
+  return elems;
+};
+
+proto._manageStamps = function() {
+  if ( !this.stamps || !this.stamps.length ) {
+    return;
+  }
+
+  this._getBoundingRect();
+
+  this.stamps.forEach( this._manageStamp, this );
+};
+
+// update boundingLeft / Top
+proto._getBoundingRect = function() {
+  // get bounding rect for container element
+  var boundingRect = this.element.getBoundingClientRect();
+  var size = this.size;
+  this._boundingRect = {
+    left: boundingRect.left + size.paddingLeft + size.borderLeftWidth,
+    top: boundingRect.top + size.paddingTop + size.borderTopWidth,
+    right: boundingRect.right - ( size.paddingRight + size.borderRightWidth ),
+    bottom: boundingRect.bottom - ( size.paddingBottom + size.borderBottomWidth )
+  };
+};
+
+/**
+ * @param {Element} stamp
+**/
+proto._manageStamp = noop;
+
+/**
+ * get x/y position of element relative to container element
+ * @param {Element} elem
+ * @returns {Object} offset - has left, top, right, bottom
+ */
+proto._getElementOffset = function( elem ) {
+  var boundingRect = elem.getBoundingClientRect();
+  var thisRect = this._boundingRect;
+  var size = getSize( elem );
+  var offset = {
+    left: boundingRect.left - thisRect.left - size.marginLeft,
+    top: boundingRect.top - thisRect.top - size.marginTop,
+    right: thisRect.right - boundingRect.right - size.marginRight,
+    bottom: thisRect.bottom - boundingRect.bottom - size.marginBottom
+  };
+  return offset;
+};
+
+// -------------------------- resize -------------------------- //
+
+// enable event handlers for listeners
+// i.e. resize -> onresize
+proto.handleEvent = utils.handleEvent;
+
+/**
+ * Bind layout to window resizing
+ */
+proto.bindResize = function() {
+  window.addEventListener( 'resize', this );
+  this.isResizeBound = true;
+};
+
+/**
+ * Unbind layout to window resizing
+ */
+proto.unbindResize = function() {
+  window.removeEventListener( 'resize', this );
+  this.isResizeBound = false;
+};
+
+proto.onresize = function() {
+  this.resize();
+};
+
+utils.debounceMethod( Outlayer, 'onresize', 100 );
+
+proto.resize = function() {
+  // don't trigger if size did not change
+  // or if resize was unbound. See #9
+  if ( !this.isResizeBound || !this.needsResizeLayout() ) {
+    return;
+  }
+
+  this.layout();
+};
+
+/**
+ * check if layout is needed post layout
+ * @returns Boolean
+ */
+proto.needsResizeLayout = function() {
+  var size = getSize( this.element );
+  // check that this.size and size are there
+  // IE8 triggers resize on body size change, so they might not be
+  var hasSizes = this.size && size;
+  return hasSizes && size.innerWidth !== this.size.innerWidth;
+};
+
+// -------------------------- methods -------------------------- //
+
+/**
+ * add items to Outlayer instance
+ * @param {Array or NodeList or Element} elems
+ * @returns {Array} items - Outlayer.Items
+**/
+proto.addItems = function( elems ) {
+  var items = this._itemize( elems );
+  // add items to collection
+  if ( items.length ) {
+    this.items = this.items.concat( items );
+  }
+  return items;
+};
+
+/**
+ * Layout newly-appended item elements
+ * @param {Array or NodeList or Element} elems
+ */
+proto.appended = function( elems ) {
+  var items = this.addItems( elems );
+  if ( !items.length ) {
+    return;
+  }
+  // layout and reveal just the new items
+  this.layoutItems( items, true );
+  this.reveal( items );
+};
+
+/**
+ * Layout prepended elements
+ * @param {Array or NodeList or Element} elems
+ */
+proto.prepended = function( elems ) {
+  var items = this._itemize( elems );
+  if ( !items.length ) {
+    return;
+  }
+  // add items to beginning of collection
+  var previousItems = this.items.slice(0);
+  this.items = items.concat( previousItems );
+  // start new layout
+  this._resetLayout();
+  this._manageStamps();
+  // layout new stuff without transition
+  this.layoutItems( items, true );
+  this.reveal( items );
+  // layout previous items
+  this.layoutItems( previousItems );
+};
+
+/**
+ * reveal a collection of items
+ * @param {Array of Outlayer.Items} items
+ */
+proto.reveal = function( items ) {
+  this._emitCompleteOnItems( 'reveal', items );
+  if ( !items || !items.length ) {
+    return;
+  }
+  var stagger = this.updateStagger();
+  items.forEach( function( item, i ) {
+    item.stagger( i * stagger );
+    item.reveal();
+  });
+};
+
+/**
+ * hide a collection of items
+ * @param {Array of Outlayer.Items} items
+ */
+proto.hide = function( items ) {
+  this._emitCompleteOnItems( 'hide', items );
+  if ( !items || !items.length ) {
+    return;
+  }
+  var stagger = this.updateStagger();
+  items.forEach( function( item, i ) {
+    item.stagger( i * stagger );
+    item.hide();
+  });
+};
+
+/**
+ * reveal item elements
+ * @param {Array}, {Element}, {NodeList} items
+ */
+proto.revealItemElements = function( elems ) {
+  var items = this.getItems( elems );
+  this.reveal( items );
+};
+
+/**
+ * hide item elements
+ * @param {Array}, {Element}, {NodeList} items
+ */
+proto.hideItemElements = function( elems ) {
+  var items = this.getItems( elems );
+  this.hide( items );
+};
+
+/**
+ * get Outlayer.Item, given an Element
+ * @param {Element} elem
+ * @param {Function} callback
+ * @returns {Outlayer.Item} item
+ */
+proto.getItem = function( elem ) {
+  // loop through items to get the one that matches
+  for ( var i=0; i < this.items.length; i++ ) {
+    var item = this.items[i];
+    if ( item.element == elem ) {
+      // return item
+      return item;
+    }
+  }
+};
+
+/**
+ * get collection of Outlayer.Items, given Elements
+ * @param {Array} elems
+ * @returns {Array} items - Outlayer.Items
+ */
+proto.getItems = function( elems ) {
+  elems = utils.makeArray( elems );
+  var items = [];
+  elems.forEach( function( elem ) {
+    var item = this.getItem( elem );
+    if ( item ) {
+      items.push( item );
+    }
+  }, this );
+
+  return items;
+};
+
+/**
+ * remove element(s) from instance and DOM
+ * @param {Array or NodeList or Element} elems
+ */
+proto.remove = function( elems ) {
+  var removeItems = this.getItems( elems );
+
+  this._emitCompleteOnItems( 'remove', removeItems );
+
+  // bail if no items to remove
+  if ( !removeItems || !removeItems.length ) {
+    return;
+  }
+
+  removeItems.forEach( function( item ) {
+    item.remove();
+    // remove item from collection
+    utils.removeFrom( this.items, item );
+  }, this );
+};
+
+// ----- destroy ----- //
+
+// remove and disable Outlayer instance
+proto.destroy = function() {
+  // clean up dynamic styles
+  var style = this.element.style;
+  style.height = '';
+  style.position = '';
+  style.width = '';
+  // destroy items
+  this.items.forEach( function( item ) {
+    item.destroy();
+  });
+
+  this.unbindResize();
+
+  var id = this.element.outlayerGUID;
+  delete instances[ id ]; // remove reference to instance by id
+  delete this.element.outlayerGUID;
+  // remove data for jQuery
+  if ( jQuery ) {
+    jQuery.removeData( this.element, this.constructor.namespace );
+  }
+
+};
+
+// -------------------------- data -------------------------- //
+
+/**
+ * get Outlayer instance from element
+ * @param {Element} elem
+ * @returns {Outlayer}
+ */
+Outlayer.data = function( elem ) {
+  elem = utils.getQueryElement( elem );
+  var id = elem && elem.outlayerGUID;
+  return id && instances[ id ];
+};
+
+
+// -------------------------- create Outlayer class -------------------------- //
+
+/**
+ * create a layout class
+ * @param {String} namespace
+ */
+Outlayer.create = function( namespace, options ) {
+  // sub-class Outlayer
+  var Layout = subclass( Outlayer );
+  // apply new options and compatOptions
+  Layout.defaults = utils.extend( {}, Outlayer.defaults );
+  utils.extend( Layout.defaults, options );
+  Layout.compatOptions = utils.extend( {}, Outlayer.compatOptions  );
+
+  Layout.namespace = namespace;
+
+  Layout.data = Outlayer.data;
+
+  // sub-class Item
+  Layout.Item = subclass( Item );
+
+  // -------------------------- declarative -------------------------- //
+
+  utils.htmlInit( Layout, namespace );
+
+  // -------------------------- jQuery bridge -------------------------- //
+
+  // make into jQuery plugin
+  if ( jQuery && jQuery.bridget ) {
+    jQuery.bridget( namespace, Layout );
+  }
+
+  return Layout;
+};
+
+function subclass( Parent ) {
+  function SubClass() {
+    Parent.apply( this, arguments );
+  }
+
+  SubClass.prototype = Object.create( Parent.prototype );
+  SubClass.prototype.constructor = SubClass;
+
+  return SubClass;
+}
+
+// ----- helpers ----- //
+
+// how many milliseconds are in each unit
+var msUnits = {
+  ms: 1,
+  s: 1000
+};
+
+// munge time-like parameter into millisecond number
+// '0.4s' -> 40
+function getMilliseconds( time ) {
+  if ( typeof time == 'number' ) {
+    return time;
+  }
+  var matches = time.match( /(^\d*\.?\d*)(\w*)/ );
+  var num = matches && matches[1];
+  var unit = matches && matches[2];
+  if ( !num.length ) {
+    return 0;
+  }
+  num = parseFloat( num );
+  var mult = msUnits[ unit ] || 1;
+  return num * mult;
+}
+
+// ----- fin ----- //
+
+// back in global
+Outlayer.Item = Item;
+
+return Outlayer;
+
+}));
+
+},{"./item":182,"ev-emitter":139,"fizzy-ui-utils":142,"get-size":143}],184:[function(require,module,exports){
 module.exports={"2.16.840.1.101.3.4.1.1": "aes-128-ecb",
 "2.16.840.1.101.3.4.1.2": "aes-128-cbc",
 "2.16.840.1.101.3.4.1.3": "aes-128-ofb",
@@ -36455,7 +38719,7 @@ module.exports={"2.16.840.1.101.3.4.1.1": "aes-128-ecb",
 "2.16.840.1.101.3.4.1.43": "aes-256-ofb",
 "2.16.840.1.101.3.4.1.44": "aes-256-cfb"
 }
-},{}],179:[function(require,module,exports){
+},{}],185:[function(require,module,exports){
 // from https://github.com/indutny/self-signed/blob/gh-pages/lib/asn1.js
 // Fedor, you are amazing.
 'use strict'
@@ -36579,7 +38843,7 @@ exports.signature = asn1.define('signature', function () {
   )
 })
 
-},{"./certificate":180,"asn1.js":5}],180:[function(require,module,exports){
+},{"./certificate":186,"asn1.js":5}],186:[function(require,module,exports){
 // from https://github.com/Rantanen/node-dtls/blob/25a7dc861bda38cfeac93a723500eea4f0ac2e86/Certificate.js
 // thanks to @Rantanen
 
@@ -36670,7 +38934,7 @@ var X509Certificate = asn.define('X509Certificate', function () {
 
 module.exports = X509Certificate
 
-},{"asn1.js":5}],181:[function(require,module,exports){
+},{"asn1.js":5}],187:[function(require,module,exports){
 // adapted from https://github.com/apatil/pemstrip
 var findProc = /Proc-Type: 4,ENCRYPTED[\n\r]+DEK-Info: AES-((?:128)|(?:192)|(?:256))-CBC,([0-9A-H]+)[\n\r]+([0-9A-z\n\r+/=]+)[\n\r]+/m
 var startRegex = /^-----BEGIN ((?:.*? KEY)|CERTIFICATE)-----/m
@@ -36703,7 +38967,7 @@ module.exports = function (okey, password) {
   }
 }
 
-},{"browserify-aes":26,"evp_bytestokey":140,"safe-buffer":200}],182:[function(require,module,exports){
+},{"browserify-aes":26,"evp_bytestokey":141,"safe-buffer":206}],188:[function(require,module,exports){
 var asn1 = require('./asn1')
 var aesid = require('./aesid.json')
 var fixProc = require('./fixProc')
@@ -36812,11 +39076,11 @@ function decrypt (data, password) {
   return Buffer.concat(out)
 }
 
-},{"./aesid.json":178,"./asn1":179,"./fixProc":181,"browserify-aes":26,"pbkdf2":183,"safe-buffer":200}],183:[function(require,module,exports){
+},{"./aesid.json":184,"./asn1":185,"./fixProc":187,"browserify-aes":26,"pbkdf2":189,"safe-buffer":206}],189:[function(require,module,exports){
 exports.pbkdf2 = require('./lib/async')
 exports.pbkdf2Sync = require('./lib/sync')
 
-},{"./lib/async":184,"./lib/sync":187}],184:[function(require,module,exports){
+},{"./lib/async":190,"./lib/sync":193}],190:[function(require,module,exports){
 (function (global){(function (){
 var Buffer = require('safe-buffer').Buffer
 
@@ -36938,7 +39202,7 @@ module.exports = function (password, salt, iterations, keylen, digest, callback)
 }
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./default-encoding":185,"./precondition":186,"./sync":187,"./to-buffer":188,"safe-buffer":200}],185:[function(require,module,exports){
+},{"./default-encoding":191,"./precondition":192,"./sync":193,"./to-buffer":194,"safe-buffer":206}],191:[function(require,module,exports){
 (function (process,global){(function (){
 var defaultEncoding
 /* istanbul ignore next */
@@ -36954,7 +39218,7 @@ if (global.process && global.process.browser) {
 module.exports = defaultEncoding
 
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":189}],186:[function(require,module,exports){
+},{"_process":195}],192:[function(require,module,exports){
 var MAX_ALLOC = Math.pow(2, 30) - 1 // default in iojs
 
 module.exports = function (iterations, keylen) {
@@ -36975,7 +39239,7 @@ module.exports = function (iterations, keylen) {
   }
 }
 
-},{}],187:[function(require,module,exports){
+},{}],193:[function(require,module,exports){
 var md5 = require('create-hash/md5')
 var RIPEMD160 = require('ripemd160')
 var sha = require('sha.js')
@@ -37082,7 +39346,7 @@ function pbkdf2 (password, salt, iterations, keylen, digest) {
 
 module.exports = pbkdf2
 
-},{"./default-encoding":185,"./precondition":186,"./to-buffer":188,"create-hash/md5":72,"ripemd160":199,"safe-buffer":200,"sha.js":203}],188:[function(require,module,exports){
+},{"./default-encoding":191,"./precondition":192,"./to-buffer":194,"create-hash/md5":72,"ripemd160":205,"safe-buffer":206,"sha.js":209}],194:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 
 module.exports = function (thing, encoding, name) {
@@ -37097,7 +39361,7 @@ module.exports = function (thing, encoding, name) {
   }
 }
 
-},{"safe-buffer":200}],189:[function(require,module,exports){
+},{"safe-buffer":206}],195:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -37283,7 +39547,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],190:[function(require,module,exports){
+},{}],196:[function(require,module,exports){
 exports.publicEncrypt = require('./publicEncrypt')
 exports.privateDecrypt = require('./privateDecrypt')
 
@@ -37295,7 +39559,7 @@ exports.publicDecrypt = function publicDecrypt (key, buf) {
   return exports.privateDecrypt(key, buf, true)
 }
 
-},{"./privateDecrypt":193,"./publicEncrypt":194}],191:[function(require,module,exports){
+},{"./privateDecrypt":199,"./publicEncrypt":200}],197:[function(require,module,exports){
 var createHash = require('create-hash')
 var Buffer = require('safe-buffer').Buffer
 
@@ -37316,9 +39580,9 @@ function i2ops (c) {
   return out
 }
 
-},{"create-hash":71,"safe-buffer":200}],192:[function(require,module,exports){
+},{"create-hash":71,"safe-buffer":206}],198:[function(require,module,exports){
 arguments[4][19][0].apply(exports,arguments)
-},{"buffer":23,"dup":19}],193:[function(require,module,exports){
+},{"buffer":23,"dup":19}],199:[function(require,module,exports){
 var parseKeys = require('parse-asn1')
 var mgf = require('./mgf')
 var xor = require('./xor')
@@ -37425,7 +39689,7 @@ function compare (a, b) {
   return dif
 }
 
-},{"./mgf":191,"./withPublic":195,"./xor":196,"bn.js":192,"browserify-rsa":44,"create-hash":71,"parse-asn1":182,"safe-buffer":200}],194:[function(require,module,exports){
+},{"./mgf":197,"./withPublic":201,"./xor":202,"bn.js":198,"browserify-rsa":44,"create-hash":71,"parse-asn1":188,"safe-buffer":206}],200:[function(require,module,exports){
 var parseKeys = require('parse-asn1')
 var randomBytes = require('randombytes')
 var createHash = require('create-hash')
@@ -37515,7 +39779,7 @@ function nonZero (len) {
   return out
 }
 
-},{"./mgf":191,"./withPublic":195,"./xor":196,"bn.js":192,"browserify-rsa":44,"create-hash":71,"parse-asn1":182,"randombytes":197,"safe-buffer":200}],195:[function(require,module,exports){
+},{"./mgf":197,"./withPublic":201,"./xor":202,"bn.js":198,"browserify-rsa":44,"create-hash":71,"parse-asn1":188,"randombytes":203,"safe-buffer":206}],201:[function(require,module,exports){
 var BN = require('bn.js')
 var Buffer = require('safe-buffer').Buffer
 
@@ -37529,7 +39793,7 @@ function withPublic (paddedMsg, key) {
 
 module.exports = withPublic
 
-},{"bn.js":192,"safe-buffer":200}],196:[function(require,module,exports){
+},{"bn.js":198,"safe-buffer":206}],202:[function(require,module,exports){
 module.exports = function xor (a, b) {
   var len = a.length
   var i = -1
@@ -37539,7 +39803,7 @@ module.exports = function xor (a, b) {
   return a
 }
 
-},{}],197:[function(require,module,exports){
+},{}],203:[function(require,module,exports){
 (function (process,global){(function (){
 'use strict'
 
@@ -37593,7 +39857,7 @@ function randomBytes (size, cb) {
 }
 
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":189,"safe-buffer":200}],198:[function(require,module,exports){
+},{"_process":195,"safe-buffer":206}],204:[function(require,module,exports){
 (function (process,global){(function (){
 'use strict'
 
@@ -37705,7 +39969,7 @@ function randomFillSync (buf, offset, size) {
 }
 
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":189,"randombytes":197,"safe-buffer":200}],199:[function(require,module,exports){
+},{"_process":195,"randombytes":203,"safe-buffer":206}],205:[function(require,module,exports){
 'use strict'
 var Buffer = require('buffer').Buffer
 var inherits = require('inherits')
@@ -37870,7 +40134,7 @@ function fn5 (a, b, c, d, e, m, k, s) {
 
 module.exports = RIPEMD160
 
-},{"buffer":67,"hash-base":141,"inherits":172}],200:[function(require,module,exports){
+},{"buffer":67,"hash-base":144,"inherits":175}],206:[function(require,module,exports){
 /*! safe-buffer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
 /* eslint-disable node/no-deprecated-api */
 var buffer = require('buffer')
@@ -37937,7 +40201,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
   return buffer.SlowBuffer(size)
 }
 
-},{"buffer":67}],201:[function(require,module,exports){
+},{"buffer":67}],207:[function(require,module,exports){
 (function (process){(function (){
 /* eslint-disable node/no-deprecated-api */
 
@@ -38018,7 +40282,7 @@ if (!safer.constants) {
 module.exports = safer
 
 }).call(this)}).call(this,require('_process'))
-},{"_process":189,"buffer":67}],202:[function(require,module,exports){
+},{"_process":195,"buffer":67}],208:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 
 // prototype class for hash functions
@@ -38101,7 +40365,7 @@ Hash.prototype._update = function () {
 
 module.exports = Hash
 
-},{"safe-buffer":200}],203:[function(require,module,exports){
+},{"safe-buffer":206}],209:[function(require,module,exports){
 var exports = module.exports = function SHA (algorithm) {
   algorithm = algorithm.toLowerCase()
 
@@ -38118,7 +40382,7 @@ exports.sha256 = require('./sha256')
 exports.sha384 = require('./sha384')
 exports.sha512 = require('./sha512')
 
-},{"./sha":204,"./sha1":205,"./sha224":206,"./sha256":207,"./sha384":208,"./sha512":209}],204:[function(require,module,exports){
+},{"./sha":210,"./sha1":211,"./sha224":212,"./sha256":213,"./sha384":214,"./sha512":215}],210:[function(require,module,exports){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-0, as defined
  * in FIPS PUB 180-1
@@ -38214,7 +40478,7 @@ Sha.prototype._hash = function () {
 
 module.exports = Sha
 
-},{"./hash":202,"inherits":172,"safe-buffer":200}],205:[function(require,module,exports){
+},{"./hash":208,"inherits":175,"safe-buffer":206}],211:[function(require,module,exports){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
  * in FIPS PUB 180-1
@@ -38315,7 +40579,7 @@ Sha1.prototype._hash = function () {
 
 module.exports = Sha1
 
-},{"./hash":202,"inherits":172,"safe-buffer":200}],206:[function(require,module,exports){
+},{"./hash":208,"inherits":175,"safe-buffer":206}],212:[function(require,module,exports){
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
  * in FIPS 180-2
@@ -38370,7 +40634,7 @@ Sha224.prototype._hash = function () {
 
 module.exports = Sha224
 
-},{"./hash":202,"./sha256":207,"inherits":172,"safe-buffer":200}],207:[function(require,module,exports){
+},{"./hash":208,"./sha256":213,"inherits":175,"safe-buffer":206}],213:[function(require,module,exports){
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
  * in FIPS 180-2
@@ -38507,7 +40771,7 @@ Sha256.prototype._hash = function () {
 
 module.exports = Sha256
 
-},{"./hash":202,"inherits":172,"safe-buffer":200}],208:[function(require,module,exports){
+},{"./hash":208,"inherits":175,"safe-buffer":206}],214:[function(require,module,exports){
 var inherits = require('inherits')
 var SHA512 = require('./sha512')
 var Hash = require('./hash')
@@ -38566,7 +40830,7 @@ Sha384.prototype._hash = function () {
 
 module.exports = Sha384
 
-},{"./hash":202,"./sha512":209,"inherits":172,"safe-buffer":200}],209:[function(require,module,exports){
+},{"./hash":208,"./sha512":215,"inherits":175,"safe-buffer":206}],215:[function(require,module,exports){
 var inherits = require('inherits')
 var Hash = require('./hash')
 var Buffer = require('safe-buffer').Buffer
@@ -38828,7 +41092,7 @@ Sha512.prototype._hash = function () {
 
 module.exports = Sha512
 
-},{"./hash":202,"inherits":172,"safe-buffer":200}],210:[function(require,module,exports){
+},{"./hash":208,"inherits":175,"safe-buffer":206}],216:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -38959,35 +41223,35 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":139,"inherits":172,"readable-stream/lib/_stream_duplex.js":212,"readable-stream/lib/_stream_passthrough.js":213,"readable-stream/lib/_stream_readable.js":214,"readable-stream/lib/_stream_transform.js":215,"readable-stream/lib/_stream_writable.js":216,"readable-stream/lib/internal/streams/end-of-stream.js":220,"readable-stream/lib/internal/streams/pipeline.js":222}],211:[function(require,module,exports){
+},{"events":140,"inherits":175,"readable-stream/lib/_stream_duplex.js":218,"readable-stream/lib/_stream_passthrough.js":219,"readable-stream/lib/_stream_readable.js":220,"readable-stream/lib/_stream_transform.js":221,"readable-stream/lib/_stream_writable.js":222,"readable-stream/lib/internal/streams/end-of-stream.js":226,"readable-stream/lib/internal/streams/pipeline.js":228}],217:[function(require,module,exports){
 arguments[4][51][0].apply(exports,arguments)
-},{"dup":51}],212:[function(require,module,exports){
+},{"dup":51}],218:[function(require,module,exports){
 arguments[4][52][0].apply(exports,arguments)
-},{"./_stream_readable":214,"./_stream_writable":216,"_process":189,"dup":52,"inherits":172}],213:[function(require,module,exports){
+},{"./_stream_readable":220,"./_stream_writable":222,"_process":195,"dup":52,"inherits":175}],219:[function(require,module,exports){
 arguments[4][53][0].apply(exports,arguments)
-},{"./_stream_transform":215,"dup":53,"inherits":172}],214:[function(require,module,exports){
+},{"./_stream_transform":221,"dup":53,"inherits":175}],220:[function(require,module,exports){
 arguments[4][54][0].apply(exports,arguments)
-},{"../errors":211,"./_stream_duplex":212,"./internal/streams/async_iterator":217,"./internal/streams/buffer_list":218,"./internal/streams/destroy":219,"./internal/streams/from":221,"./internal/streams/state":223,"./internal/streams/stream":224,"_process":189,"buffer":67,"dup":54,"events":139,"inherits":172,"string_decoder/":225,"util":23}],215:[function(require,module,exports){
+},{"../errors":217,"./_stream_duplex":218,"./internal/streams/async_iterator":223,"./internal/streams/buffer_list":224,"./internal/streams/destroy":225,"./internal/streams/from":227,"./internal/streams/state":229,"./internal/streams/stream":230,"_process":195,"buffer":67,"dup":54,"events":140,"inherits":175,"string_decoder/":231,"util":23}],221:[function(require,module,exports){
 arguments[4][55][0].apply(exports,arguments)
-},{"../errors":211,"./_stream_duplex":212,"dup":55,"inherits":172}],216:[function(require,module,exports){
+},{"../errors":217,"./_stream_duplex":218,"dup":55,"inherits":175}],222:[function(require,module,exports){
 arguments[4][56][0].apply(exports,arguments)
-},{"../errors":211,"./_stream_duplex":212,"./internal/streams/destroy":219,"./internal/streams/state":223,"./internal/streams/stream":224,"_process":189,"buffer":67,"dup":56,"inherits":172,"util-deprecate":226}],217:[function(require,module,exports){
+},{"../errors":217,"./_stream_duplex":218,"./internal/streams/destroy":225,"./internal/streams/state":229,"./internal/streams/stream":230,"_process":195,"buffer":67,"dup":56,"inherits":175,"util-deprecate":232}],223:[function(require,module,exports){
 arguments[4][57][0].apply(exports,arguments)
-},{"./end-of-stream":220,"_process":189,"dup":57}],218:[function(require,module,exports){
+},{"./end-of-stream":226,"_process":195,"dup":57}],224:[function(require,module,exports){
 arguments[4][58][0].apply(exports,arguments)
-},{"buffer":67,"dup":58,"util":23}],219:[function(require,module,exports){
+},{"buffer":67,"dup":58,"util":23}],225:[function(require,module,exports){
 arguments[4][59][0].apply(exports,arguments)
-},{"_process":189,"dup":59}],220:[function(require,module,exports){
+},{"_process":195,"dup":59}],226:[function(require,module,exports){
 arguments[4][60][0].apply(exports,arguments)
-},{"../../../errors":211,"dup":60}],221:[function(require,module,exports){
+},{"../../../errors":217,"dup":60}],227:[function(require,module,exports){
 arguments[4][61][0].apply(exports,arguments)
-},{"dup":61}],222:[function(require,module,exports){
+},{"dup":61}],228:[function(require,module,exports){
 arguments[4][62][0].apply(exports,arguments)
-},{"../../../errors":211,"./end-of-stream":220,"dup":62}],223:[function(require,module,exports){
+},{"../../../errors":217,"./end-of-stream":226,"dup":62}],229:[function(require,module,exports){
 arguments[4][63][0].apply(exports,arguments)
-},{"../../../errors":211,"dup":63}],224:[function(require,module,exports){
+},{"../../../errors":217,"dup":63}],230:[function(require,module,exports){
 arguments[4][64][0].apply(exports,arguments)
-},{"dup":64,"events":139}],225:[function(require,module,exports){
+},{"dup":64,"events":140}],231:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -39284,7 +41548,7 @@ function simpleWrite(buf) {
 function simpleEnd(buf) {
   return buf && buf.length ? this.write(buf) : '';
 }
-},{"safe-buffer":200}],226:[function(require,module,exports){
+},{"safe-buffer":206}],232:[function(require,module,exports){
 (function (global){(function (){
 
 /**

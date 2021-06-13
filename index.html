@@ -8,7 +8,7 @@
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap&family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&family=Pacifico&family=Quicksand:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap&display=swap" rel="stylesheet">
 
     <!-- FontAwesome -->
     <script src="https://kit.fontawesome.com/dfa77e14af.js" crossorigin="anonymous"></script>
@@ -16,28 +16,15 @@
     <!-- Custom styles -->
     <link href="css/main.css" rel="stylesheet">
 
-    <!-- Favicons -->
-    <link rel="apple-touch-icon" href="/docs/5.0/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
-    <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
-    <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
-    <link rel="manifest" href="/docs/5.0/assets/img/favicons/manifest.json">
-    <link rel="mask-icon" href="/docs/5.0/assets/img/favicons/safari-pinned-tab.svg" color="#7952b3">
-    <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon.ico">
-    <meta name="theme-color" content="#7952b3">
-
     <!-- Scripts -->
     <script src="js/bundle.js" defer></script>
 
 </head>
 
 <body>
-
-
-
-
     <div id="body-container">
-        <div class="row">
 
+        <div class="row">
             <div id="navbar">
                 <div id="title">
                     <h3>Karen Zwier</h3>
@@ -48,37 +35,41 @@
                         <i class="fas fa-bars"></i>
                     </button>
                 </div>
-
             </div>
         </div>
 
         <div class="row">
-
             <div id="sidebar" class="collapse width">
                 <div id="sidebar-container">
                     <ul>
                         <li>
+                            <a href="#intro">
+                                <i class="fas fa-user"></i>
+                                Intro
+                            </a>
+                        </li>
+                        <li>
                             <a href="#portfolio">
-                                <i class="far fa-file-code"></i>
+                                <i class="fas fa-project-diagram"></i>
                                 Project Gallery
                             </a>
                         </li>
                         <li>
                             <a href="#experience">
-                                <i class="far fa-file-code"></i>
+                                <i class="fas fa-briefcase"></i>
                                 Experience
                             </a>
                         </li>
 
                         <li>
-                            <a href="#contact">
-                                <i class="fas fa-user"></i>
+                            <a href="#skills">
+                                <i class="fas fa-tools"></i>
                                 Skills
                             </a>
                         </li>
                         <li>
-                            <a href="#about">
-                                <i class="fas fa-user"></i>
+                            <a href="#contact">
+                                <i class="fas fa-envelope"></i>
                                 Contact
                             </a>
                         </li>
@@ -95,32 +86,32 @@
                     <ul>
                         <li>
                             <a href="#intro">
-                                <i class="far fa-file-code"></i>
-                                Home
+                                <i class="fas fa-user"></i>
+                                Intro
                             </a>
                         </li>
                         <li>
                             <a href="#portfolio">
-                                <i class="far fa-file-code"></i>
+                                <i class="fas fa-project-diagram"></i>
                                 Project Gallery
                             </a>
                         </li>
                         <li>
                             <a href="#experience">
-                                <i class="far fa-file-code"></i>
+                                <i class="fas fa-briefcase"></i>
                                 Experience
                             </a>
                         </li>
 
                         <li>
-                            <a href="#contact">
-                                <i class="fas fa-user"></i>
+                            <a href="#skills">
+                                <i class="fas fa-tools"></i>
                                 Skills
                             </a>
                         </li>
                         <li>
-                            <a href="#about">
-                                <i class="fas fa-user"></i>
+                            <a href="#contact">
+                                <i class="fas fa-envelope"></i>
                                 Contact
                             </a>
                         </li>
@@ -135,54 +126,61 @@
                         <div id="empty">
                         </div>
                         <img src="img/selfie.png" alt="Karen waving" />
-                        <h1><code>$ echo "Hi!"</code><br> I'm a developer who <span>loves</span> complex problems and being challenged in new ways.</h1>
+                        <h1><code>$ echo "Hi!"</code><br> I'm a developer who <span>loves</span> tackling complex problems and being challenged in new ways.</h1>
                     </div>
                 </div>
 
                 <div class="row">
-
                     <div id="portfolio">
                         <div id="portfolio-wrapper">
-                            <!-- <div class="clip">
-                                <div class="clip-circle"></div>
-                            </div> -->
                             <h1>Project Gallery</h1>
 
                             <section class="repos">
                                 <input type="text" class="filter-repos hide" placeholder="Search by project name" />
-                                <div class="row repo-list"></div>
+                                <div class="repo-list"></div>
+                                <div class="button-container">
+                                    <button class="more">Show more &darr;</button>
+                                </div>
                             </section>
-                            <section class="repo-data hide"></section>
+                            <section class="repo-data hide">
+                            </section>
                             <div class="button-container">
-                                <button class="view-repos hide">Back to Repo Gallery</button>
+                                <button class="view-repos hide">Back to Gallery</button>
                             </div>
-
-
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
                     <div id="experience">
+
+                        <h1>Experience</h1>
+
                         <div class="main-timeline">
 
                             <!-- start experience section-->
                             <div class="timeline">
-
+                                <div class="icon"></div>
                                 <div class="date-content">
+                                    <div class="date-line"></div>
                                     <div class="date-outer">
-
-                                        <span class="year">2021
-                                        </span>
-
+                                        2021
+                                    </div>
+                                    <div class="date-caption">
+                                        <div class="wrapper">
+                                            <h5 class="title">Skillcrush</h5>
+                                            <h5 class="title">
+                                                Developer Fast-Track Intensive
+                                            </h5>
+                                            <p class="description">Courses in HTML5, CSS, Git, Responsive Web Design, JavaScript, React</p>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="icon"></div>
                                 <div class="timeline-content">
                                     <div class="wrapper">
                                         <h5 class="title">Skillcrush</h5>
                                         <h5 class="title">
-                                            Developer Fast-Track Intensive 
+                                            Developer Fast-Track
                                         </h5>
                                         <p class="description">Courses in HTML5, CSS, Git, Responsive Web Design, JavaScript, React</p>
 
@@ -193,6 +191,21 @@
 
                             <!-- start experience section-->
                             <div class="timeline">
+                                <div class="icon"></div>
+                                <div class="date-content">
+                                    <div class="date-line"></div>
+                                    <div class="date-outer">
+                                        2018&ndash;21
+                                    </div>
+                                    <div class="date-caption">
+                                        <div class="wrapper">
+                                            <h5 class="title">Faculty at Iowa State University</h5>
+                                            <p class="description">
+                                                Taught courses covering topics such as ethics, critical thinking, and societal impacts of technology. Delivered lectures and facilitated discussions for classes ranging in size from 30-100 students.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="timeline-content">
                                     <div class="wrapper">
                                         <h5 class="title">Faculty at Iowa State University</h5>
@@ -201,32 +214,27 @@
                                         </p>
                                     </div>
                                 </div>
-
-                                <div class="icon"></div>
-                                <div class="date-content">
-                                    <div class="date-outer">
-
-                                        <span class="year">2018&ndash;21
-                                        </span>
-
-
-                                    </div>
-                                </div>
                             </div>
                             <!-- end experience section-->
 
                             <!-- start experience section-->
                             <div class="timeline">
-
+                                <div class="icon"></div>
                                 <div class="date-content">
+                                    <div class="date-line"></div>
                                     <div class="date-outer">
-
-                                        <span class="year">2013&ndash;18
-                                        </span>
-
+                                        2013&ndash;18
+                                    </div>
+                                    <div class="date-caption">
+                                        <div class="wrapper">
+                                            <h5 class="title">Faculty at Drake University</h5>
+                                            <p class="description">
+                                                Designed and taught honors-level interdisciplinary courses (science and religion,
+                                                philosophy of science, physics and philosophy, comparative religion). Served as Interim Director of The Comparison Project Lecture Series
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="icon"></div>
                                 <div class="timeline-content">
                                     <div class="wrapper">
                                         <h5 class="title">Faculty at Drake University</h5>
@@ -241,6 +249,23 @@
 
                             <!-- start experience section-->
                             <div class="timeline">
+                                <div class="icon"></div>
+                                <div class="date-content">
+                                    <div class="date-line"></div>
+                                    <div class="date-outer">
+                                        2006&ndash;14
+                                    </div>
+                                    <div class="date-caption">
+                                        <div class="wrapper">
+                                            <h5 class="title">University of Pittsburgh, Ph.D. History and Philosophy of Science</h5>
+                                            <p class="description">&amp;</p>
+                                            <h5 class="title">University of Pittsburgh, M.A. Philosophy</h5>
+                                            <p class="description">
+                                                Teaching fellow. Graduate research focus on causal reasoning. Dissertation: <em>Interventionist Causation in Physical Science</em>.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="timeline-content">
                                     <div class="wrapper">
                                         <h5 class="title">University of Pittsburgh, Ph.D. History and Philosophy of Science</h5>
@@ -251,35 +276,37 @@
                                         </p>
                                     </div>
                                 </div>
-                                <div class="icon"></div>
-                                <div class="date-content">
-                                    <div class="date-outer">
-
-                                        <span class="year">2006&ndash;14
-                                        </span>
-
-                                    </div>
-                                </div>
 
                             </div>
                             <!-- end experience section-->
 
                             <!-- start experience section-->
                             <div class="timeline">
-
+                                <div class="icon"></div>
                                 <div class="date-content">
+                                    <div class="date-line"></div>
                                     <div class="date-outer">
-
-                                        <span class="year">2006</span>
-
+                                        2006
+                                    </div>
+                                    <div class="date-caption">
+                                        <div class="wrapper">
+                                            <h5 class="title">University of Illinois, B.S. Computer Engineering</h5>
+                                            <p class="description">
+                                                Topics of study: Computer architecture, assembly language, interpreters, data structures, databases, object oriented programming.
+                                            </p>
+                                            <p class="description">&amp;</p>
+                                            <h5 class="title">University of Illinois, B.A. Philosophy</h5>
+                                            <p class="description">
+                                                Topics of study: Logic, philosophy of mathematics, philosophy of physics.
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="icon"></div>
                                 <div class="timeline-content">
                                     <div class="wrapper">
                                         <h5 class="title">University of Illinois, B.S. Computer Engineering</h5>
                                         <p class="description">
-                                            Topics of study: Computer architecture, assembly language, interpreters, data structures, databases.
+                                            Topics of study: Computer architecture, assembly language, interpreters, data structures, databases, object oriented programming.
                                         </p>
                                         <p class="description">&amp;</p>
                                         <h5 class="title">University of Illinois, B.A. Philosophy</h5>
@@ -290,24 +317,119 @@
                                 </div>
                             </div>
                             <!-- end experience section-->
-
-
-
                         </div>
                     </div>
-
                 </div>
+
                 <div class="row">
-                    <div id="skills" class="w-100">
-                        <div id="skills-wrapper" class="px-4">
-                            <h2 class="m-3 p-0 text-center display-5">Skills & Education</h2>
+                    <div id="skills">
+                        <div id="skills-wrapper">
+                            <h1>Skills</h1>
 
-                            <p>I earned a B.S. in Computer Engineering (University of Illinois) back in 2006, where I gained a strong foundation in computer architecture, object oriented programming, and data structures. My career path after college took me into academia before coming back to tech. Over the last two years, I have been updating my skillset using a wide variety of self-guided platforms, incuding HackerRank, 30 Days of Code (Kathryn Hodge), Udemy, Codecademy, and LinkedIn Learning. Most recently, I have been using Skillcrush to brush up and add to my front-end development skills. </p>
+                            <p>Over the past two years, I have been updating my skillset using a variety of self-guided platforms, incuding <a href="https://www.hackerrank.com/" target="_blank">HackerRank</a>, <a href="https://www.hackerrank.com/domains/tutorials/30-days-of-code" target="_blank">30 Days of Code</a>, <a href="https://www.udemy.com/" target="_blank">Udemy</a>, <a href="https://www.codecademy.com/" target="_blank">Codecademy</a>, <a href="https://www.linkedin.com/learning" target="_blank">LinkedIn Learning</a>, <a href="https://revature.com/learn-to-code/" target="_blank">Revature</a>, and most recently, <a href="https://skillcrush.com/" target="_blank">Skillcrush</a>. </p>
 
-                            <div id="badge-wrapper">
-                                <div class="hex-badge yellow">
-                                    <div class="circle"><i class="fab fa-html5"></i></div>
-                                    <div class="ribbon">HTML</div>
+                            <div id="skill-badges">
+                                <div id="badge-wrapper">
+                                    <div class="hex-badge sea-green">
+                                        <div class="circle"><i class="fab fa-html5"></i></div>
+                                        <div class="ribbon">HTML</div>
+                                    </div>
+                                </div>
+
+                                <div id="badge-wrapper">
+                                    <div class="hex-badge rajah">
+                                        <div class="circle"><i class="fab fa-css3-alt"></i></div>
+                                        <div class="ribbon">CSS</div>
+                                    </div>
+                                </div>
+
+                                <div id="badge-wrapper">
+                                    <div class="hex-badge dark-lava">
+                                        <div class="circle"><i class="fab fa-js"></i></div>
+                                        <div class="ribbon">JS</div>
+                                    </div>
+                                </div>
+
+                                <div id="badge-wrapper">
+                                    <div class="hex-badge mandarin">
+                                        <div class="circle"><i class="fab fa-git-square"></i></div>
+                                        <div class="ribbon">Git</div>
+                                    </div>
+                                </div>
+
+                                <div id="badge-wrapper">
+                                    <div class="hex-badge sea-green">
+                                        <div class="circle">$_</div>
+                                        <div class="ribbon">Bash</div>
+                                    </div>
+                                </div>
+
+                                <div id="badge-wrapper">
+                                    <div class="hex-badge dark-lava">
+                                        <div class="circle"><i class="fab fa-react"></i></div>
+                                        <div class="ribbon">React</div>
+                                    </div>
+                                </div>
+
+                                <div id="badge-wrapper">
+                                    <div class="hex-badge mandarin">
+                                        <div class="circle"><i class="fab fa-bootstrap"></i></div>
+                                        <div class="ribbon">Bootstrap</div>
+                                    </div>
+                                </div>
+
+                                <div id="badge-wrapper">
+                                    <div class="hex-badge rajah">
+                                        <div class="circle"><i class="fab fa-java"></i></div>
+                                        <div class="ribbon">Java</div>
+                                    </div>
+                                </div>
+
+                                <div id="badge-wrapper">
+                                    <div class="hex-badge dark-lava">
+                                        <div class="circle"><i class="fas fa-flask"></i></div>
+                                        <div class="ribbon">TDD</div>
+                                    </div>
+                                </div>
+
+                                <div id="badge-wrapper">
+                                    <div class="hex-badge mandarin">
+                                        <div class="circle"><i class="fas fa-database"></i></div>
+                                        <div class="ribbon">SQL</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div id="contact">
+                        <div id="contact-wrapper">
+                            <h1>Contact</h1>
+                            <p>Why yes, it turns out I *am* actively seeking a job! Glad you asked!</p>
+                            <div id="contact-column-wrapper">
+                                <div id="meet">
+                                    
+                                    <h2>Let's meet!</h2>
+                                    <div class="big-icons">
+                                        <i class="fas fa-coffee"></i> 
+                                        <i class="fas fa-video"></i>
+                                    </div>
+                                    <p>
+                                        <i class="fas fa-map-marked-alt"></i> Located in Des Moines, IA
+                                    </p>
+                                    <p>
+                                        <a href="mailto:krzwier@gmail.com"><i class="fas fa-envelope"></i></a> <a href="mailto:krzwier@gmail.com">krzwier@gmail.com</a>
+                                    </p>
+                                </div>
+                                <div id="social">
+                                    <h2>Find me on:</h2>
+                                    <div class="big-icons">
+                                        <a href="https://www.linkedin.com/in/karen-zwier/" target="_blank">
+                                        <i class="fab fa-linkedin"></i></a>
+                                        <a href="https://github.com/krzwier" target="_blank"><i class="fab fa-github-square"></i></a>
+                                    </div>
                                 </div>
                             </div>
                         </div>

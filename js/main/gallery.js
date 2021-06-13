@@ -2,10 +2,10 @@ const { lineBreak } = require("acorn");
 const { HmacSHA3 } = require("crypto-js");
 const funkyTown = require("./funkyTown");
 const imagesLoaded = require('imagesloaded');
+const Masonry = require('masonry-layout');
 
 
-
-const overview = document.querySelector('.overview');
+// const overview = document.querySelector('.overview');
 
 const repoListDiv = document.querySelector('.repo-list');
 
@@ -17,19 +17,38 @@ const backToGallery = document.querySelector('.view-repos');
 
 const filterInput = document.querySelector('.filter-repos');
 
+const moreButton = document.querySelector('.more');
+
 const username = "krzwier";
 
 let repoList = [];
 
+let pinnedList = [];
+
+let more = false;
+
 const repoListQuery = {
     'query': 'query { ' +
         'repositoryOwner(login: "' + username + '") { ' +
-        'repositories(orderBy: {field: CREATED_AT, direction: DESC}, first: 100, privacy: PUBLIC) {' +
+        '... on ProfileOwner {' +
+        'itemShowcase {' +
+        'items(first: 6) {' +
+        'edges {' +
+        'node {' +
+        '... on Repository {' +
+        'name' +
+        '}' +
+        '}' +
+        '}' +
+        '}' +
+        '}' +
+        '}' +
+        'repositories(orderBy: {field: UPDATED_AT, direction: DESC}, first: 100, privacy: PUBLIC) {' +
         'nodes {' +
         'openGraphImageUrl,' +
         'name,' +
         'description,' +
-        'languages(first: 10) {' +
+        'languages(first: 10, orderBy: {field: SIZE, direction: DESC}) {' +
         'edges {' +
         'node {' +
         'name' +
@@ -45,43 +64,6 @@ const repoListQuery = {
         '}' +
         '}'
 };
-
-
-const fetchProfile = async function (username) {
-
-    const data = await fetch('https://api.github.com/users/' + username, {
-        headers: {
-            Accept: 'application/vnd.github.v3+json'
-        }
-    }).catch((e) => {
-        console.error(`API call to https://api.github.com/users/ rejected in fetchProfile("${username}") function: ${e.message}`);
-    });
-    try {
-        const userData = await data.json()
-        displayProfile(userData);
-        return userData;
-    } catch (e) {
-        console.error(`Failed conversion to JSON in fetchProfile("${username}" function: ${e.message}`);
-    };
-
-}
-
-const displayProfile = function (userData) {
-    const newDiv = document.createElement("div");
-    newDiv.classList.add("user-info");
-    newDiv.innerHTML =
-        '<figure>' +
-        '<img alt="user avatar" src="' + userData.avatar_url + '">' +
-        '</figure>' +
-        '<div>' +
-        '<p><strong>Name:</strong> ' + userData.name + '</p>' +
-        '<p><strong>Bio:</strong> ' + userData.bio + '</p>' +
-        '<p><strong>Location:</strong> ' + userData.location + '</p>' +
-        '<p><strong>Number of public repos:</strong> ' + userData.public_repos + '</p>' +
-        '</div>';
-    overview.innerHTML = newDiv.outerHTML;
-
-}
 
 const fetchRepoList = async function (username) {
 
@@ -99,6 +81,11 @@ const fetchRepoList = async function (username) {
     try {
         const repoListObject = await res.json();
         repoList = repoListObject.data.repositoryOwner.repositories.nodes;
+        const pins = repoListObject.data.repositoryOwner.itemShowcase.items.edges;
+        pinnedList = [];
+        for (let pin of pins) {
+            pinnedList.push(pin.node.name.toLowerCase());
+        }
         displayRepoList(repoList);
         return repoList;
     } catch (e) {
@@ -108,6 +95,7 @@ const fetchRepoList = async function (username) {
 }
 
 const displayRepoList = function (repoList) {
+
     filterInput.classList.remove("hide");
     for (let repo of repoList) {
         const languages = document.createElement("ul");
@@ -119,9 +107,12 @@ const displayRepoList = function (repoList) {
         }
         const li = document.createElement("div");
         li.classList.add("repo");
-        // li.classList.add("col");
-        // li.classList.add("col-md-6");
-        // li.classList.add("col-lg-4");
+        if (pinnedList.includes(repo.name.toLowerCase())) {
+            li.classList.add("brick");
+        } else {
+            li.classList.add("hide");
+        }
+
 
         li.innerHTML =
             '<div class="card">' +
@@ -136,7 +127,7 @@ const displayRepoList = function (repoList) {
     }
 
     // wait until all images are loaded, then update masonry grid
-    refreshMasonry(repoListDiv);
+    refreshMasonry();
 
     // imagesLoaded(repoListDiv, function () {
     //     // init Isotope after all images have loaded
@@ -150,11 +141,11 @@ const displayRepoList = function (repoList) {
 
 }
 
-const refreshMasonry = function () {
+const refreshMasonry = async function () {
     imagesLoaded(repoListDiv, function () {
         // init Isotope after all images have loaded
         const msnry = new Masonry(repoListDiv, {
-            itemSelector: '.repo',
+            itemSelector: '.brick',
             // columnWidth: '.grid-sizer',
             percentPosition: true
         });
@@ -191,6 +182,9 @@ repoListDiv.addEventListener("click", async function (e) {
     } catch (e) {
         console.error(`displayRepoInfo("${repoName}", "${repoInfo.readme}", ${repoInfo.languages}, "${repoInfo.picUrl}", "${repoInfo.url}", ${repoInfo.numDeployments}) function failed when called by repo-list click event handler: ${e.message}`);
     };
+
+    document.querySelector('#portfolio').scrollIntoView();
+
 });
 
 
@@ -283,12 +277,13 @@ const displayRepoInfo = async function (repoName, rawReadme, languages, picUrl, 
     }
     repoData.innerHTML = "";
     const newDiv = document.createElement("div");
+    newDiv.classList.add("repo-info-wrapper");
     let htmlString =
         '<div><img src="' + picUrl + '" alt="preview image"></div>' +
         '<div class="readme">' +
         readme +
         "<div>" + languagesUL.outerHTML + "</div>" +
-        '<div class="buttons"><a class="visit" href="' + url + '" target="_blank" rel="noreferrer noopener">View Repo on GitHub</a>';
+        '<div class="buttons"><a class="visit" href="' + url + '" target="_blank" rel="noreferrer noopener">GitHub Repo</a>';
     if (numDeployments >= 1) {
         htmlString = htmlString +
             '<a class="visit live" href="https://' + username + '.github.io/' + repoName + '/" target="_blank" rel="noreferrer noopener">Live Version</a></div>';
@@ -302,29 +297,56 @@ const displayRepoInfo = async function (repoName, rawReadme, languages, picUrl, 
 
     repoData.classList.remove("hide");
     repos.classList.add("hide");
+    moreButton.classList.add("hide");
     backToGallery.classList.remove("hide");
 };
 
-backToGallery.addEventListener("click", function () {
+backToGallery.addEventListener("click", async function () {
     repos.classList.remove("hide");
     repoData.classList.add("hide");
     backToGallery.classList.add("hide");
-
+    moreButton.classList.remove("hide");
+    await refreshMasonry();
+    document.querySelector('#portfolio').scrollIntoView();
 });
 
 filterInput.addEventListener("input", function (e) {
+    chooseVisibleRepos();
+});
+
+const chooseVisibleRepos = function () {
     const searchText = filterInput.value.toLowerCase();
     const repos = document.querySelectorAll(".repo");
     for (let repo of repos) {
         const repoHeader = repo.querySelector("h3");
         const repoTitle = repoHeader.textContent.toLowerCase();
         if (repoTitle.includes(searchText)) {
-            repo.classList.remove("hide");
+            if (!more && !pinnedList.includes(repoTitle)) {
+                repo.classList.add("hide");
+                repo.classList.remove("brick");
+            } else {
+                repo.classList.remove("hide");
+                repo.classList.add("brick");
+            }
         } else {
             repo.classList.add("hide");
+            repo.classList.remove("brick");
         }
     }
     refreshMasonry();
+}
+
+moreButton.addEventListener("click", function (e) {
+    more = !more;
+    if (more) {
+        moreButton.innerHTML = 'Show less &uarr;';
+    } else {
+        moreButton.innerHTML = 'Show more &darr;';
+    }
+    chooseVisibleRepos();
+    if (!more) {
+        document.querySelector('#portfolio').scrollIntoView();
+    }
 });
 
 const str = function () {
@@ -332,11 +354,8 @@ const str = function () {
         "3BDHQaPnfxKnioaw7TW9JqrTbUt";
 }
 
-/* ---- EXPORT ONLY IF RUNNING TESTS ---- */
 /* istanbul ignore next */
 module.exports = {
-    fetchProfile,
-    displayProfile,
     fetchRepoList,
     displayRepoList,
     getRepoInfo
