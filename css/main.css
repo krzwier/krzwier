@@ -475,13 +475,13 @@ progress {
   }
 }
 
-.display-3, #intro span {
+.display-3 {
   font-size: calc(1.525rem + 3.3vw);
   font-weight: 300;
   line-height: 1.2;
 }
 @media (min-width: 1200px) {
-  .display-3, #intro span {
+  .display-3 {
     font-size: 4rem;
   }
 }
@@ -508,13 +508,13 @@ progress {
   }
 }
 
-.display-6, #intro h1, #intro .h1 {
+.display-6 {
   font-size: calc(1.375rem + 1.5vw);
   font-weight: 300;
   line-height: 1.2;
 }
 @media (min-width: 1200px) {
-  .display-6, #intro h1, #intro .h1 {
+  .display-6 {
     font-size: 2.5rem;
   }
 }
@@ -649,7 +649,7 @@ progress {
   margin-top: var(--bs-gutter-y);
 }
 
-.col, #meet, #social, .repo-info-wrapper div, .repo {
+.col, .repo-info-wrapper div, .repo {
   flex: 1 0 0%;
 }
 
@@ -748,7 +748,7 @@ progress {
   width: 91.6666666667%;
 }
 
-.col-12, #main-wrapper {
+.col-12, #meet, #social, #main-wrapper {
   flex: 0 0 auto;
   width: 100%;
 }
@@ -6572,7 +6572,7 @@ textarea.form-control-lg {
   flex-shrink: 1 !important;
 }
 
-.flex-wrap, #skill-badges, .language-list, #portfolio-wrapper {
+.flex-wrap, #contact-column-wrapper, #skill-badges, .language-list, #portfolio-wrapper {
   flex-wrap: wrap !important;
 }
 
@@ -6815,12 +6815,12 @@ textarea.form-control-lg {
   margin-bottom: 1rem !important;
 }
 
-.my-4, #contact .big-icons {
+.my-4, #contact .big-icons, #contact-column-wrapper {
   margin-top: 1.5rem !important;
   margin-bottom: 1.5rem !important;
 }
 
-.my-5, #contact-column-wrapper, #skill-badges {
+.my-5, #skill-badges {
   margin-top: 3rem !important;
   margin-bottom: 3rem !important;
 }
@@ -6943,7 +6943,8 @@ textarea.form-control-lg {
   margin-left: auto !important;
 }
 
-.p-0, #portfolio ul, #portfolio h2, #portfolio .h2, #sidebar-widescreen-container, #sidebar {
+.p-0, #portfolio ul, #portfolio h2, #portfolio .h2, #sidebar-widescreen-container, #sidebar, #sidebar ul,
+#sidebar-widescreen ul {
   padding: 0 !important;
 }
 
@@ -7023,7 +7024,7 @@ textarea.form-control-lg {
   padding-bottom: 1.5rem !important;
 }
 
-.py-5, #contact h1, #contact .h1, #skills h1, #skills .h1, #experience h1, #experience .h1 {
+.py-5, #meet, #social, #contact h1, #contact .h1, #skills h1, #skills .h1, #experience h1, #experience .h1 {
   padding-top: 3rem !important;
   padding-bottom: 3rem !important;
 }
@@ -7128,11 +7129,11 @@ textarea.form-control-lg {
   font-family: var(--bs-font-monospace) !important;
 }
 
-.fs-1, #intro code {
+.fs-1, #intro span {
   font-size: calc(1.375rem + 1.5vw) !important;
 }
 
-.fs-2 {
+.fs-2, #intro h1, #intro .h1, #intro code {
   font-size: calc(1.325rem + 0.9vw) !important;
 }
 
@@ -7160,7 +7161,7 @@ textarea.form-control-lg {
   font-style: normal !important;
 }
 
-.fw-light, h4, .h4 {
+.fw-light, #intro h1, #intro .h1, h4, .h4 {
   font-weight: 300 !important;
 }
 
@@ -8417,7 +8418,7 @@ textarea.form-control-lg {
     margin-bottom: 1.5rem !important;
   }
 
-  .my-md-5 {
+  .my-md-5, #contact-column-wrapper {
     margin-top: 3rem !important;
     margin-bottom: 3rem !important;
   }
@@ -8551,8 +8552,7 @@ textarea.form-control-lg {
     padding: 0.5rem !important;
   }
 
-  .p-md-3, #title-widescreen, #sidebar ul li,
-#sidebar-widescreen ul li {
+  .p-md-3, #title-widescreen {
     padding: 1rem !important;
   }
 
@@ -8579,7 +8579,8 @@ textarea.form-control-lg {
     padding-left: 0.5rem !important;
   }
 
-  .px-md-3 {
+  .px-md-3, #sidebar ul li,
+#sidebar-widescreen ul li {
     padding-right: 1rem !important;
     padding-left: 1rem !important;
   }
@@ -8594,7 +8595,7 @@ textarea.form-control-lg {
     padding-left: 3rem !important;
   }
 
-  .py-md-0 {
+  .py-md-0, #meet, #social {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
   }
@@ -10686,11 +10687,11 @@ textarea.form-control-lg {
   }
 }
 @media (min-width: 1200px) {
-  .fs-1, #intro code {
+  .fs-1, #intro span {
     font-size: 2.5rem !important;
   }
 
-  .fs-2 {
+  .fs-2, #intro h1, #intro .h1, #intro code {
     font-size: 2rem !important;
   }
 
@@ -10789,7 +10790,6 @@ h3, .h3 {
 #sidebar ul,
 #sidebar-widescreen ul {
   list-style: none;
-  padding: 0;
 }
 #sidebar ul li a,
 #sidebar-widescreen ul li a {
@@ -11117,7 +11117,7 @@ button:hover {
 }
 
 /* ---- STYLING FOR TABLET SCREENS ---- */
-@media only screen and (min-width: 768px) {
+@media (min-width: 768px) {
   #main-wrapper {
     padding-top: 0;
   }
@@ -11220,7 +11220,19 @@ button:hover {
     width: 85% !important;
   }
 }
-@media only screen and (min-width: 1200px) {
+@media (min-width: 1200px) {
+  #intro h1, #intro .h1 {
+    font-size: 3rem !important;
+  }
+
+  #intro h1 code, #intro .h1 code {
+    font-size: 3rem !important;
+  }
+
+  #intro h1 span, #intro .h1 span {
+    font-size: 3.5rem !important;
+  }
+
   #empty {
     height: calc(100% - 92.5vw);
   }

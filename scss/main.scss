@@ -22,13 +22,7 @@ $dark-orange: #c85619;
 $light-orange: #f6d0aa;
 $smoky-black-shadow: rgba(38, 36, 22, 0.3);
 
-// @mixin margin-auto {
-//     top: 0;
-//     left: 0;
-//     right: 0;
-//     bottom: 0;
-//     margin: auto;
-// }
+
 
 body {
     font-family: $font-stack;
@@ -109,10 +103,10 @@ h5 {
 
     ul {
         list-style: none;
-        padding: 0;
+        @extend .p-0;
         li {
             @extend .py-2;
-            @extend .p-md-3;
+            @extend .px-md-3;
             a {
                 @extend .fw-normal;
                 @extend .text-decoration-none;
@@ -204,20 +198,21 @@ h5 {
     }
 
     code {
-        @extend .fs-1;
+        @extend .fs-2;
         color: $amazon;
         font-family: $code-font-stack;
         
     }
 
     span {
-        @extend .display-3  ;
+        @extend .fs-1;
         color: $mandarin;
         font-family: $pacifico-font-stack;
     }
 
     h1 {
-        @extend .display-6;
+        @extend .fs-2;
+        @extend .fw-light;
         @extend .p-4;
     }
 }
@@ -716,13 +711,17 @@ button:hover {
 
 #contact-column-wrapper {
     @extend .d-flex;
-    @extend .my-5;
+    @extend .flex-wrap;
+    @extend .my-4;
+    @extend .my-md-5;
 }
 
 #meet, #social {
-    @extend .col;
+    @extend .col-12;
     @extend .col-md-6;
     @extend .text-center;
+    @extend .py-5;
+    @extend .py-md-0;
 }
 
 #contact .big-icons {
@@ -740,7 +739,9 @@ button:hover {
 
 /* ---- STYLING FOR TABLET SCREENS ---- */
 
-@media only screen and (min-width: 768px) {
+// @media only screen and (min-width: 768px) {
+@include media-breakpoint-up(md) {
+
     #main-wrapper {
         padding-top: 0;
     }
@@ -844,9 +845,25 @@ button:hover {
 
 }
 
-@media only screen and (min-width: 1200px) {
+// @media only screen and (min-width: 1200px) {
+@include media-breakpoint-up(xl) {
+
+    #intro h1 {
+        font-size: 3rem !important;
+    }
+
+    #intro h1 code {
+        font-size: 3rem !important;
+    }
+
+    #intro h1 span {
+        font-size: 3.5rem !important;
+    }
+
     #empty {
         height: calc(100% - 92.5vw);
     }
+
+
 
 }
