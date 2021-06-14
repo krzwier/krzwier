@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "type": "pwa-chrome",
+            "name": "file:///Users/krzwier/Dropbox/GitHub/krzwier/index.html",
+            "request": "launch",
+            "url": "file:///Users/krzwier/Dropbox/GitHub/krzwier/index.html"
+        }
+    ]
+}

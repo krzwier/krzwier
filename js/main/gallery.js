@@ -1,5 +1,3 @@
-const { lineBreak } = require("acorn");
-const { HmacSHA3 } = require("crypto-js");
 const funkyTown = require("./funkyTown");
 const imagesLoaded = require('imagesloaded');
 const Masonry = require('masonry-layout');
@@ -141,7 +139,29 @@ const displayRepoList = function (repoList) {
 
 }
 
-const refreshMasonry = async function () {
+const chooseVisibleRepos = function () {
+    const searchText = filterInput.value.toLowerCase();
+    const repos = document.querySelectorAll(".repo");
+    for (let repo of repos) {
+        const repoHeader = repo.querySelector("h3");
+        const repoTitle = repoHeader.textContent.toLowerCase();
+        if (repoTitle.includes(searchText)) {
+            if (!more && !pinnedList.includes(repoTitle)) {
+                repo.classList.add("hide");
+                repo.classList.remove("brick");
+            } else {
+                repo.classList.remove("hide");
+                repo.classList.add("brick");
+            }
+        } else {
+            repo.classList.add("hide");
+            repo.classList.remove("brick");
+        }
+    }
+    refreshMasonry();
+}
+
+const refreshMasonry = function () {
     imagesLoaded(repoListDiv, function () {
         // init Isotope after all images have loaded
         const msnry = new Masonry(repoListDiv, {
@@ -152,7 +172,9 @@ const refreshMasonry = async function () {
     });
 };
 
-window.onresize = refreshMasonry;
+window.addEventListener('resize', () => {
+    refreshMasonry();
+});
 
 const mess = function () {
     return "U2F" +
@@ -311,30 +333,10 @@ backToGallery.addEventListener("click", async function () {
 });
 
 filterInput.addEventListener("input", function (e) {
-    chooseVisibleRepos();
+    VisibleRepos();
 });
 
-const chooseVisibleRepos = function () {
-    const searchText = filterInput.value.toLowerCase();
-    const repos = document.querySelectorAll(".repo");
-    for (let repo of repos) {
-        const repoHeader = repo.querySelector("h3");
-        const repoTitle = repoHeader.textContent.toLowerCase();
-        if (repoTitle.includes(searchText)) {
-            if (!more && !pinnedList.includes(repoTitle)) {
-                repo.classList.add("hide");
-                repo.classList.remove("brick");
-            } else {
-                repo.classList.remove("hide");
-                repo.classList.add("brick");
-            }
-        } else {
-            repo.classList.add("hide");
-            repo.classList.remove("brick");
-        }
-    }
-    refreshMasonry();
-}
+
 
 moreButton.addEventListener("click", function (e) {
     more = !more;

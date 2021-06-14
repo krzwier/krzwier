@@ -22,13 +22,13 @@ $dark-orange: #c85619;
 $light-orange: #f6d0aa;
 $smoky-black-shadow: rgba(38, 36, 22, 0.3);
 
-@mixin margin-auto {
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
-}
+// @mixin margin-auto {
+//     top: 0;
+//     left: 0;
+//     right: 0;
+//     bottom: 0;
+//     margin: auto;
+// }
 
 body {
     font-family: $font-stack;
