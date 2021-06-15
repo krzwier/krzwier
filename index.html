@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&family=Pacifico&family=Quicksand:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap&display=swap" rel="stylesheet">
 
     <!-- FontAwesome -->
-    <script src="https://kit.fontawesome.com/dfa77e14af.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/dfa77e14af.js" crossorigin="anonymous" defer></script>
 
     <!-- Custom styles -->
     <link href="css/main.css" rel="stylesheet">
@@ -24,7 +24,7 @@
 <body>
     <div id="body-container">
 
-        <div class="row">
+
             <div id="navbar">
                 <div id="title">
                     <h3>Karen Zwier</h3>
@@ -36,48 +36,49 @@
                     </button>
                 </div>
             </div>
+
+
+        <div id="sidebar" class="collapse width">
+            <div id="sidebar-container">
+                <ul>
+                    <li>
+                        <a href="#intro">
+                            <i class="fas fa-user"></i>
+                            Intro
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#portfolio">
+                            <i class="fas fa-project-diagram"></i>
+                            Project Gallery
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#experience">
+                            <i class="fas fa-briefcase"></i>
+                            Experience
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#skills">
+                            <i class="fas fa-tools"></i>
+                            Skills
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#contact">
+                            <i class="fas fa-envelope"></i>
+                            Contact
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
 
-        <div class="row">
-            <div id="sidebar" class="collapse width">
-                <div id="sidebar-container">
-                    <ul>
-                        <li>
-                            <a href="#intro">
-                                <i class="fas fa-user"></i>
-                                Intro
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#portfolio">
-                                <i class="fas fa-project-diagram"></i>
-                                Project Gallery
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#experience">
-                                <i class="fas fa-briefcase"></i>
-                                Experience
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="#skills">
-                                <i class="fas fa-tools"></i>
-                                Skills
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#contact">
-                                <i class="fas fa-envelope"></i>
-                                Contact
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div id="sidebar-widescreen-container">
+        <main>
+            <div class="main-container">
+                
                 <div id="sidebar-widescreen">
                     <div id="title-widescreen">
                         <h3>Karen Zwier</h3>
@@ -117,335 +118,335 @@
                         </li>
                     </ul>
                 </div>
+
+
+                <div id="main-wrapper">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div id="intro">
+                                <div id="empty">
+                                </div>
+                                <img src="img/selfie.webp" alt="Karen waving" />
+                                <h1><code>$ echo "Hi!"</code><br> I'm a developer who <span>loves</span> tackling complex problems and being challenged in new ways.</h1>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div id="portfolio">
+                                <div id="portfolio-wrapper">
+                                    <h1>Project Gallery</h1>
+
+                                    <section class="repos">
+                                        <input type="text" class="filter-repos hide" placeholder="Search by project name" />
+                                        <div class="repo-list"></div>
+                                        <div class="button-container">
+                                            <button class="more">Show more &darr;</button>
+                                        </div>
+                                    </section>
+                                    <section class="repo-data hide">
+                                    </section>
+                                    <div class="button-container">
+                                        <button class="view-repos hide">Back to Gallery</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div id="experience">
+
+                                <h1>Experience</h1>
+
+                                <div class="main-timeline">
+
+                                    <!-- start experience section-->
+                                    <div class="timeline">
+                                        <div class="icon"></div>
+                                        <div class="date-content">
+                                            <div class="date-line"></div>
+                                            <div class="date-outer">
+                                                2021
+                                            </div>
+                                            <div class="date-caption">
+                                                <div class="wrapper">
+                                                    <h5 class="title">Skillcrush</h5>
+                                                    <h5 class="title">
+                                                        Developer Fast-Track Intensive
+                                                    </h5>
+                                                    <p class="description">Courses in HTML5, CSS, Git, Responsive Web Design, JavaScript, React</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="timeline-content">
+                                            <div class="wrapper">
+                                                <h5 class="title">Skillcrush</h5>
+                                                <h5 class="title">
+                                                    Developer Fast-Track
+                                                </h5>
+                                                <p class="description">Courses in HTML5, CSS, Git, Responsive Web Design, JavaScript, React</p>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- end experience section-->
+
+                                    <!-- start experience section-->
+                                    <div class="timeline">
+                                        <div class="icon"></div>
+                                        <div class="date-content">
+                                            <div class="date-line"></div>
+                                            <div class="date-outer">
+                                                2018&ndash;21
+                                            </div>
+                                            <div class="date-caption">
+                                                <div class="wrapper">
+                                                    <h5 class="title">Faculty at Iowa State University</h5>
+                                                    <p class="description">
+                                                        Taught courses covering topics such as ethics, critical thinking, and societal impacts of technology. Delivered lectures and facilitated discussions for classes ranging in size from 30-100 students.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="timeline-content">
+                                            <div class="wrapper">
+                                                <h5 class="title">Faculty at Iowa State University</h5>
+                                                <p class="description">
+                                                    Taught courses covering topics such as ethics, critical thinking, and societal impacts of technology. Delivered lectures and facilitated discussions for classes ranging in size from 30-100 students.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- end experience section-->
+
+                                    <!-- start experience section-->
+                                    <div class="timeline">
+                                        <div class="icon"></div>
+                                        <div class="date-content">
+                                            <div class="date-line"></div>
+                                            <div class="date-outer">
+                                                2013&ndash;18
+                                            </div>
+                                            <div class="date-caption">
+                                                <div class="wrapper">
+                                                    <h5 class="title">Faculty at Drake University</h5>
+                                                    <p class="description">
+                                                        Designed and taught honors-level interdisciplinary courses (science and religion,
+                                                        philosophy of science, physics and philosophy, comparative religion). Served as Interim Director of The Comparison Project Lecture Series
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="timeline-content">
+                                            <div class="wrapper">
+                                                <h5 class="title">Faculty at Drake University</h5>
+                                                <p class="description">
+                                                    Designed and taught honors-level interdisciplinary courses (science and religion,
+                                                    philosophy of science, physics and philosophy, comparative religion). Served as Interim Director of The Comparison Project Lecture Series
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- end experience section-->
+
+                                    <!-- start experience section-->
+                                    <div class="timeline">
+                                        <div class="icon"></div>
+                                        <div class="date-content">
+                                            <div class="date-line"></div>
+                                            <div class="date-outer">
+                                                2006&ndash;14
+                                            </div>
+                                            <div class="date-caption">
+                                                <div class="wrapper">
+                                                    <h5 class="title">University of Pittsburgh, Ph.D. History and Philosophy of Science</h5>
+                                                    <p class="description">&amp;</p>
+                                                    <h5 class="title">University of Pittsburgh, M.A. Philosophy</h5>
+                                                    <p class="description">
+                                                        Teaching fellow. Graduate research focus on causal reasoning. Dissertation: <em>Interventionist Causation in Physical Science</em>.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="timeline-content">
+                                            <div class="wrapper">
+                                                <h5 class="title">University of Pittsburgh, Ph.D. History and Philosophy of Science</h5>
+                                                <p class="description">&amp;</p>
+                                                <h5 class="title">University of Pittsburgh, M.A. Philosophy</h5>
+                                                <p class="description">
+                                                    Teaching fellow. Graduate research focus on causal reasoning. Dissertation: <em>Interventionist Causation in Physical Science</em>.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <!-- end experience section-->
+
+                                    <!-- start experience section-->
+                                    <div class="timeline">
+                                        <div class="icon"></div>
+                                        <div class="date-content">
+                                            <div class="date-line"></div>
+                                            <div class="date-outer">
+                                                2006
+                                            </div>
+                                            <div class="date-caption">
+                                                <div class="wrapper">
+                                                    <h5 class="title">University of Illinois, B.S. Computer Engineering</h5>
+                                                    <p class="description">
+                                                        Topics of study: Computer architecture, assembly language, interpreters, data structures, databases, object oriented programming.
+                                                    </p>
+                                                    <p class="description">&amp;</p>
+                                                    <h5 class="title">University of Illinois, B.A. Philosophy</h5>
+                                                    <p class="description">
+                                                        Topics of study: Logic, philosophy of mathematics, philosophy of physics.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="timeline-content">
+                                            <div class="wrapper">
+                                                <h5 class="title">University of Illinois, B.S. Computer Engineering</h5>
+                                                <p class="description">
+                                                    Topics of study: Computer architecture, assembly language, interpreters, data structures, databases, object oriented programming.
+                                                </p>
+                                                <p class="description">&amp;</p>
+                                                <h5 class="title">University of Illinois, B.A. Philosophy</h5>
+                                                <p class="description">
+                                                    Topics of study: Logic, philosophy of mathematics, philosophy of physics.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- end experience section-->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div id="skills">
+                                <div id="skills-wrapper">
+                                    <h1>Skills</h1>
+
+                                    <p>Over the past two years, I have been updating my skillset using a variety of self-guided platforms, incuding <a href="https://www.hackerrank.com/" target="_blank">HackerRank</a>, <a href="https://www.hackerrank.com/domains/tutorials/30-days-of-code" target="_blank">30 Days of Code</a>, <a href="https://www.udemy.com/" target="_blank">Udemy</a>, <a href="https://www.codecademy.com/" target="_blank">Codecademy</a>, <a href="https://www.linkedin.com/learning" target="_blank">LinkedIn Learning</a>, <a href="https://revature.com/learn-to-code/" target="_blank">Revature</a>, and most recently, <a href="https://skillcrush.com/" target="_blank">Skillcrush</a>. </p>
+
+                                    <div id="skill-badges">
+                                        <div id="badge-wrapper">
+                                            <div class="hex-badge sea-green">
+                                                <div class="circle"><i class="fab fa-html5"></i></div>
+                                                <div class="ribbon">HTML</div>
+                                            </div>
+                                        </div>
+
+                                        <div id="badge-wrapper">
+                                            <div class="hex-badge rajah">
+                                                <div class="circle"><i class="fab fa-css3-alt"></i></div>
+                                                <div class="ribbon">CSS</div>
+                                            </div>
+                                        </div>
+
+                                        <div id="badge-wrapper">
+                                            <div class="hex-badge dark-lava">
+                                                <div class="circle"><i class="fab fa-js"></i></div>
+                                                <div class="ribbon">JS</div>
+                                            </div>
+                                        </div>
+
+                                        <div id="badge-wrapper">
+                                            <div class="hex-badge mandarin">
+                                                <div class="circle"><i class="fab fa-git-square"></i></div>
+                                                <div class="ribbon">Git</div>
+                                            </div>
+                                        </div>
+
+                                        <div id="badge-wrapper">
+                                            <div class="hex-badge sea-green">
+                                                <div class="circle">$_</div>
+                                                <div class="ribbon">Bash</div>
+                                            </div>
+                                        </div>
+
+                                        <div id="badge-wrapper">
+                                            <div class="hex-badge dark-lava">
+                                                <div class="circle"><i class="fab fa-react"></i></div>
+                                                <div class="ribbon">React</div>
+                                            </div>
+                                        </div>
+
+                                        <div id="badge-wrapper">
+                                            <div class="hex-badge mandarin">
+                                                <div class="circle"><i class="fab fa-bootstrap"></i></div>
+                                                <div class="ribbon">Bootstrap</div>
+                                            </div>
+                                        </div>
+
+                                        <div id="badge-wrapper">
+                                            <div class="hex-badge rajah">
+                                                <div class="circle"><i class="fab fa-java"></i></div>
+                                                <div class="ribbon">Java</div>
+                                            </div>
+                                        </div>
+
+                                        <div id="badge-wrapper">
+                                            <div class="hex-badge dark-lava">
+                                                <div class="circle"><i class="fas fa-flask"></i></div>
+                                                <div class="ribbon">TDD</div>
+                                            </div>
+                                        </div>
+
+                                        <div id="badge-wrapper">
+                                            <div class="hex-badge mandarin">
+                                                <div class="circle"><i class="fas fa-database"></i></div>
+                                                <div class="ribbon">SQL</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div id="contact">
+                                <div id="contact-wrapper">
+                                    <h1>Contact</h1>
+                                    <p>Why yes, it turns out I *am* actively seeking a job! Glad you asked!</p>
+                                    <div id="contact-column-wrapper">
+                                        <div id="meet">
+
+                                            <h2>Let's meet!</h2>
+                                            <div class="big-icons">
+                                                <i class="fas fa-coffee"></i>
+                                                <i class="fas fa-video"></i>
+                                            </div>
+                                            <p>
+                                                <i class="fas fa-map-marked-alt"></i> Located in Des Moines, IA
+                                            </p>
+                                            <p>
+                                                <a href="mailto:krzwier@gmail.com"><i class="fas fa-envelope"></i></a> <a href="mailto:krzwier@gmail.com">krzwier@gmail.com</a>
+                                            </p>
+                                        </div>
+                                        <div id="social">
+                                            <h2>Find me on:</h2>
+                                            <div class="big-icons">
+                                                <a href="https://www.linkedin.com/in/karen-zwier/" target="_blank">
+                                                    <i class="fab fa-linkedin"></i></a>
+                                                <a href="https://github.com/krzwier" target="_blank"><i class="fab fa-github-square"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </main>
 
-            <main id="main-wrapper">
-
-                <div class="row">
-                    <div id="intro">
-                        <div id="empty">
-                        </div>
-                        <img src="img/selfie.png" alt="Karen waving" />
-                        <h1><code>$ echo "Hi!"</code><br> I'm a developer who <span>loves</span> tackling complex problems and being challenged in new ways.</h1>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div id="portfolio">
-                        <div id="portfolio-wrapper">
-                            <h1>Project Gallery</h1>
-
-                            <section class="repos">
-                                <input type="text" class="filter-repos hide" placeholder="Search by project name" />
-                                <div class="repo-list"></div>
-                                <div class="button-container">
-                                    <button class="more">Show more &darr;</button>
-                                </div>
-                            </section>
-                            <section class="repo-data hide">
-                            </section>
-                            <div class="button-container">
-                                <button class="view-repos hide">Back to Gallery</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div id="experience">
-
-                        <h1>Experience</h1>
-
-                        <div class="main-timeline">
-
-                            <!-- start experience section-->
-                            <div class="timeline">
-                                <div class="icon"></div>
-                                <div class="date-content">
-                                    <div class="date-line"></div>
-                                    <div class="date-outer">
-                                        2021
-                                    </div>
-                                    <div class="date-caption">
-                                        <div class="wrapper">
-                                            <h5 class="title">Skillcrush</h5>
-                                            <h5 class="title">
-                                                Developer Fast-Track Intensive
-                                            </h5>
-                                            <p class="description">Courses in HTML5, CSS, Git, Responsive Web Design, JavaScript, React</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="timeline-content">
-                                    <div class="wrapper">
-                                        <h5 class="title">Skillcrush</h5>
-                                        <h5 class="title">
-                                            Developer Fast-Track
-                                        </h5>
-                                        <p class="description">Courses in HTML5, CSS, Git, Responsive Web Design, JavaScript, React</p>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end experience section-->
-
-                            <!-- start experience section-->
-                            <div class="timeline">
-                                <div class="icon"></div>
-                                <div class="date-content">
-                                    <div class="date-line"></div>
-                                    <div class="date-outer">
-                                        2018&ndash;21
-                                    </div>
-                                    <div class="date-caption">
-                                        <div class="wrapper">
-                                            <h5 class="title">Faculty at Iowa State University</h5>
-                                            <p class="description">
-                                                Taught courses covering topics such as ethics, critical thinking, and societal impacts of technology. Delivered lectures and facilitated discussions for classes ranging in size from 30-100 students.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="timeline-content">
-                                    <div class="wrapper">
-                                        <h5 class="title">Faculty at Iowa State University</h5>
-                                        <p class="description">
-                                            Taught courses covering topics such as ethics, critical thinking, and societal impacts of technology. Delivered lectures and facilitated discussions for classes ranging in size from 30-100 students.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end experience section-->
-
-                            <!-- start experience section-->
-                            <div class="timeline">
-                                <div class="icon"></div>
-                                <div class="date-content">
-                                    <div class="date-line"></div>
-                                    <div class="date-outer">
-                                        2013&ndash;18
-                                    </div>
-                                    <div class="date-caption">
-                                        <div class="wrapper">
-                                            <h5 class="title">Faculty at Drake University</h5>
-                                            <p class="description">
-                                                Designed and taught honors-level interdisciplinary courses (science and religion,
-                                                philosophy of science, physics and philosophy, comparative religion). Served as Interim Director of The Comparison Project Lecture Series
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="timeline-content">
-                                    <div class="wrapper">
-                                        <h5 class="title">Faculty at Drake University</h5>
-                                        <p class="description">
-                                            Designed and taught honors-level interdisciplinary courses (science and religion,
-                                            philosophy of science, physics and philosophy, comparative religion). Served as Interim Director of The Comparison Project Lecture Series
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end experience section-->
-
-                            <!-- start experience section-->
-                            <div class="timeline">
-                                <div class="icon"></div>
-                                <div class="date-content">
-                                    <div class="date-line"></div>
-                                    <div class="date-outer">
-                                        2006&ndash;14
-                                    </div>
-                                    <div class="date-caption">
-                                        <div class="wrapper">
-                                            <h5 class="title">University of Pittsburgh, Ph.D. History and Philosophy of Science</h5>
-                                            <p class="description">&amp;</p>
-                                            <h5 class="title">University of Pittsburgh, M.A. Philosophy</h5>
-                                            <p class="description">
-                                                Teaching fellow. Graduate research focus on causal reasoning. Dissertation: <em>Interventionist Causation in Physical Science</em>.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="timeline-content">
-                                    <div class="wrapper">
-                                        <h5 class="title">University of Pittsburgh, Ph.D. History and Philosophy of Science</h5>
-                                        <p class="description">&amp;</p>
-                                        <h5 class="title">University of Pittsburgh, M.A. Philosophy</h5>
-                                        <p class="description">
-                                            Teaching fellow. Graduate research focus on causal reasoning. Dissertation: <em>Interventionist Causation in Physical Science</em>.
-                                        </p>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <!-- end experience section-->
-
-                            <!-- start experience section-->
-                            <div class="timeline">
-                                <div class="icon"></div>
-                                <div class="date-content">
-                                    <div class="date-line"></div>
-                                    <div class="date-outer">
-                                        2006
-                                    </div>
-                                    <div class="date-caption">
-                                        <div class="wrapper">
-                                            <h5 class="title">University of Illinois, B.S. Computer Engineering</h5>
-                                            <p class="description">
-                                                Topics of study: Computer architecture, assembly language, interpreters, data structures, databases, object oriented programming.
-                                            </p>
-                                            <p class="description">&amp;</p>
-                                            <h5 class="title">University of Illinois, B.A. Philosophy</h5>
-                                            <p class="description">
-                                                Topics of study: Logic, philosophy of mathematics, philosophy of physics.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="timeline-content">
-                                    <div class="wrapper">
-                                        <h5 class="title">University of Illinois, B.S. Computer Engineering</h5>
-                                        <p class="description">
-                                            Topics of study: Computer architecture, assembly language, interpreters, data structures, databases, object oriented programming.
-                                        </p>
-                                        <p class="description">&amp;</p>
-                                        <h5 class="title">University of Illinois, B.A. Philosophy</h5>
-                                        <p class="description">
-                                            Topics of study: Logic, philosophy of mathematics, philosophy of physics.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end experience section-->
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div id="skills">
-                        <div id="skills-wrapper">
-                            <h1>Skills</h1>
-
-                            <p>Over the past two years, I have been updating my skillset using a variety of self-guided platforms, incuding <a href="https://www.hackerrank.com/" target="_blank">HackerRank</a>, <a href="https://www.hackerrank.com/domains/tutorials/30-days-of-code" target="_blank">30 Days of Code</a>, <a href="https://www.udemy.com/" target="_blank">Udemy</a>, <a href="https://www.codecademy.com/" target="_blank">Codecademy</a>, <a href="https://www.linkedin.com/learning" target="_blank">LinkedIn Learning</a>, <a href="https://revature.com/learn-to-code/" target="_blank">Revature</a>, and most recently, <a href="https://skillcrush.com/" target="_blank">Skillcrush</a>. </p>
-
-                            <div id="skill-badges">
-                                <div id="badge-wrapper">
-                                    <div class="hex-badge sea-green">
-                                        <div class="circle"><i class="fab fa-html5"></i></div>
-                                        <div class="ribbon">HTML</div>
-                                    </div>
-                                </div>
-
-                                <div id="badge-wrapper">
-                                    <div class="hex-badge rajah">
-                                        <div class="circle"><i class="fab fa-css3-alt"></i></div>
-                                        <div class="ribbon">CSS</div>
-                                    </div>
-                                </div>
-
-                                <div id="badge-wrapper">
-                                    <div class="hex-badge dark-lava">
-                                        <div class="circle"><i class="fab fa-js"></i></div>
-                                        <div class="ribbon">JS</div>
-                                    </div>
-                                </div>
-
-                                <div id="badge-wrapper">
-                                    <div class="hex-badge mandarin">
-                                        <div class="circle"><i class="fab fa-git-square"></i></div>
-                                        <div class="ribbon">Git</div>
-                                    </div>
-                                </div>
-
-                                <div id="badge-wrapper">
-                                    <div class="hex-badge sea-green">
-                                        <div class="circle">$_</div>
-                                        <div class="ribbon">Bash</div>
-                                    </div>
-                                </div>
-
-                                <div id="badge-wrapper">
-                                    <div class="hex-badge dark-lava">
-                                        <div class="circle"><i class="fab fa-react"></i></div>
-                                        <div class="ribbon">React</div>
-                                    </div>
-                                </div>
-
-                                <div id="badge-wrapper">
-                                    <div class="hex-badge mandarin">
-                                        <div class="circle"><i class="fab fa-bootstrap"></i></div>
-                                        <div class="ribbon">Bootstrap</div>
-                                    </div>
-                                </div>
-
-                                <div id="badge-wrapper">
-                                    <div class="hex-badge rajah">
-                                        <div class="circle"><i class="fab fa-java"></i></div>
-                                        <div class="ribbon">Java</div>
-                                    </div>
-                                </div>
-
-                                <div id="badge-wrapper">
-                                    <div class="hex-badge dark-lava">
-                                        <div class="circle"><i class="fas fa-flask"></i></div>
-                                        <div class="ribbon">TDD</div>
-                                    </div>
-                                </div>
-
-                                <div id="badge-wrapper">
-                                    <div class="hex-badge mandarin">
-                                        <div class="circle"><i class="fas fa-database"></i></div>
-                                        <div class="ribbon">SQL</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div id="contact">
-                        <div id="contact-wrapper">
-                            <h1>Contact</h1>
-                            <p>Why yes, it turns out I *am* actively seeking a job! Glad you asked!</p>
-                            <div id="contact-column-wrapper">
-                                <div id="meet">
-                                    
-                                    <h2>Let's meet!</h2>
-                                    <div class="big-icons">
-                                        <i class="fas fa-coffee"></i> 
-                                        <i class="fas fa-video"></i>
-                                    </div>
-                                    <p>
-                                        <i class="fas fa-map-marked-alt"></i> Located in Des Moines, IA
-                                    </p>
-                                    <p>
-                                        <a href="mailto:krzwier@gmail.com"><i class="fas fa-envelope"></i></a> <a href="mailto:krzwier@gmail.com">krzwier@gmail.com</a>
-                                    </p>
-                                </div>
-                                <div id="social">
-                                    <h2>Find me on:</h2>
-                                    <div class="big-icons">
-                                        <a href="https://www.linkedin.com/in/karen-zwier/" target="_blank">
-                                        <i class="fab fa-linkedin"></i></a>
-                                        <a href="https://github.com/krzwier" target="_blank"><i class="fab fa-github-square"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </main>
-        </div>
     </div>
 
 
     <!-- Popper and Bootstrap Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js" integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG" crossorigin="anonymous"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
-    <script src="js/masonry.pkgd.min.js"></script>
-
 </body>
 
 </html>
