@@ -1,9 +1,4 @@
 const funkyTown = require("./funkyTown");
-const imagesLoaded = require('imagesloaded');
-const Masonry = require('masonry-layout');
-
-
-// const overview = document.querySelector('.overview');
 
 const repoListDiv = document.querySelector('.repo-list');
 
@@ -105,9 +100,7 @@ const displayRepoList = function (repoList) {
         }
         const li = document.createElement("div");
         li.classList.add("repo");
-        if (pinnedList.includes(repo.name.toLowerCase())) {
-            li.classList.add("brick");
-        } else {
+        if (!pinnedList.includes(repo.name.toLowerCase())) {
             li.classList.add("hide");
         }
 
@@ -124,19 +117,6 @@ const displayRepoList = function (repoList) {
         repoListDiv.append(li);
     }
 
-    // wait until all images are loaded, then update masonry grid
-    refreshMasonry();
-
-    // imagesLoaded(repoListDiv, function () {
-    //     // init Isotope after all images have loaded
-    //     const msnry = new Masonry(repoListDiv, {
-    //         itemSelector: '.repo',
-    //         // columnWidth: '.grid-sizer',
-    //         percentPosition: true
-    //     });
-    // });
-
-
 }
 
 const chooseVisibleRepos = function () {
@@ -148,33 +128,14 @@ const chooseVisibleRepos = function () {
         if (repoTitle.includes(searchText)) {
             if (!more && !pinnedList.includes(repoTitle)) {
                 repo.classList.add("hide");
-                repo.classList.remove("brick");
             } else {
                 repo.classList.remove("hide");
-                repo.classList.add("brick");
             }
         } else {
             repo.classList.add("hide");
-            repo.classList.remove("brick");
         }
     }
-    refreshMasonry();
 }
-
-const refreshMasonry = function () {
-    imagesLoaded(repoListDiv, function () {
-        // init Isotope after all images have loaded
-        const msnry = new Masonry(repoListDiv, {
-            itemSelector: '.brick',
-            // columnWidth: '.grid-sizer',
-            percentPosition: true
-        });
-    });
-};
-
-window.addEventListener('resize', () => {
-    refreshMasonry();
-});
 
 const mess = function () {
     return "U2F" +
@@ -185,7 +146,6 @@ const mess = function () {
 
 repoListDiv.addEventListener("click", async function (e) {
     let element = e.target;
-    // let element = e.target;
     if (e.target.classList.contains("repo-list")) {
         return;
     } else {
@@ -323,12 +283,11 @@ const displayRepoInfo = async function (repoName, rawReadme, languages, picUrl, 
     backToGallery.classList.remove("hide");
 };
 
-backToGallery.addEventListener("click", async function () {
+backToGallery.addEventListener("click", function () {
     repos.classList.remove("hide");
     repoData.classList.add("hide");
     backToGallery.classList.add("hide");
     moreButton.classList.remove("hide");
-    await refreshMasonry();
     document.querySelector('#portfolio').scrollIntoView();
 });
 
