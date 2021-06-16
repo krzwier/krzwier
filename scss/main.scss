@@ -216,9 +216,10 @@ main {
     }
 
     code {
-        @extend .fs-2;
+        // @extend .fs-2;
         color: $amazon;
         font-family: $code-font-stack;
+        font-size: calc(1.25rem + 0.9vw) !important;
         
     }
 
@@ -229,9 +230,11 @@ main {
     }
 
     h1 {
-        @extend .fs-2;
+        // @extend .fs-2;
         @extend .fw-light;
         @extend .p-4;
+        font-size: calc(1.25rem + 0.9vw) !important;
+        
     }
 }
 
@@ -317,6 +320,7 @@ button:hover {
 
 .repo-list {
     columns: 325px auto;
+    column-fill: balance;
 }
 
 .language-list {

@@ -7131,7 +7131,7 @@ textarea.form-control-lg {
   font-size: calc(1.375rem + 1.5vw) !important;
 }
 
-.fs-2, #intro h1, #intro .h1, #intro code {
+.fs-2 {
   font-size: calc(1.325rem + 0.9vw) !important;
 }
 
@@ -10689,7 +10689,7 @@ textarea.form-control-lg {
     font-size: 2.5rem !important;
   }
 
-  .fs-2, #intro h1, #intro .h1, #intro code {
+  .fs-2 {
     font-size: 2rem !important;
   }
 
@@ -10846,11 +10846,16 @@ h3, .h3 {
 #intro code {
   color: #317d51;
   font-family: "Roboto Mono", monospace;
+  font-size: calc(1.25rem + 0.9vw) !important;
 }
 #intro span {
   color: #da5e1b;
   font-family: "Pacifico", cursive;
 }
+#intro h1, #intro .h1 {
+  font-size: calc(1.25rem + 0.9vw) !important;
+}
+
 /* ---- PORTFOLIO SECTION ---- */
 #portfolio {
   background: #9cb97c;
@@ -10879,6 +10884,7 @@ button:hover {
 
 .repo-list {
   columns: 325px auto;
+  column-fill: balance;
 }
 
 .language-list li {
