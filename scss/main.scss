@@ -360,10 +360,12 @@ button:hover {
 }
 
 .repo-data {
+    @extend .w-100;
     @extend .p-4;
 }
 
 .repo-info-wrapper {
+    @extend .w-100;
     @extend .d-flex;
     @extend .flex-column;
     @extend .p-4;
@@ -382,6 +384,8 @@ button:hover {
 
 .repo-data .readme {
     @extend .pt-3;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 .repo-data .language-list li {

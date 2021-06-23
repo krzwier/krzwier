@@ -42,21 +42,39 @@ const repoListQuery = {
         'name,' +
         'description,' +
         'languages(first: 10, orderBy: {field: SIZE, direction: DESC}) {' +
-        'edges {' +
-        'node {' +
+        'nodes {' +
         'name' +
         '}' +
-        '}' +
         '},' +
-        'deployments {' +
-        'totalCount' +
-        '},' +
+        'homepageUrl,' +
         'url' +
         '}' +
         '}' +
         '}' +
         '}'
 };
+
+
+
+//             'repositories(orderBy: {field: CREATED_AT, direction: DESC}, first: 100, privacy: PUBLIC) {' +
+//                 'nodes { ' +
+//                     'name,' +
+//                     'description,' +
+//                     'languages(orderBy: {field: SIZE, direction: DESC}, first: 10) {' +
+//                         'nodes {' +
+//                         'name' +
+//                         '}' +
+//                     '},' +
+//                     'openGraphImageUrl,' +
+                    
+//                 '}' +
+//             '}' +
+//         '}' +
+//     '}'
+// }
+
+
+
 
 const fetchRepoList = async function (username) {
 
@@ -73,7 +91,14 @@ const fetchRepoList = async function (username) {
     });
     try {
         const repoListObject = await res.json();
+        console.log(repoListObject);
         repoList = repoListObject.data.repositoryOwner.repositories.nodes;
+        for (repo of repoList) {
+            if (repo.name.toLowerCase() === "krzwier") {
+                const index = repoList.indexOf(repo);
+                repoList.splice(index, 1);
+            }
+        }
         const pins = repoListObject.data.repositoryOwner.itemShowcase.items.edges;
         pinnedList = [];
         for (let pin of pins) {
@@ -94,9 +119,9 @@ const displayRepoList = async function (repoList) {
     for (let repo of repoList) {
         const languages = document.createElement("ul");
         languages.classList.add("language-list");
-        for (let language of repo.languages.edges) {
+        for (let language of repo.languages.nodes) {
             const item = document.createElement("li");
-            item.textContent = language.node.name;
+            item.textContent = language.name;
             languages.append(item);
         }
         const li = document.createElement("div");
@@ -161,9 +186,9 @@ repoListDiv.addEventListener("click", async function (e) {
         console.error(`getRepoInfo("${repoName}") function rejected promise when called by repo-list click event handler: ${e.message}`);
     });
     try {
-        await displayRepoInfo(repoName, repoInfo.readme, repoInfo.languages, repoInfo.picUrl, repoInfo.url, repoInfo.numDeployments);
+        await displayRepoInfo(repoName, repoInfo.readme, repoInfo.languages, repoInfo.picUrl, repoInfo.url, repoInfo.homepage);
     } catch (e) {
-        console.error(`displayRepoInfo("${repoName}", "${repoInfo.readme}", ${repoInfo.languages}, "${repoInfo.picUrl}", "${repoInfo.url}", ${repoInfo.numDeployments}) function failed when called by repo-list click event handler: ${e.message}`);
+        console.error(`displayRepoInfo("${repoName}", "${repoInfo.readme}", ${repoInfo.languages}, "${repoInfo.picUrl}", "${repoInfo.url}", ${repoInfo.homepage}) function failed when called by repo-list click event handler: ${e.message}`);
     };
 
     document.querySelector('#portfolio').scrollIntoView();
@@ -174,16 +199,16 @@ repoListDiv.addEventListener("click", async function (e) {
 const getRepoInfo = async function (repoName) {
     let picUrl = "";
     let url = "";
-    let numDeployments = 0;
+    let homepage;
     const languages = [];
     for (let repo of repoList) {
         if (repo.name === repoName) {
-            for (let language of repo.languages.edges) {
-                languages.push(language.node.name);
+            for (let language of repo.languages.nodes) {
+                languages.push(language.name);
             }
             picUrl = repo.openGraphImageUrl;
             url = repo.url;
-            numDeployments = repo.deployments.totalCount;
+            homepage = repo.homepageUrl;
             break;
         }
     }
@@ -228,11 +253,11 @@ const getRepoInfo = async function (repoName) {
     } catch (e) {
         console.error(`Failed conversion to JSON in getRepoInfo("${repoName}" function: ${e.message}`);
     };
-    return { repoName, readme, languages, picUrl, url, numDeployments };
+    return { repoName, readme, languages, picUrl, url, homepage };
 
 };
 
-const displayRepoInfo = async function (repoName, rawReadme, languages, picUrl, url, numDeployments) {
+const displayRepoInfo = async function (repoName, rawReadme, languages, picUrl, url, homepage) {
 
     const res = await fetch("https://api.github.com/markdown", {
         method: "POST",
@@ -243,13 +268,13 @@ const displayRepoInfo = async function (repoName, rawReadme, languages, picUrl, 
             'text': rawReadme
         })
     }).catch((e) => {
-        console.error(`API call to https://api.github.com/markdown rejected in displayRepoInfo("${repoName}", "${rawReadme}", ${languages}, "${picUrl}", "${url}", ${numDeployments}) function: ${e.message}`);
+        console.error(`API call to https://api.github.com/markdown rejected in displayRepoInfo("${repoName}", "${rawReadme}", ${languages}, "${picUrl}", "${url}", ${homepage}) function: ${e.message}`);
     });
     let readme = "";
     try {
         readme = await res.text();
     } catch (e) {
-        console.error(`Failed conversion to text in displayRepoInfo("${repoName}", "${rawReadme}", ${languages}, "${picUrl}", "${url}", ${numDeployments}) function: ${e.message}`);
+        console.error(`Failed conversion to text in displayRepoInfo("${repoName}", "${rawReadme}", ${languages}, "${picUrl}", "${url}", ${homepage}) function: ${e.message}`);
     };
     const languagesUL = document.createElement("ul");
     languagesUL.classList.add("language-list");
@@ -267,9 +292,9 @@ const displayRepoInfo = async function (repoName, rawReadme, languages, picUrl, 
         readme +
         "<div>" + languagesUL.outerHTML + "</div>" +
         '<div class="buttons"><a class="visit" href="' + url + '" target="_blank" rel="noreferrer noopener">GitHub Repo</a>';
-    if (numDeployments >= 1) {
+    if (homepage) {
         htmlString = htmlString +
-            '<a class="visit live" href="https://' + username + '.github.io/' + repoName + '/" target="_blank" rel="noreferrer noopener">Live Version</a></div>';
+            '<a class="visit live" href="' + homepage + '" target="_blank" rel="noreferrer noopener">Live Version</a></div>';
     } else {
         htmlString = htmlString + '</div>';
     }
