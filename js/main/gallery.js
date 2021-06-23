@@ -36,7 +36,7 @@ const repoListQuery = {
         '}' +
         '}' +
         '}' +
-        'repositories(orderBy: {field: UPDATED_AT, direction: DESC}, first: 100, privacy: PUBLIC) {' +
+        'repositories(orderBy: {field: CREATED_AT, direction: DESC}, first: 100, privacy: PUBLIC) {' +
         'nodes {' +
         'openGraphImageUrl,' +
         'name,' +
