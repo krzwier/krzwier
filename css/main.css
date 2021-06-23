@@ -6482,7 +6482,7 @@ textarea.form-control-lg {
   width: 75% !important;
 }
 
-.w-100, #contact h1, #contact .h1, #skills h1, #skills .h1, .timeline .date-content, #experience h1, #experience .h1, .buttons, .repo-info-wrapper img, .repo img, .language-list, .repos, .button-container, #portfolio-wrapper, #portfolio h1, #portfolio .h1, #intro, #title-widescreen {
+.w-100, #contact h1, #contact .h1, #skills h1, #skills .h1, .timeline .date-content, #experience h1, #experience .h1, .buttons, .repo-info-wrapper img, .repo-info-wrapper, .repo-data, .repo img, .language-list, .repos, .button-container, #portfolio-wrapper, #portfolio h1, #portfolio .h1, #intro, #title-widescreen {
   width: 100% !important;
 }
 
@@ -10906,6 +10906,11 @@ button:hover {
 
 .repo-info-wrapper {
   background-color: #fff9eb;
+}
+
+.repo-data .readme {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .repo-data .language-list li {
