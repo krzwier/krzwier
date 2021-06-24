@@ -648,7 +648,7 @@ main,
   margin-top: var(--bs-gutter-y);
 }
 
-.col, .repo-info-wrapper div {
+.col, .repo-info-wrapper > div {
   flex: 1 0 0%;
 }
 
@@ -1139,7 +1139,7 @@ main,
     width: 41.6666666667%;
   }
 
-  .col-md-6, #meet, #social, .repo-info-wrapper div {
+  .col-md-6, #meet, #social, .repo-info-wrapper > div {
     flex: 0 0 auto;
     width: 50%;
   }
@@ -10887,6 +10887,10 @@ button:hover {
   column-fill: balance;
 }
 
+.language-list li.topic {
+  background-color: #e88741;
+}
+
 .language-list li {
   background-color: #39935f;
 }
@@ -10911,10 +10915,6 @@ button:hover {
 .repo-data .readme {
   overflow-wrap: break-word;
   word-wrap: break-word;
-}
-
-.repo-data .language-list li {
-  background-color: #da5e1b;
 }
 
 #portfolio .readme > h1, #portfolio .readme > .h1 {
@@ -11258,6 +11258,15 @@ button:hover {
 
   #empty {
     height: calc(100% - 92.5vw);
+  }
+}
+@media (min-width: 1400px) {
+  .main-timeline .timeline {
+    margin-bottom: 100px !important;
+  }
+
+  .main-timeline .timeline:last-child {
+    margin-bottom: 3em !important;
   }
 }
 

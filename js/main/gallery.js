@@ -23,58 +23,43 @@ let more = false;
 const repoListQuery = {
     'query': 'query { ' +
         'repositoryOwner(login: "' + username + '") { ' +
-        '... on ProfileOwner {' +
-        'itemShowcase {' +
-        'items(first: 6) {' +
-        'edges {' +
-        'node {' +
-        '... on Repository {' +
-        'name' +
+            '... on ProfileOwner {' +
+                'itemShowcase {' +
+                    'items(first: 6) {' +
+                        'edges {' +
+                            'node {' +
+                                '... on Repository {' +
+                                    'name' +
+                                '}' +
+                            '}' +
+                        '}' +
+                    '}' +
+                '}' +
+            '}' +
+            'repositories(orderBy: {field: CREATED_AT, direction: DESC}, first: 100, privacy: PUBLIC) {' +
+                'nodes {' +
+                    'openGraphImageUrl,' +
+                    'name,' +
+                    'description,' +
+                    'languages(first: 10, orderBy: {field: SIZE, direction: DESC}) {' +
+                        'nodes {' +
+                            'name' +
+                        '}' +
+                    '},' +
+                    'homepageUrl,' +
+                    'url,' +
+                    'repositoryTopics(first: 10) {' +
+                        'nodes {' +
+                            'topic {' +
+                                'name' +
+                            '}' +
+                        '}' +
+                    '}' +
+                '}' +
+            '}' +
         '}' +
-        '}' +
-        '}' +
-        '}' +
-        '}' +
-        '}' +
-        'repositories(orderBy: {field: CREATED_AT, direction: DESC}, first: 100, privacy: PUBLIC) {' +
-        'nodes {' +
-        'openGraphImageUrl,' +
-        'name,' +
-        'description,' +
-        'languages(first: 10, orderBy: {field: SIZE, direction: DESC}) {' +
-        'nodes {' +
-        'name' +
-        '}' +
-        '},' +
-        'homepageUrl,' +
-        'url' +
-        '}' +
-        '}' +
-        '}' +
-        '}'
+    '}'
 };
-
-
-
-//             'repositories(orderBy: {field: CREATED_AT, direction: DESC}, first: 100, privacy: PUBLIC) {' +
-//                 'nodes { ' +
-//                     'name,' +
-//                     'description,' +
-//                     'languages(orderBy: {field: SIZE, direction: DESC}, first: 10) {' +
-//                         'nodes {' +
-//                         'name' +
-//                         '}' +
-//                     '},' +
-//                     'openGraphImageUrl,' +
-                    
-//                 '}' +
-//             '}' +
-//         '}' +
-//     '}'
-// }
-
-
-
 
 const fetchRepoList = async function (username) {
 
@@ -124,6 +109,14 @@ const displayRepoList = async function (repoList) {
             item.textContent = language.name;
             languages.append(item);
         }
+        // const topics = document.createElement("ul");
+        // topics.classList.add("topic-list");
+        for (let topic of repo.repositoryTopics.nodes) {
+            const item = document.createElement("li");
+            item.classList.add("topic");
+            item.textContent = topic.topic.name;
+            languages.append(item);
+        }
         const li = document.createElement("div");
         li.classList.add("repo");
         if (!pinnedList.includes(repo.name.toLowerCase())) {
@@ -138,6 +131,7 @@ const displayRepoList = async function (repoList) {
             '<h3 class="card-title">' + repo.name + '</h3>' +
             '<p class="card-text">' + repo.description + '</p>' +
             languages.outerHTML +
+            // topics.outerHTML +
             '</div>' +
             '</div>';
         repoListDiv.append(li);
@@ -151,7 +145,14 @@ const chooseVisibleRepos = function () {
     for (let repo of repos) {
         const repoHeader = repo.querySelector("h3");
         const repoTitle = repoHeader.textContent.toLowerCase();
-        if (repoTitle.includes(searchText)) {
+        const repoDescription = repo.querySelector("p");
+        const tags = repo.querySelectorAll(".language-list>li");
+        let combinedString = repoTitle;
+        combinedString = combinedString + repoDescription.textContent.toLowerCase();
+        for (let tag of tags) {
+            combinedString = combinedString + tag.textContent.toLowerCase();
+        }
+        if (combinedString.includes(searchText)) {
             if (!more && !pinnedList.includes(repoTitle)) {
                 repo.classList.add("hide");
             } else {
@@ -186,9 +187,9 @@ repoListDiv.addEventListener("click", async function (e) {
         console.error(`getRepoInfo("${repoName}") function rejected promise when called by repo-list click event handler: ${e.message}`);
     });
     try {
-        await displayRepoInfo(repoName, repoInfo.readme, repoInfo.languages, repoInfo.picUrl, repoInfo.url, repoInfo.homepage);
+        await displayRepoInfo(repoName, repoInfo.readme, repoInfo.languages, repoInfo.topics, repoInfo.picUrl, repoInfo.url, repoInfo.homepage);
     } catch (e) {
-        console.error(`displayRepoInfo("${repoName}", "${repoInfo.readme}", ${repoInfo.languages}, "${repoInfo.picUrl}", "${repoInfo.url}", ${repoInfo.homepage}) function failed when called by repo-list click event handler: ${e.message}`);
+        console.error(`displayRepoInfo("${repoName}", "${repoInfo.readme}", ${repoInfo.languages}, "${repoInfo.topics}", ${repoInfo.picUrl}", "${repoInfo.url}", ${repoInfo.homepage}) function failed when called by repo-list click event handler: ${e.message}`);
     };
 
     document.querySelector('#portfolio').scrollIntoView();
@@ -201,10 +202,14 @@ const getRepoInfo = async function (repoName) {
     let url = "";
     let homepage;
     const languages = [];
+    const topics = [];
     for (let repo of repoList) {
         if (repo.name === repoName) {
             for (let language of repo.languages.nodes) {
                 languages.push(language.name);
+            }
+            for (let topic of repo.repositoryTopics.nodes) {
+                topics.push(topic.topic.name);
             }
             picUrl = repo.openGraphImageUrl;
             url = repo.url;
@@ -253,11 +258,11 @@ const getRepoInfo = async function (repoName) {
     } catch (e) {
         console.error(`Failed conversion to JSON in getRepoInfo("${repoName}" function: ${e.message}`);
     };
-    return { repoName, readme, languages, picUrl, url, homepage };
+    return { repoName, readme, languages, topics, picUrl, url, homepage };
 
 };
 
-const displayRepoInfo = async function (repoName, rawReadme, languages, picUrl, url, homepage) {
+const displayRepoInfo = async function (repoName, rawReadme, languages, topics, picUrl, url, homepage) {
 
     const res = await fetch("https://api.github.com/markdown", {
         method: "POST",
@@ -268,19 +273,25 @@ const displayRepoInfo = async function (repoName, rawReadme, languages, picUrl, 
             'text': rawReadme
         })
     }).catch((e) => {
-        console.error(`API call to https://api.github.com/markdown rejected in displayRepoInfo("${repoName}", "${rawReadme}", ${languages}, "${picUrl}", "${url}", ${homepage}) function: ${e.message}`);
+        console.error(`API call to https://api.github.com/markdown rejected in displayRepoInfo("${repoName}", "${rawReadme}", ${languages}, ${topics}, "${picUrl}", "${url}", ${homepage}) function: ${e.message}`);
     });
     let readme = "";
     try {
         readme = await res.text();
     } catch (e) {
-        console.error(`Failed conversion to text in displayRepoInfo("${repoName}", "${rawReadme}", ${languages}, "${picUrl}", "${url}", ${homepage}) function: ${e.message}`);
+        console.error(`Failed conversion to text in displayRepoInfo("${repoName}", "${rawReadme}", ${languages}, ${topics}, "${picUrl}", "${url}", ${homepage}) function: ${e.message}`);
     };
     const languagesUL = document.createElement("ul");
     languagesUL.classList.add("language-list");
     for (let language of languages) {
         const item = document.createElement("li");
         item.textContent = language;
+        languagesUL.append(item);
+    }
+    for (let topic of topics) {
+        const item = document.createElement("li");
+        item.classList.add("topic");
+        item.textContent = topic;
         languagesUL.append(item);
     }
     repoData.innerHTML = "";
@@ -317,7 +328,7 @@ backToGallery.addEventListener("click", function () {
 });
 
 filterInput.addEventListener("input", function (e) {
-    VisibleRepos();
+    chooseVisibleRepos();
 });
 
 
