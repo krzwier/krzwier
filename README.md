@@ -1,8 +1,8 @@
 # 👋 Hi, I’m **Karen**. 
 
-### I'm a full-stack developer. I'm currently looking for a job, and I'm quite a catch 🎣, so be sure to snap me up quick!
+### I'm a full-stack developer.
 
-- 👩‍🏫 → 👩‍💻 I'm making a career change from higher education to tech
+- 👩‍🏫 → 👩‍💻 I'm a former philosophy professor who has pivoted my career to tech
 
 - 📚 I’ve recently been learning front-end languages (HTML5, CSS, JavaScript) and frameworks like Bootstrap and React
 
